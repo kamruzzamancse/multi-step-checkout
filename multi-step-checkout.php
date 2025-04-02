@@ -141,5 +141,4 @@ add_shortcode( 'multi_step_checkout', 'msc_custom_checkout_form' );
         }
     } 
 
-
 </style>
