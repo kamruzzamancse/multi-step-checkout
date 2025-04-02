@@ -64,7 +64,11 @@ function msc_custom_checkout_form() {
             </div>
         </div>
         <div id="pro_checkout">
-        <?php include( plugin_dir_path(__FILE__) . 'includes/step-6-checkout.php'); ?>
+            <?php include( plugin_dir_path(__FILE__) . 'includes/step-6-checkout.php'); ?>
+        </div>
+        <!-- Footer Section -->
+        <div id="checkout-footer" class="pro_footer">
+            <?php include( plugin_dir_path(__FILE__) . 'includes/footer.php'); ?>
         </div>
     </div>
     <?php
@@ -72,7 +76,6 @@ function msc_custom_checkout_form() {
 
 add_shortcode( 'multi_step_checkout', 'msc_custom_checkout_form' );
 ?>
-
 
 <style>
     #multi-step-checkout {
