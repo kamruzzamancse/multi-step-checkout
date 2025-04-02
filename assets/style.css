@@ -1,0 +1,211 @@
+:root {
+  --praimary: #00a899;
+  --lightGray: #b3b3b3de;
+  --Bellefair: Bellefair;
+}
+* {
+  font-family: "Montserrat", sans-serif;
+}
+article {
+  margin: 0;
+  padding: 0 !important ;
+}
+
+/* For Chrome, Safari, Edge, and Opera */
+input[type="number"]::-webkit-inner-spin-button,
+ input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* For Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.pro_row {
+  width: 100%;
+  padding: 0;
+  /* background-color: #00a89a3b; */
+}
+.pro_col{
+  padding: 0;
+}
+.pro_heading2{
+  font-size: 28px;
+  font-weight: 700;
+  color: #000;
+  margin: 0;
+}
+#product_list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  /* width: 60%; */
+  float: left;
+}
+
+#date_time_picker {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 15px;
+}
+
+#arrival_window {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+.storage-item {
+  width: 100% !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+  border-radius: 5px;
+}
+
+.storage-item input[type="number"] {
+  text-align: center;
+}
+
+.next-step {
+  margin-top: 20px;
+}
+
+/* @media (max-width: 768px) {
+    #product_list, .price-summary {
+        width: 100%;
+        float: none;
+    }
+} */
+
+.price-summary {
+  /* width: 35%; */
+  /* float: right; */
+  background: #00a89a48;
+  padding: 15px;
+  border-radius: 5px;
+  margin-left: 20px;
+  border: 1px solid #ccc;
+}
+
+.price-summary h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.price-summary p {
+  font-size: 16px;
+  color: #000000;
+  margin: 5px 0;
+  font-weight: 500;
+}
+
+.price-summary p strong {
+  font-weight: bold;
+}
+
+.price-summary #price_details {
+  margin-bottom: 10px;
+}
+
+.price-summary span {
+  float: right;
+}
+
+.price-summary hr {
+  border: none;
+  height: 1px;
+  background: #000;
+  margin: 10px 0;
+}
+
+.price-summary .return-info {
+  font-size: 12px;
+  color: #666;
+  background: #f5f5f5;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.is-invalid {
+  border-color: red;
+}
+
+.prev_next_button {
+  clear: both;
+}
+/* ====input==== */
+.pro_inputBox {
+  width: 100%;
+  position: relative !important;
+}
+.pro_inputBox input {
+  display: block;
+  width: 100%;
+  font-size: 16px;
+  padding: 10px;
+  position: relative;
+  outline: 1px solid transparent;
+  border: 1px solid var(--lightGray);
+  border-radius: 4px !important;
+}
+.pro_inputBox input:hover {
+  border: 1px solid black;
+  outline: 1px solid black;
+}
+.pro_inputBox input:focus {
+  border: 1px solid #00a899;
+  outline: 1px solid #00a899;
+  border-radius: 3px;
+}
+.pro_inputBox label {
+  position: absolute;
+  width: -moz-max-content;
+  width: max-content;
+  top: 10px;
+  left: 10px;
+  z-index: 9;
+  background-color: #fff;
+  transition: 0.1s all linear;
+  font-size: 14px;
+  width: fit-content;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: calc(100% - 20px);
+}
+.pro_inputBox .filled {
+  top: -12px;
+  left: 10px;
+  color: var(--praimary);
+}
+#enterManually {
+  color: black;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/*add by kamruzzaman*/
+
+
+
+
+
+/* =================== */
+.next-step {
+  background-color: #00a899;
+  padding: 8px 42px;
+  border-radius: 4px;
+}
+a {
+  color: #00a899;
+}
