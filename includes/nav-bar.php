@@ -1,32 +1,38 @@
-
-    <nav class="">
-        <div class="box_warpper">
+<nav class="">
+    <div class="box_warpper">
+        <div class="box-container">
             <div class="box" id="boxOne">
                 <div class="miniBox"></div>
             </div>
-            <div class="line"></div>
-            <div class="box" id="boxTwo">
-                <!-- <div class="miniBox"></div> -->
-            </div>
-            <div class="line"></div>
-            <div class="box" id="boxThree">
-                <!-- <div class="miniBox"></div> -->
-            </div>
-            <div class="line"></div>
-            <div class="box" id="boxFour">
-                <!-- <div class="miniBox"></div> -->
-            </div>
-            <div class="line"></div>
-            <div class="box" id="boxfive">
-                <!-- <div class="miniBox"></div> -->
-            </div>
-            <div class="line"></div>
-            <div class="box" id="boxLast">
-                <!-- <div class="miniBox"></div> -->
-            </div>
+            <span class="box-label">Storage</span>
         </div>
-    </nav>
-
+        <div class="line"></div>
+        <div class="box-container">
+            <div class="box" id="boxTwo"></div>
+            <span class="box-label">Address</span>
+        </div>
+        <div class="line"></div>
+        <div class="box-container">
+            <div class="box" id="boxThree"></div>
+            <span class="box-label">Pickup</span>
+        </div>
+        <div class="line"></div>
+        <div class="box-container">
+            <div class="box" id="boxFour"></div>
+            <span class="box-label">Materials</span>
+        </div>
+        <div class="line"></div>
+        <div class="box-container">
+            <div class="box" id="boxFive"></div>
+            <span class="box-label">Protection</span>
+        </div>
+        <div class="line"></div>
+        <div class="box-container">
+            <div class="box" id="boxLast"></div>
+            <span class="box-label">Checkout</span>
+        </div>
+    </div>
+</nav>
 
 <style>
 nav {
@@ -70,29 +76,40 @@ nav .box_warpper .line {
   width: 80px;
   height: 2px;
   background-color: var(--lightGray);
+  margin-top: -22px;
+}
+
+.box-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.box-label {
+  margin-top: 8px;
+  font-size: 11px;
+  color: #333;
+  text-align: center;
+  font-weight: bold;
 }
 
 </style>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("DOMContentLoaded", () => {
     const boxes = document.querySelectorAll(".box");
 
     boxes.forEach((box) => {
-        const miniBox =document.createElement('div');
-              miniBox.classList.add("miniBox")
         box.addEventListener("click", function () {
-            // ===Remove 'active' class from all boxes===
-            boxes.forEach((eachBox)=>{
+            // Remove 'active' class and miniBox from all boxes
+            boxes.forEach((eachBox) => {
                 eachBox.classList.remove("active");
                 const miniBox = eachBox.querySelector(".miniBox");
-                if (miniBox) {
-                    eachBox.removeChild(miniBox);
-                }
+                if (miniBox) eachBox.removeChild(miniBox);
             });
-            // ====Add 'active' class to the clicked box===
+
+            // Add 'active' class and append miniBox to the clicked box
             this.classList.add("active");
-            // ====Create and append miniBox if not already inside===
             if (!this.querySelector(".miniBox")) {
                 const miniBox = document.createElement("div");
                 miniBox.classList.add("miniBox");
@@ -100,5 +117,6 @@ nav .box_warpper .line {
             }
         });
     });
-  });
+});
+
 </script>

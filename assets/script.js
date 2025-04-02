@@ -88,6 +88,44 @@ jQuery(document).ready(function ($) {
         showStep(currentStep);
     });
 
+    // ========================== nav link handlers ==========================
+    $(document).on("click", "#boxOne", function(e) {
+        e.preventDefault();
+        currentStep = 1;
+        showStep(currentStep);
+    });
+    
+    $(document).on("click", "#boxTwo", function(e) {
+        e.preventDefault();
+        currentStep = 2;
+        showStep(currentStep);
+    });
+    
+    $(document).on("click", "#boxThree", function(e) {
+        e.preventDefault();
+        currentStep = 3;
+        showStep(currentStep);
+    });
+    
+    $(document).on("click", "#boxFour", function(e) {
+        e.preventDefault();
+        currentStep = 4;
+        showStep(currentStep);
+    });
+    
+    $(document).on("click", "#boxFive", function(e) {
+        e.preventDefault();
+        currentStep = 5;
+        showStep(currentStep);
+    });
+    
+    $(document).on("click", "#boxLast", function(e) {
+        e.preventDefault();
+        currentStep = 6;
+        showStep(currentStep);
+    });
+    
+
      // ========================== UPDATE SUMMARY DISPLAY ==========================
    /* function updateSummary() {
         // Price Summary

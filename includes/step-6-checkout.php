@@ -60,10 +60,6 @@
                         <p class="delivery-note">Delivery Fee applies at delivery <span title="This will be added later.">❔</span></p>
                     </div>
                 </div>
-                <!-- Navigation Buttons -->
-                <div class="prev_next_button">
-                    <button class="prev-step">Previous</button>
-                </div>
             </div>
 
             <div class="col-md-5 right-section">

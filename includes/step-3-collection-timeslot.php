@@ -8,8 +8,7 @@
                 <input type="text" id="collection_timeslot" name="collection_timeslot" readonly>
                 
                 <div class="prev_next_button">
-                    <button class="prev-step">Previous</button>
-                    <button class="next-step">Next</button>
+                    <button class="next-step">Continue</button>
                 </div> 
             </div>
             

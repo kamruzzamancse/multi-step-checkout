@@ -174,7 +174,7 @@
      </div>
 
     <div class="prev_next_button">
-        <button class="next-step">Next</button>
+        <button class="next-step">Continue</button>
     </div>
 </div>
 

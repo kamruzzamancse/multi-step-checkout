@@ -209,3 +209,14 @@ input[type="number"] {
 a {
   color: #00a899;
 }
+
+[type=button], [type=submit], button {
+  color: white !important;
+  border-radius: 0 !important;
+  border: 2px solid #127878 !important;
+}
+
+[type=button]:hover, [type=submit]:hover, button:hover {
+  background-color: #127878 !important;
+}
+
