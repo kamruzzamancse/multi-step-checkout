@@ -1,0 +1,233 @@
+jQuery(document).ready(function ($) {
+
+    // ========================== Global State ==========================
+    let currentStep = 1; // Start from Step 1
+
+
+    // ========================== STEP MANAGEMENT ==========================
+    function showStep(step) {
+        $(".step").hide(); // Hide all steps
+        $("#step-" + step).show(); // Show current step
+
+        // Hide price-summary for Step 6 only
+        if (step === 6) {
+            $("#price-summary-wrapper").hide();
+        } else {
+            $("#price-summary-wrapper").show();
+        }
+    }
+
+
+    // ========================== ADDRESS VALIDATION ==========================
+    function validateAddressForm() {
+        const requiredFields = ['#building_name', '#address_line1', '#town', '#postcode'];
+        let isValid = true;
+
+        requiredFields.forEach(function (fieldId) {
+            const field = $(fieldId);
+            if (!field.val().trim()) {
+                isValid = false;
+                field.addClass('is-invalid');
+            } else {
+                field.removeClass('is-invalid');
+            }
+        });
+
+        return isValid;
+    }
+
+
+    // ========================== NEXT BUTTON ==========================
+    $('.next-step').click(function () {
+        if (currentStep === 2) {
+            if (!validateAddressForm()) {
+                return; // Stop progression if address is invalid
+            }
+            saveAddressToSession();
+        }
+
+        if (currentStep === 3) {
+            savePickupDetails(); // Save pickup info before moving forward
+        }
+
+        currentStep++;
+        showStep(currentStep);
+        updateSummary();
+    });
+
+
+    // ========================== PREVIOUS BUTTON ==========================
+    $('.prev-step').click(function () {
+        if (currentStep > 1) {
+            currentStep--;
+            showStep(currentStep);
+        }
+    });
+
+
+    // ========================== UPDATE SUMMARY DISPLAY ==========================
+    function updateSummary() {
+        // Price Summary
+        if (sessionStorage.getItem("price_details")) {
+            $("#price_details").html(sessionStorage.getItem("price_details"));
+            $("#subtotal").text(`£${sessionStorage.getItem("subtotal")}`);
+            $("#total_due").text(`£${sessionStorage.getItem("total_due")}`);
+        }
+
+        // Collection Address
+        let savedAddress = sessionStorage.getItem("collection_address");
+        if (savedAddress && savedAddress.trim() !== "") {
+            $("#collection_address").text(savedAddress).show();
+            $("#collection_label").show();
+        } else {
+            $("#collection_address, #collection_label").hide();
+        }
+
+        // Pickup Date/Time
+        let pickupDetails = sessionStorage.getItem("pickup_date");
+        if (pickupDetails) {
+            let pickupData = JSON.parse(pickupDetails);
+            $("#pickup_label").show();
+            $("#pickup_date").text(`${pickupData.date} (${pickupData.time})`);
+        }
+    }
+
+
+    // ========================== ON PAGE LOAD ==========================
+    showStep(1);                  // Start from step 1
+    updateSummary();              // Load stored data
+    $(document).ready(updateSummary); // Also call on ready (redundant, safe)
+
+
+    // ========================== PICKUP DATE & TIMESLOT ==========================
+    function savePickupDetails() {
+        let selectedDate = $("#collection_timeslot").val();
+        let arrivalType = $(".option.selected").attr("id");
+        let selectedTimeslot = "";
+        let pickupPrice = "";
+
+        if (!selectedDate) return; // Prevent saving empty date
+
+        if (arrivalType === "flexibleArrival") {
+            selectedTimeslot = "07:00-03:00";
+            pickupPrice = "£0.00";
+        } else if (arrivalType === "scheduledArrival") {
+            selectedTimeslot = $(".time-slot.selected").text() || "Not Selected";
+            pickupPrice = "£29.00";
+        }
+
+        let pickupData = {
+            date: selectedDate,
+            time: selectedTimeslot,
+            price: pickupPrice
+        };
+
+        sessionStorage.setItem("pickup_date", JSON.stringify(pickupData));
+        updateSummary();
+    }
+
+    // Datepicker setup
+    $("#collection_timeslot").datepicker({
+        dateFormat: "yy-mm-dd",
+        minDate: 0,
+        onSelect: function (selectedDate) {
+            alert("Selected date: " + selectedDate);
+            savePickupDetails();
+        }
+    });
+
+    // Arrival Option Selection
+    $(document).on("click", ".option", function () {
+        $(".option").removeClass("selected");
+        $(this).addClass("selected");
+        savePickupDetails();
+    });
+
+
+    // ========================== CALCULATE TOTAL PRICE ==========================
+    // Called when quantity changes
+    function updateTotal() {
+        let totalPrice = 0;
+        let details = "";
+
+        document.querySelectorAll(".storage-item input[type='number']").forEach(input => {
+            let pricePerItem = parseFloat(input.dataset.price);
+            let quantity = parseInt(input.value);
+            let productName = input.closest('.storage-item').querySelector('.product-info strong').innerText;
+
+            if (isNaN(quantity) || quantity < 1) quantity = 0;
+            if (isNaN(pricePerItem) || pricePerItem <= 0) pricePerItem = 0;
+
+            if (quantity > 0 && pricePerItem > 0) {
+                let itemTotal = quantity * pricePerItem;
+                totalPrice += itemTotal;
+                details += `${quantity} x ${productName} = £${itemTotal.toFixed(2)} <br>`;
+            }
+        });
+
+        // Display
+        document.getElementById("price_details").innerHTML = details;
+        document.getElementById("subtotal").innerText = `£${totalPrice.toFixed(2)}`;
+        document.getElementById("total_due").innerText = `£${totalPrice.toFixed(2)}`;
+
+        // Save in session
+        sessionStorage.setItem("price_details", details);
+        sessionStorage.setItem("subtotal", totalPrice.toFixed(2));
+        sessionStorage.setItem("total_due", totalPrice.toFixed(2));
+    }
+
+
+    // ========================== RESTORE PRICE DETAILS ON REFRESH ==========================
+    document.addEventListener("DOMContentLoaded", () => {
+        if (sessionStorage.getItem("price_details")) {
+            document.getElementById("price_details").innerHTML = sessionStorage.getItem("price_details");
+            document.getElementById("subtotal").innerText = `£${sessionStorage.getItem("subtotal")}`;
+            document.getElementById("total_due").innerText = `£${sessionStorage.getItem("total_due")}`;
+        }
+
+        let savedAddress = sessionStorage.getItem("collection_address");
+        let addressLabel = document.getElementById("collection_label");
+
+        if (savedAddress && savedAddress.trim() !== "") {
+            document.getElementById("collection_address").innerText = savedAddress;
+            addressLabel.style.display = "block";
+        } else {
+            document.getElementById("collection_address").style.display = "none";
+            addressLabel.style.display = "none";
+        }
+    });
+
+
+    // ========================== QUANTITY CHANGE BUTTONS ==========================
+    window.updateQuantity = function (button, change) {
+        var inputField = button.parentElement.querySelector("input");
+        var currentValue = parseInt(inputField.value);
+        var newValue = currentValue + change;
+        if (newValue < 0) newValue = 0;
+        inputField.value = newValue;
+        updateTotal();
+    };
+
+
+    // ========================== SAVE ADDRESS TO SESSION ==========================
+    function saveAddressToSession() {
+        let addressDetails = {
+            building_name: document.getElementById("building_name").value.trim(),
+            address_line1: document.getElementById("address_line1").value.trim(),
+            address_line2: document.getElementById("address_line2").value.trim(),
+            town: document.getElementById("town").value.trim(),
+            postcode: document.getElementById("postcode").value.trim(),
+        };
+
+        let formattedAddress = Object.values(addressDetails).filter(value => value !== "").join(', ');
+        sessionStorage.setItem("collection_address", formattedAddress);
+    }
+
+
+    // ========================== FINAL SAVE ON NEXT CLICK ==========================
+    document.querySelector(".next-step").addEventListener("click", function () {
+        saveAddressToSession();
+        updateSummary();
+    });
+
+});
