@@ -32,24 +32,24 @@
 
 
     <!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ -->
-    <p id="price_details"></p>    
+    <div id="custom_items_summary"></div>
+    <p id="price_details"></p>
     <p id="collection_label"><strong>Collection Address:</strong></p>
     <p id="collection_address" style="display: none;"></p>
     <p id="pickup_label" style="display: none;"><strong>Pickup Date:</strong></p>
     <p id="pickup_date" style="display: none;"></p>
-
     <p id="delivery_label" style="display: none;"><strong>Delivery Date:</strong></p>
     <p id="delivery_date" style="display: none;"></p>
 
     <!-- Protection Plan -->
-    <p id="protection_label" style="display: none;"><strong>Protection Plan:</strong> <span id="protection_title"></span> - <span id="protection_price">£0.00</span></p>
+    <p id="protection_label" style="display: none;"><strong>Protection Plan:</strong> <span id="protection_title"></span> - <span id="protection_price">€0.00</span></p>
     <!-- ==sub total== -->
     <div class="Sub_total">
-        <p><strong>Subtotal:</strong> <span id="subtotal">£0.00</span></p>
+        <p><strong>Subtotal:</strong> <span id="subtotal">€0.00</span></p>
     </div>
     <!-- ===total due=== -->
     <div class="totalDue">
-        <p><strong>Total due today:</strong> <span id="total_due">£0.00</span></p>
+        <p><strong>Total due today:</strong> <span id="total_due">€0.00</span></p>
     </div>
     <p>
     <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#1f1f1f"><path d="M480-344 240-584l47.33-47.33L480-438.67l192.67-192.66L720-584 480-344Z"/></svg> Return charges apply
@@ -137,4 +137,29 @@
         border-radius: 3px;
         margin-top: 15px;
     }
+
+/* css for custom item by kamruzzaman*/
+
+.custom-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.custom-item .remove-item {
+    cursor: pointer;
+    color: red;
+    font-weight: bold;
+}
+
+.custom-item span {
+    display: inline-block;
+    padding-left: 10px;
+}
+
+.custom-item .price {
+    text-align: right;
+}
+
 </style>

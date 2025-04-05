@@ -21,7 +21,6 @@ function msc_check_woocommerce() {
 register_activation_hook( __FILE__, 'msc_check_woocommerce' );
 
 // Load CSS & JS
-// Load CSS & JS
 function msc_enqueue_scripts() {
      // Enqueue Google Font Montserrat
      wp_enqueue_style('google-font-montserrat', 'https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap', array(), null);

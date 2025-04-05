@@ -17,10 +17,13 @@ jQuery(document).ready(function ($) {
         }
     }
 
+    
+    // ================= STORAGE PLAN VALIDATION (STEP-1) ===================
 
-    // ========================== ADDRESS VALIDATION ==========================
+
+    // ==================== ADDRESS VALIDATION (STEP-2) =====================
     function validateAddressForm() {
-        const requiredFields = ['#building_name', '#address_line1', '#town', '#postcode'];
+        const requiredFields = ['#first_name', '#last_name', '#building_name', '#address_line1', '#town', '#postcode'];
         let isValid = true;
 
         requiredFields.forEach(function (fieldId) {
@@ -36,12 +39,29 @@ jQuery(document).ready(function ($) {
         return isValid;
     }
 
+    // ==================== PICKUPDATE VALIDATION (STEP-3) ==================
+    // ==================== MATERIALS VALIDATION (STEP-4) ===================
+    // ==================== PROTECTION VALIDATION (STEP-5) ==================
+    // ==================== CHECKOUT VALIDATION (STEP-6) ====================
+
 
     // ========================== NEXT BUTTON ==========================
     $('.next-step').click(function () {
+
+        if (currentStep === 1) {
+             // Validation check before proceeding
+            let subtotalPre = parseFloat(sessionStorage.getItem("subtotal_pre")) || 0;
+            let subtotalCustom = parseFloat(sessionStorage.getItem("subtotal_custom")) || 0;
+
+            if (subtotalPre <= 0 && subtotalCustom <= 0) {
+                alert("Please add at least one item before continuing.");
+                return false;
+            }
+        }
+
         if (currentStep === 2) {
             if (!validateAddressForm()) {
-                //return; // Stop progression if address is invalid
+                return; // Stop progression if address is invalid
             }
             saveAddressToSession();
         }
@@ -127,160 +147,65 @@ jQuery(document).ready(function ($) {
     
 
      // ========================== UPDATE SUMMARY DISPLAY ==========================
-   /* function updateSummary() {
-        // Price Summary
-        if (sessionStorage.getItem("price_details")) {
-            $("#price_details").html(sessionStorage.getItem("price_details"));
-            $("#subtotal").text(`£${sessionStorage.getItem("subtotal")}`);
-            $("#total_due").text(`£${sessionStorage.getItem("total_due")}`);
-        }
-
-        // Collection Address
-        let savedAddress = sessionStorage.getItem("collection_address");
-        if (savedAddress && savedAddress.trim() !== "") {
-            $("#collection_address").text(savedAddress).show();
-            $("#collection_label").show();
-        } else {
-            $("#collection_address, #collection_label").hide();
-        }
-
-        // Pickup Date/Time
-        let pickupDetails = sessionStorage.getItem("pickup_date");
-
-        if (pickupDetails && pickupDetails !== "null") {  
-            let pickupData = JSON.parse(pickupDetails);  
-
-            if (pickupData.date && pickupData.time && pickupData.price !== undefined) {  
-                $("#pickup_label").show();  
-
-                // Convert price string to a number safely
-                let pickupPrice = parseFloat(pickupData.price.replace(/[^\d.]/g, "")) || 0;
-
-                // Create spans for alignment
-                $("#pickup_date")
-                    .html(`
-                        <span>${pickupData.date}, ${pickupData.time}</span>
-                        <span>£${pickupPrice.toFixed(2)}</span>
-                    `)
-                    .css({
-                        "display": "flex", 
-                        "justify-content": "space-between", 
-                        "align-items": "center",
-                        "width": "100%"
-                    })
-                    .show();
-            }  
-        }
-
-        // Delivery Date/Time
-        let deliveryDetails = sessionStorage.getItem("delivery_date");
-
-        if (deliveryDetails && deliveryDetails !== "null") {  
-            let deliveryData = JSON.parse(deliveryDetails);  
-
-            if (deliveryData.date && deliveryData.time && deliveryData.price !== undefined) {  
-                $("#delivery_label").show();
-
-                // Convert price string to a number safely
-                let deliveryPrice = parseFloat(deliveryData.price.replace(/[^\d.]/g, "")) || 0;
-
-                // Create spans for alignment
-                $("#delivery_date")
-                    .html(`
-                        <span>${deliveryData.date}, ${deliveryData.time}</span>
-                        <span">£${deliveryPrice.toFixed(2)}</span>
-                    `)
-                    .css({
-                        "display": "flex", 
-                        "justify-content": "space-between", 
-                        "align-items": "center",
-                        "width": "100%"
-                    })
-                    .show();  
-            }  
-        }
-        
-    } */
-
-    function updateSummary() {
-        // Price Summary
-        if (sessionStorage.getItem("price_details")) {
-            $("#price_details").html(sessionStorage.getItem("price_details"));
-        }
-    
-        // Initialize total price
+     function updateSummary() {
         let totalPrice = 0;
     
-        // Collect price for storage items
-        document.querySelectorAll(".storage-item input[type='number']").forEach(input => {
-            let pricePerItem = parseFloat(input.dataset.price);
-            let quantity = parseInt(input.value);
-            let productName = input.closest('.storage-item').querySelector('.product-info strong').innerText;
+        // Load all base subtotals
+        let storedSubtotal = parseFloat(sessionStorage.getItem("subtotal_pre") || "0");
+        let storedSubtotalCustom = parseFloat(sessionStorage.getItem("subtotal_custom") || "0");
     
-            if (isNaN(quantity) || quantity < 1) quantity = 0;
-            if (isNaN(pricePerItem) || pricePerItem <= 0) pricePerItem = 0;
+        let pickupPrice = 0;
+        let deliveryPrice = 0;
     
-            if (quantity > 0 && pricePerItem > 0) {
-                let itemTotal = quantity * pricePerItem;
-                totalPrice += itemTotal;
-            }
-        });
-    
-        // Pickup Price
+        // Handle Pickup
         let pickupDetails = sessionStorage.getItem("pickup_date");
-        if (pickupDetails && pickupDetails !== "null") {  
+        if (pickupDetails && pickupDetails !== "null") {
             let pickupData = JSON.parse(pickupDetails);
-            if (pickupData.price) {
-                let pickupPrice = parseFloat(pickupData.price.replace(/[^\d.]/g, "")) || 0;
-                totalPrice += pickupPrice;
+            pickupPrice = parseFloat(pickupData.price?.replace(/[^\d.]/g, "") || "0");
     
-                // Display Pickup Date/Time with price
-                $("#pickup_label").show();
-                $("#pickup_date")
-                    .html(`
-                        <span>${pickupData.date}, ${pickupData.time}</span>
-                        <span>£${pickupPrice.toFixed(2)}</span>
-                    `)
-                    .css({
-                        "display": "flex", 
-                        "justify-content": "space-between", 
-                        "align-items": "center",
-                        "width": "100%"
-                    })
-                    .show();
-            }  
+            // Save individual pickup price
+            sessionStorage.setItem("subtotal_pickup", pickupPrice.toFixed(2));
+    
+            // Display Pickup Info
+            $("#pickup_label").show();
+            $("#pickup_date").html(`
+                <span>${pickupData.date}, ${pickupData.time}</span>
+                <span>€${pickupPrice.toFixed(2)}</span>
+            `).css({
+                "display": "flex", 
+                "justify-content": "space-between", 
+                "align-items": "center",
+                "width": "100%"
+            }).show();
         }
     
-        // Delivery Price
+        // Handle Delivery
         let deliveryDetails = sessionStorage.getItem("delivery_date");
-        if (deliveryDetails && deliveryDetails !== "null") {  
+        if (deliveryDetails && deliveryDetails !== "null") {
             let deliveryData = JSON.parse(deliveryDetails);
-            if (deliveryData.price) {
-                let deliveryPrice = parseFloat(deliveryData.price.replace(/[^\d.]/g, "")) || 0;
-                totalPrice += deliveryPrice;
+            deliveryPrice = parseFloat(deliveryData.price?.replace(/[^\d.]/g, "") || "0");
     
-                // Display Delivery Date/Time with price
-                $("#delivery_label").show();
-                $("#delivery_date")
-                    .html(`
-                        <span>${deliveryData.date}, ${deliveryData.time}</span>
-                        <span>£${deliveryPrice.toFixed(2)}</span>
-                    `)
-                    .css({
-                        "display": "flex", 
-                        "justify-content": "space-between", 
-                        "align-items": "center",
-                        "width": "100%"
-                    })
-                    .show();
-            }  
+            // Save individual delivery price
+            sessionStorage.setItem("subtotal_delivery", deliveryPrice.toFixed(2));
+    
+            // Display Delivery Info
+            $("#delivery_label").show();
+            $("#delivery_date").html(`
+                <span>${deliveryData.date}, ${deliveryData.time}</span>
+                <span>€${deliveryPrice.toFixed(2)}</span>
+            `).css({
+                "display": "flex", 
+                "justify-content": "space-between", 
+                "align-items": "center",
+                "width": "100%"
+            }).show();
         }
     
-        // Subtotal and Total Due
-        $("#subtotal").text(`£${totalPrice.toFixed(2)}`);
-        $("#total_due").text(`£${totalPrice.toFixed(2)}`);
+        // Final Total Calculation
+        totalPrice = storedSubtotal + storedSubtotalCustom + pickupPrice + deliveryPrice;
     
-        // Save in session
+        // Update UI and session
+        $("#subtotal, #total_due").text(`€${totalPrice.toFixed(2)}`);
         sessionStorage.setItem("subtotal", totalPrice.toFixed(2));
         sessionStorage.setItem("total_due", totalPrice.toFixed(2));
     
@@ -292,7 +217,7 @@ jQuery(document).ready(function ($) {
         } else {
             $("#collection_address, #collection_label").hide();
         }
-    }        
+    }                  
 
     // ========================== ON PAGE LOAD ==========================
     showStep(1);                  // Start from step 1
@@ -316,7 +241,7 @@ jQuery(document).ready(function ($) {
         // Determine the arrival type and selected timeslot
         if (arrivalType === "flexibleArrival") {
             selectedTimeslot = "07:00-03:00";
-            pickupPrice = "£0.00";
+            pickupPrice = "€0.00";
         } else if (arrivalType === "scheduledArrival") {
             // Check if a time slot is selected
             if ($(".time-slot.selected").length > 0) {
@@ -324,7 +249,7 @@ jQuery(document).ready(function ($) {
             } else {
                 selectedTimeslot = "Not Selected";
             }
-            pickupPrice = "£29.00";
+            pickupPrice = "€29.00";
         }
 
         // Store the selected date, time, and price in an object
@@ -384,7 +309,7 @@ jQuery(document).ready(function ($) {
         // Determine the arrival type and selected timeslot
         if (arrivalType === "flexibleArrival_1") {
             selectedTimeslot = "07:00-03:00";
-            deliveryPrice = "£0.00";
+            deliveryPrice = "€0.00";
         } else if (arrivalType === "scheduledArrival_1") {
             // Check if a time slot is selected
             if ($(".time-slot-1.selected").length > 0) {
@@ -392,7 +317,7 @@ jQuery(document).ready(function ($) {
             } else {
                 selectedTimeslot = "Not Selected";
             }
-            deliveryPrice = "£29.00";
+            deliveryPrice = "€29.00";
         }
 
         // Store the selected date, time, and price in an object
@@ -441,55 +366,112 @@ jQuery(document).ready(function ($) {
     function updateTotal() {
         let totalPrice = 0;
         let details = "";
-
+    
         document.querySelectorAll(".storage-item input[type='number']").forEach(input => {
-            let pricePerItem = parseFloat(input.dataset.price);
-            let quantity = parseInt(input.value);
+            let pricePerItem = parseFloat(input.dataset.price || "0");
+            let quantity = parseInt(input.value) || 0;
             let productName = input.closest('.storage-item').querySelector('.product-info strong').innerText;
-
-            if (isNaN(quantity) || quantity < 1) quantity = 0;
-            if (isNaN(pricePerItem) || pricePerItem <= 0) pricePerItem = 0;
-
+    
             if (quantity > 0 && pricePerItem > 0) {
                 let itemTotal = quantity * pricePerItem;
                 totalPrice += itemTotal;
-                details += `${quantity} x ${productName} = £${itemTotal.toFixed(2)} <br>`;
+    
+                details += `
+                    <div class="storage-item-row" 
+                        style="font-size: 14px; font-weight: 400; display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 5px;">
+                        <div style="display: flex; align-items: center; gap: 10px; flex-grow: 1;">
+                            <span>${quantity} x ${productName}</span>
+                        </div>
+                        <span style="text-align: right; min-width: 60px;">€${itemTotal.toFixed(2)}/mo</span>
+                    </div>
+                `;
             }
         });
-
-        // Display
+    
+        // Save predefined item subtotal before adding custom/pickup/delivery
+        let totalPricePre = totalPrice;
+    
+        let subtotalCustom = parseFloat(sessionStorage.getItem("subtotal_custom") || "0");
+        let storedSubtotalPickup = parseFloat(sessionStorage.getItem("subtotal_pickup") || "0");
+        let storedSubtotalDelivery = parseFloat(sessionStorage.getItem("subtotal_delivery") || "0");
+    
+        totalPrice += subtotalCustom + storedSubtotalPickup + storedSubtotalDelivery;
+    
+        // Display updated details
         document.getElementById("price_details").innerHTML = details;
-        document.getElementById("subtotal").innerText = `£${totalPrice.toFixed(2)}`;
-        document.getElementById("total_due").innerText = `£${totalPrice.toFixed(2)}`;
-
-        // Save in session
+        document.getElementById("subtotal").innerText = `€${totalPrice.toFixed(2)}`;
+        document.getElementById("total_due").innerText = `€${totalPrice.toFixed(2)}`;
+    
+        // Save in sessionStorage
         sessionStorage.setItem("price_details", details);
         sessionStorage.setItem("subtotal", totalPrice.toFixed(2));
         sessionStorage.setItem("total_due", totalPrice.toFixed(2));
+        sessionStorage.setItem("subtotal_pre", totalPricePre.toFixed(2));
     }
 
-
-    // ========================== RESTORE PRICE DETAILS ON REFRESH ==========================
-    document.addEventListener("DOMContentLoaded", () => {
+    
+    // ========================== RESTORE ALL STEPS DATA ON REFRESH ==========================
+    jQuery(document).ready(function ($) {
+        // Check if price details exist in sessionStorage
         if (sessionStorage.getItem("price_details")) {
-            document.getElementById("price_details").innerHTML = sessionStorage.getItem("price_details");
-            document.getElementById("subtotal").innerText = `£${sessionStorage.getItem("subtotal")}`;
-            document.getElementById("total_due").innerText = `£${sessionStorage.getItem("total_due")}`;
+            // Restore price details
+            $("#price_details").html(sessionStorage.getItem("price_details"));
         }
-
+    
+        // Check if there are custom items in sessionStorage
+        let customItems = JSON.parse(sessionStorage.getItem("custom_items")) || [];
+        console.log("Custom Items from SessionStorage:", sessionStorage.getItem("custom_items"));
+        console.log("Debugging Message: Hire larka");
+    
+        // Only proceed if there are custom items in sessionStorage
+        if (customItems.length > 0) {
+            // Clear previous custom items from the summary section
+            $("#custom_items_summary").empty();
+    
+            // Initialize a variable to keep track of the total price of custom items
+            let totalPrice = 0;
+    
+            // Loop through custom items and display them
+            customItems.forEach((item, index) => {
+                let customItemHTML = `
+                    <div id="custom-item-${index}" class="custom-item" style="font-size: 14px; font-weight: 400; display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                        <span class="remove-item" data-index="${index}" style="cursor: pointer; color: red; padding-left: 0;">x</span>
+                        <span style="flex-grow: 1; padding-left: 10px;">${item.name} (${item.cubicFeet} cu.ft.)</span>
+                        <span style="text-align: right; padding-left: 10px;">€${item.price} /mo</span>
+                    </div>
+                `;
+                $("#custom_items_summary").append(customItemHTML);
+                totalPrice += item.price;  // Add the price of each custom item to the total
+            });
+    
+            // Save subtotal_custom to sessionStorage
+            sessionStorage.setItem("subtotal_custom", totalPrice.toFixed(2));
+        }
+    
+        // Calculate and display the total price by adding subtotal_pre and subtotal_custom
+        let subtotalPre = parseFloat(sessionStorage.getItem("subtotal_pre")) || 0;
+        let subtotalCustom = parseFloat(sessionStorage.getItem("subtotal_custom")) || 0;
+        let storedSubtotalPickup = parseFloat(sessionStorage.getItem("subtotal_pickup") || "0");
+        let storedSubtotalDelivery = parseFloat(sessionStorage.getItem("subtotal_delivery") || "0");
+        let total = subtotalPre + subtotalCustom + storedSubtotalPickup + storedSubtotalDelivery;
+    
+        $("#subtotal").text(`€${total.toFixed(2)}`);
+        $("#total_due").text(`€${total.toFixed(2)}`);
+    
+        // If a collection address is saved, display it
         let savedAddress = sessionStorage.getItem("collection_address");
-        let addressLabel = document.getElementById("collection_label");
-
+        let addressLabel = $("#collection_label");
+    
         if (savedAddress && savedAddress.trim() !== "") {
-            document.getElementById("collection_address").innerText = savedAddress;
-            addressLabel.style.display = "block";
+            $("#collection_address").text(savedAddress);
+            addressLabel.show();
         } else {
-            document.getElementById("collection_address").style.display = "none";
-            addressLabel.style.display = "none";
+            $("#collection_address").hide();
+            addressLabel.hide();
         }
     });
 
-
+    
     // ========================== QUANTITY CHANGE BUTTONS ==========================
     window.updateQuantity = function (button, change) {
         var inputField = button.parentElement.querySelector("input");
@@ -499,6 +481,25 @@ jQuery(document).ready(function ($) {
         inputField.value = newValue;
         updateTotal();
     };
+
+    /* function updateQuantity(button, change) {
+        const input = $(button).siblings('input[type="number"]');
+        let value = parseInt(input.val()) || 0;
+        value = Math.max(0, value + change);
+        input.val(value);
+    
+        // Save to sessionStorage
+        const productId = input.attr('id');
+        saveQuantityToSession(productId, value);
+    
+        updateTotal();
+    }
+    
+    function saveQuantityToSession(productId, quantity) {
+        let quantities = JSON.parse(sessionStorage.getItem('product_quantities') || '{}');
+        quantities[productId] = quantity;
+        sessionStorage.setItem('product_quantities', JSON.stringify(quantities));
+    } */    
 
 
     // ========================== SAVE ADDRESS TO SESSION ==========================
@@ -517,71 +518,28 @@ jQuery(document).ready(function ($) {
 
 
     // ========================== FINAL SAVE ON NEXT CLICK ==========================
-    document.querySelector(".next-step").addEventListener("click", function () {
+    /* document.querySelector(".next-step").addEventListener("click", function () {
         saveAddressToSession();
         updateSummary();
-    });
+    }); */
 
 });
 
+// ================== AUTO-UPDATE LABEL STATE FOR INPUT FIELDS ==================
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".pro_inputBox input").forEach((input) => {
+        let label = input.closest(".pro_inputBox")?.querySelector("label");
 
+        if (!label) return;
 
+        // Initialize the label state
+        if (input.value.trim()) label.classList.add("filled");
 
-
-// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-// document.addEventListener("DOMContentLoaded", function () {
-//     let inputs = document.querySelectorAll(".pro_inputBox input");
-
-//     inputs.forEach((input) => {
-
-//       if (input.value) {
-//         input.previousElementSibling.classList.add("filled");
-//       }
-  
-  
-//       input.addEventListener("focus", () => {
-//         input.previousElementSibling.classList.add("filled");
-//       });
-//       input.addEventListener("click", () => {
-//         input.previousElementSibling.classList.add("filled");
-//       });
-
-//       input.addEventListener("blur", () => {
-//         if (input.value === "") {
-//           input.previousElementSibling.classList.remove("filled");
-//         }
-//       });
-//     });
-//   });
-  document.addEventListener("DOMContentLoaded", function () {
-    let inputs = document.querySelectorAll(".pro_inputBox input");
-
-    inputs.forEach((input) => {
-        let parentBox = input.closest(".pro_inputBox"); 
-        let label = parentBox ? parentBox.querySelector("label") : null;
-
-        if (!label) return; 
-
-        
-        if (input.value.trim()) {
-            label.classList.add("filled");
-        }
-
-        input.addEventListener("focus", () => {
-            label.classList.add("filled");
-        });
-
-
-        input.addEventListener("click", () => {
-            label.classList.add("filled");
-        });
-
-
+        // Add event listeners for focus, click, and blur
+        input.addEventListener("focus", () => label.classList.add("filled"));
+        input.addEventListener("click", () => label.classList.add("filled"));
         input.addEventListener("blur", () => {
-            if (!input.value.trim()) {
-                label.classList.remove("filled");
-            }
+            if (!input.value.trim()) label.classList.remove("filled");
         });
     });
 });

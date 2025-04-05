@@ -28,10 +28,7 @@
                             <span class="tooltipBox">18” x 18” x 16” each. 50 lb weight limit each. Boxes are free, provided they are stored in your storage plan.</span>
                         </span>
                     </p>
-                </div>
-
-                
-            
+                </div>   
         </div>
     </div>
     <!-- Dynamic Product Selection -->
@@ -75,8 +72,6 @@
                 wp_reset_postdata();
             endif;
 
-            
-    
             // Display products in order: Box (1 column), Common (2 columns), Mattresses (2 columns)
             foreach (['box', 'common', 'mattresses'] as $category) {
                 if (!empty($categorized_products[$category])) {
@@ -100,7 +95,7 @@
                                 <div class="product-info">
                                     <strong><?php echo esc_html($product->get_name()); ?></strong>
                                     <p><?php echo $product->get_short_description(); ?></p>
-                                    <p class="price">£<?php echo esc_html($product->get_price()); ?> /month</p>
+                                    <p class="price">€<?php echo esc_html($product->get_price()); ?> /month</p>
                                 </div>
     
                                 <!-- Quantity Selector -->
@@ -122,7 +117,7 @@
     </div>
 
     <!-- ======custom items====== -->
-     <div class="pro_row">
+    <div class="pro_row">
         <div class="pro_col ">
             <section id="CustomItems">
                 <div class="pro_row">
@@ -153,94 +148,171 @@
                                         <label for="itemHeight">Height(inches)</label>
                                         <input type="number" id="itemHeight" name="itemHeight" oninput="handleInput(event)">
                                     </div>
-            
                                 </div>
                             </form>
                             <div class="desc d-flex justify-content-between align-items-center my-3">
-                                <p class="m-0">Total Cubic Feet : <span id="TotalCubicFeet" ></span> </p> <span>$ <b id="PricePer" ></b> /month</span>
+                                <p class="m-0">Total Cubic Feet : <span id="TotalCubicFeet" ></span> </p> <span>€ <b id="PricePer" ></b> /month</span>
                             </div>
-                            <button 
-                                type="button"
-                                class="customItemBtn py-2 rounded" 
-                                onclick = "calculateCubicFeet()"
-                                style="background-color: #00A899;">Add custom item
-                            </button>
+                            <button type="button" id="customItemBtn" class="customItemBtn py-2 rounded" style="background-color: #00A899;">Add custom item </button>
                         </div>
                     </div>
                 </div>
         
             </section>
         </div>
-     </div>
+    </div>
 
     <div class="prev_next_button">
         <button class="next-step">Continue</button>
     </div>
 </div>
 
-<!-- JavaScript for Quantity Buttons -->
 <script>
-function updateQuantity(button, change) {
-    var inputField = button.parentElement.querySelector("input");
-    var currentValue = parseInt(inputField.value);
-    var newValue = currentValue + change;
-    if (newValue < 0) newValue = 0;
-    inputField.value = newValue;
-    updateTotal(); // Update price summary
-}
-// &&&&&&&&&&&&&custom items&&&&&&&&&&&&
-
-function handleInput (event){
-console.log(event.target);
-calculateCubicFeet()
-}
-
-// ===calculate ==
+    jQuery(document).ready(function ($) {
+        // Function to calculate cubic feet and price, and update the fields
         function calculateCubicFeet() {
-            let itemLength = parseFloat(document.getElementById("itemLength").value);
-            let itemWidth = parseFloat(document.getElementById("itemWidth").value);
-            let itemHeight = parseFloat(document.getElementById("itemHeight").value);
-            let TotalCubicFeet = document.getElementById("TotalCubicFeet")
-            console.log("hi",itemLength * itemWidth * itemHeight);
-            let cubicInches = itemLength * itemWidth * itemHeight;
-            let cubicFeet = cubicInches / 1728;
-            let pricePerMonth = cubicFeet * 8;
+            let length = parseFloat($("#itemLength").val()) || 0;
+            let width = parseFloat($("#itemWidth").val()) || 0;
+            let height = parseFloat($("#itemHeight").val()) || 0;
+            let itemName = $("#itemName").val().trim();
 
-            TotalCubicFeet.innerHTML = cubicFeet.toFixed(1);
-            
-            if(isNaN(cubicFeet)){
-                TotalCubicFeet.innerHTML = "0";
-                
-            }else{
-                TotalCubicFeet.innerHTML = cubicFeet.toFixed(1);
-                let pricePerMonth = cubicFeet * 8;
-                document.getElementById("PricePer").innerHTML = pricePerMonth.toFixed(1);
+            // Validate the input fields (make sure dimensions are positive)
+            if (length <= 0 || width <= 0 || height <= 0 || !itemName) {
+                $("#TotalCubicFeet").text("0");
+                $("#PricePer").text("0.00");
+                return;
             }
+
+            // Calculate cubic feet
+            let cubicFeet = (length * width * height) / 1728;  // Cubic feet = length * width * height / 1728
+            let roundedCubicFeet = Math.ceil(cubicFeet); // Round up to the nearest integer
+
+            // Update the Total Cubic Feet and Price per month
+            $("#TotalCubicFeet").text(roundedCubicFeet);
+            let pricePerCubicFoot = 5;  // Price per cubic foot (example: €5 per month)
+            let totalPrice = (roundedCubicFeet * pricePerCubicFoot).toFixed(2);
+            $("#PricePer").text(totalPrice);
         }
+
+        // Event binding to update cubic feet and price when the user inputs data into any of the fields
+        $(document).on("input", "#itemLength, #itemWidth, #itemHeight", function () {
+            calculateCubicFeet();  // Recalculate when any of the inputs change
+        });
+
+        // Event binding for the "Add Custom Item" button to save the item and update the price summary
+        $(document).on("click", "#customItemBtn", function () {
+
+            let itemName = $("#itemName").val().trim();
+            let cubicFeet = parseFloat($("#TotalCubicFeet").text()) || 0;
+            let price = parseFloat($("#PricePer").text().replace(/[^\d.-]/g, "")) || 0;
+
+            // Validate item before adding
+            if (!itemName || cubicFeet <= 0 || price <= 0) {
+                alert("Please provide valid item information.");
+                return;
+            }
+
+            // Create the custom item object
+            let customItem = {
+                name: itemName,
+                cubicFeet: cubicFeet,
+                price: price
+            };
+
+            // Retrieve any existing custom items from sessionStorage
+            let customItems = JSON.parse(sessionStorage.getItem("custom_items")) || [];
+
+            // Add the new custom item to the array
+            customItems.push(customItem);
+
+            // Save the updated array back to sessionStorage
+            sessionStorage.setItem("custom_items", JSON.stringify(customItems));
+
+            // Update the price summary section
+            updateSummary();
+        });
+
+        // Function to update the price summary with all custom items
+        function updateSummary() {
+            let totalPrice = 0;
+
+            // Collect custom items from session storage
+            let customItems = JSON.parse(sessionStorage.getItem("custom_items")) || [];
+
+            // Clear previous custom items from the summary section
+            $("#custom_items_summary").empty();
+
+            // Loop through custom items and display them
+            customItems.forEach((item, index) => {
+                let customItemHTML = `
+                    <div id="custom-item-${index}" class="custom-item" style="font-size: 14px; font-weight: 400; display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                        <span class="remove-item" data-index="${index}" style="cursor: pointer; color: red; padding-left: 0;">x</span>
+                        <span style="flex-grow: 1; padding-left: 10px;">${item.name} (${item.cubicFeet} cu.ft.)</span>
+                        <span style="text-align: right; padding-left: 10px;">€${item.price} /mo</span>
+                    </div>
+                `;
+                $("#custom_items_summary").append(customItemHTML);
+                totalPrice += item.price;  // Add the price of each custom item to the total
+            });
+
+            // adding only custom item(s) total
+            let totalPriceCustom = totalPrice;
+
+            //To retrieve the subtotal value from sessionStorage
+            let storedSubtotal = parseFloat(sessionStorage.getItem("subtotal_pre") || "0");
+            let storedSubtotalPickup = parseFloat(sessionStorage.getItem("subtotal_pickup") || "0");
+            let storedSubtotalDelivery = parseFloat(sessionStorage.getItem("subtotal_delivery") || "0");
+            totalPrice += storedSubtotal + storedSubtotalPickup + storedSubtotalDelivery;
+
+            // Update the total price in the summary
+            $("#subtotal").text(`€${totalPrice.toFixed(2)}`);
+            $("#total_due").text(`€${totalPrice.toFixed(2)}`);
+
+            // Save the updated subtotal_custom in sessionStorage
+            sessionStorage.setItem("subtotal_custom", totalPriceCustom.toFixed(2));
+        }
+
+        // Function to handle the removal of a custom item from the summary
+        $(document).on('click', '.remove-item', function () {
+            let itemIndex = $(this).data('index');
+            
+            // Remove the item from sessionStorage
+            let customItems = JSON.parse(sessionStorage.getItem("custom_items")) || [];
+            customItems.splice(itemIndex, 1);
+            sessionStorage.setItem("custom_items", JSON.stringify(customItems));
+        
+            // Remove the item from the DOM
+            $(`#custom-item-${itemIndex}`).remove();
+        
+            // Update the price summary
+            updateSummary();
+        });
+        
+    });
 </script>
 
-<!-- CSS for Styling -->
 <style>
-    
+
 .buildPlan h2 {
-  font-size: 28px;
-  padding: 10px 0;
-  font-weight: 700;
+    font-size: 28px;
+    padding: 10px 0;
+    font-weight: 700;
 }
+
 .buildPlan .note {
-  width: 100%;
-  padding: 15px;
-  border-radius: 5px;
-  margin-top: 20px;
-  display: flex;
-  align-items: center;
-  background: rgb(0, 43, 40);
-  background: linear-gradient(90deg, rgb(0, 43, 40) 54%, rgb(0, 98, 89) 100%);
-  color: #fff;
+    width: 100%;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(90deg, rgb(0, 43, 40) 54%, rgb(0, 98, 89) 100%);
+    color: #fff;
 }
-.buildPlan .note p{
-  padding: 0;
-  margin: 0;
+
+.buildPlan .note p {
+    margin: 0;
+    padding: 0;
 }
 
 .pragraph {
@@ -248,19 +320,17 @@ calculateCubicFeet()
     position: relative;
 }
 
-/* Tooltip container for positioning */
+/* Tooltip Styles */
 .tooltipContainer {
     position: relative;
     display: inline-block;
 }
 
-/* Hidden tooltip with transition effect */
 .tooltipBox {
     position: absolute;
-    width: 250px; 
-    height: auto;
-    padding: 8px !important;
-    background-color:#202020;
+    width: 250px;
+    padding: 8px;
+    background-color: #202020;
     color: white;
     border-radius: 3px;
     top: 25px;
@@ -268,45 +338,36 @@ calculateCubicFeet()
     transform: translateX(-50%);
     font-size: 12px;
     z-index: 1000;
-    
-    /* Hide tooltip by default */
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
 
-/* Show tooltip on hover */
 .tooltipContainer:hover .tooltipBox {
     opacity: 1;
     visibility: visible;
-    transform: translateX(-50%) translateY(-5px); /* Slight movement effect */
+    transform: translateX(-50%) translateY(-5px);
 }
-/* Grid layout for single-column category (Box) */
+
+/* Product Grid Layouts */
 .product-grid-one {
     display: grid;
     grid-template-columns: 1fr;
     gap: 15px;
 }
 
-/* Grid layout for two-column categories (Common & Mattresses) */
 .product-grid-two {
     width: 100%;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 15px;
 }
-#product_list{
-    width:100%;
+
+#product_list {
+    width: 100%;
 }
 
-    
-
-
-    @media (min-width: 1200px) {
-    /* Styles for large desktops */
-    }
-
-/* Product container */
+/* Product Container */
 .product-container {
     width: 100%;
     max-width: 600px;
@@ -318,18 +379,18 @@ calculateCubicFeet()
     padding: 0;
 }
 
-/* Product image */
-.product-image{
+/* Product Image */
+.product-image {
     flex-shrink: 0;
     padding: 0;
 }
+
 .product-image img {
     width: 100px !important;
     height: 100px !important;
-    flex-shrink: 0;
 }
 
-/* Product info */
+/* Product Info */
 .product-info {
     display: flex;
     flex-direction: column;
@@ -339,13 +400,11 @@ calculateCubicFeet()
 
 .product-info strong {
     font-size: 16px;
-    display: inline-block;
     width: 100%;
     max-width: 210px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    line-clamp: 1;
 }
 
 .product-info p {
@@ -360,7 +419,7 @@ calculateCubicFeet()
     font-weight: bold;
 }
 
-/* Quantity selector */
+/* Quantity Selector */
 .product-quantity {
     display: flex;
     align-items: center;
@@ -372,17 +431,17 @@ calculateCubicFeet()
     text-align: center;
     border: 1px solid #ddd;
     border-radius: 5px;
-    padding: 0 5px 0 5px;
+    padding: 0 5px;
     font-size: 16px;
     margin: 0;
 }
 
-/* Quantity buttons */
+/* Quantity Buttons */
 .qty-btn {
     background-color: #e74c3c;
     color: white;
     border: none;
-    padding: 0 7px 0 7px;
+    padding: 0 7px;
     border-radius: 5px;
     cursor: pointer;
     font-size: 14px;
@@ -391,77 +450,42 @@ calculateCubicFeet()
 .qty-btn:hover {
     background-color: #c0392b;
 }
-#CustomItems{
+
+#CustomItems {
     width: 100%;
     max-width: 600px;
 }
 
-
-
+/* Responsive Styles */
 @media (max-width: 576px) {
     .product-grid-two {
         grid-template-columns: 1fr;
     }
 }
-    @media (min-width: 576px) {
-        .product-grid-two {
-        grid-template-columns: 1fr 1fr;
-        }
-    } 
-    @media (min-width: 768px) {
-        .product-grid-two {
-        grid-template-columns: 1fr 1fr;
-        }
-        .product-container {
-            width: 100%;
-            max-width: 600px;
-            display: flex;
-            flex-wrap: nowrap;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            padding: 10px;
-        }
-    } 
-    @media (min-width: 992px) {
-        .product-container {
-            width: 100%;
-            max-width: 600px;
-            display: flex;
-            flex-wrap: nowrap;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            padding: 10px;
-        }
+
+@media (min-width: 576px) {
+    .product-grid-two {
+        grid-template-columns: repeat(2, 1fr);
     }
-    @media (min-width: 992px) and (max-width: 1199.98px) {
-        .product-container {
-            width: 100%;
-            max-width: 600px;
-            display: flex;
-            flex-wrap: nowrap;
-            justify-content: space-between;
-            align-items: center;
-            gap: 5px;
-            padding: 10px;
-        }
-        .product-image{
-            flex-shrink: 0;
-            padding: 0;
-        }
-        .product-image img {
-            width: 100px !important;
-            height: 100px !important;
-            flex-shrink: 0;
-        }
-        .product-info {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-evenly;
-            padding: 0;
-        }
-        
+}
+
+@media (min-width: 768px) {
+    .product-container {
+        padding: 10px;
     }
+}
+
+@media (min-width: 992px) {
+    .product-container {
+        padding: 10px;
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .product-container {
+        gap: 5px;
+        padding: 10px;
+    }
+}
 
 </style>
