@@ -222,10 +222,13 @@ jQuery(document).ready(function ($) {
 
 <!-- CSS for Styling -->
 <style>
-.product-grid {
+#disposal-options, #protection-plans {
     display: flex;
-    gap: 15px;
+    flex-wrap: nowrap;
+    gap: 20px;
+    margin-bottom: 20px;
 }
+
 
 .option-container {
     display: flex;
@@ -255,14 +258,32 @@ jQuery(document).ready(function ($) {
     object-fit:contain;
 }
 
-.product-info {
-    /* flex-grow: 1; */
-}
+/* .product-info {
+    
+} */
 
 .skip-option {
     margin-top: 15px;
     display: flex;
     align-items: center;
     gap: 10px;
+}
+@media (max-width: 576px) {
+    #disposal-options, #protection-plans {
+        flex-direction: column;
+    }
+    .option-container {
+        width: 100%;
+    }
+    .option-container .product-image {
+        width: 80px;
+        height: 80px;
+    }
+    .option-container .product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit:contain;
+    }
+    
 }
 </style>
