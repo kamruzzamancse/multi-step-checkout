@@ -245,6 +245,18 @@
     color: #333;
 }
 
+@media (max-width: 768px) {
+    .pro_pickup .pro_picup_warper {
+        flex-direction: column;
+        gap: 20px;
+    }
+    .pro_picup_col {
+        width: 100%;
+    }
+    .pro_col {
+        width: 100%;
+    }
+}
 
 </style>
 

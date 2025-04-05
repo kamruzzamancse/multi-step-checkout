@@ -94,7 +94,7 @@ add_shortcode( 'multi_step_checkout', 'msc_custom_checkout_form' );
         background-color: #fff;
         top: 20px;
         left: 0;
-        z-index: 9999;
+        z-index: 999;
     }
     #mainWarpper{
         width: 100% !important;
@@ -125,7 +125,7 @@ add_shortcode( 'multi_step_checkout', 'msc_custom_checkout_form' );
         width:100% !important;
         }
         .pro_col_30{
-            width:100% !important;
+            display: none !important;
         }
     }
     @media (min-width: 576px) and (max-width: 768px) {
@@ -139,8 +139,7 @@ add_shortcode( 'multi_step_checkout', 'msc_custom_checkout_form' );
         width:100% !important;
         }
         .pro_col_30{
-            width:100% !important;
-            /* background: #000; */
+            display: none !important;
         }
     } 
 
