@@ -1,96 +1,130 @@
 <!-- Step 4: Supply Timeslot -->
 <div class="step" id="step-4">
-    <h2>Supply Timeslot</h2>
-    <div class="pro_delivery">
-        <div class="pro_delivery_warper">
-            <div id="date_time_picker" class="pro_Delivery_col">
-                <!-- <label for="supply_timeslot">Select a Supply Date:</label>
-                <input type="text" id="supply_timeslot" name="supply_timeslot" readonly>
-                <div class="prev_next_button">
-                    <button class="next-step">Continue</button>
-                </div>  -->
-                <div class="pro_calendar">
-                    <div class="pro_calendar_header">
-                        <button id="prev-month">&lt;</button>
-                        <span id="month-year"></span>
-                        <button id="next-month">&gt;</button>
-                    </div>
-                    <div class="calendar-days">
-                        <div>Sun</div><div>Mon</div><div>Tue</div>
-                        <div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
-                    </div>
-                    <div class="calendar-dates" id="calendar-dates"></div>
-                </div>
+  <!-- Packing Materials Section -->
+  <div class="packing-materials-section">
+    <h3>Would you like packing materials?</h3>
+    <p>We’ll send you enough to pack everything you want to store.</p>
 
-                
+    <div class="packing-options">
+      <div class="packing-option selected" id="packing_yes">
+        <p><strong>Yes please!</strong></p>
+        <img src="http://localhost/leonardoemlh/wp-content/uploads/2025/04/packing-yes-1.png" alt="Packing Yes" />
+      </div>
 
-            </div>
-            
-            <div id="arrival_window" class="pro_col">
-        
-                <h6><b>Select an arrival window</b></h6>
-        
-                <!-- *****an conflict would be happening here, so I will just comment it out***** -->
-                <div class="option" id="flexibleArrival flexibleArrival_1">
-                    <strong>Flexible Arrival</strong> <span class="calendar-price-1">Free</span>
-                    <p>Receive a 3-hour arrival window the day before your appointment.
-                    The earliest possible arrival is at 7 AM and the latest possible arrival is at 3 PM.</p>
-                </div>
-        
-                <div class="option" id="scheduledArrival_1">
-                    <strong>Scheduled Arrival</strong> <span class="calendar-price-1">$29</span>
-                    <p>Select a set arrival window. Limited availability.</p>
-                </div>
-        
-                <div class="time-slots-1" id="timeSlots_1">
-                    <div class="time-slot-1" data-time="07:00-08:00">07:00-08:00</div>
-                    <div class="time-slot-1" data-time="08:00-09:00">08:00-09:00</div>
-                    <div class="time-slot-1" data-time="09:00-10:00">09:00-10:00</div>
-                    <div class="time-slot-1" data-time="10:00-11:00">10:00-11:00</div>
-                    <div class="time-slot-1" data-time="11:00-12:00">11:00-12:00</div>
-                    <div class="time-slot-1" data-time="12:00-01:00">12:00-01:00</div>
-                    <div class="time-slot-1" data-time="01:00-02:00">01:00-02:00</div>
-                    <div class="time-slot-1" data-time="02:00-03:00">02:00-03:00</div>
-                </div>
-        
-            </div>
-            
-        </div>
+      <div class="packing-option" id="packing_no">
+        <p><strong>No thanks</strong></p>
+        <img src="http://localhost/leonardoemlh/wp-content/uploads/2025/04/packing-no-1.png" alt="Packing No" />
+      </div>
     </div>
+  </div>
+
+  <!-- Hidden by default, controlled via JS -->
+  <div id="supply_timeslot_section" style="display: block;">
+    <h2>Supply Appointment</h2>
+    <div class="pro_delivery">
+      <div class="pro_delivery_warper">
+        <div id="date_time_picker" class="pro_Delivery_col">
+          <label for="supply_timeslot">Select a Supply Date:</label>
+          <input type="text" id="supply_timeslot" name="supply_timeslot" readonly>
+
+          <div class="prev_next_button">
+            <button class="next-step">Continue</button>
+          </div>
+        </div>
+
+        <div id="arrival_window" class="pro_col">
+          <h6><b>Select an arrival window</b></h6>
+
+          <div class="option_1" id="flexibleArrival_1" style="position: relative;">
+            <strong>Flexible Arrival</strong>
+            <span class="calendar-price-1">Free</span>
+            <p>Receive a 3-hour arrival window the day before your appointment.
+              The earliest possible arrival is at 7 AM and the latest possible arrival is at 3 PM.
+            </p>
+          </div>
+
+          <div class="option_1" id="scheduledArrival_1" style="position: relative;">
+            <strong>Scheduled Arrival</strong>
+            <span class="calendar-price-1">$29</span>
+            <p>Select a set arrival window. Limited availability.</p>
+          </div>
+
+          <div class="time-slots-1" id="timeSlots_1">
+            <div class="time-slot-1" data-time="07:00-08:00">07:00-08:00</div>
+            <div class="time-slot-1" data-time="08:00-09:00">08:00-09:00</div>
+            <div class="time-slot-1" data-time="09:00-10:00">09:00-10:00</div>
+            <div class="time-slot-1" data-time="10:00-11:00">10:00-11:00</div>
+            <div class="time-slot-1" data-time="11:00-12:00">11:00-12:00</div>
+            <div class="time-slot-1" data-time="12:00-01:00">12:00-01:00</div>
+            <div class="time-slot-1" data-time="01:00-02:00">01:00-02:00</div>
+            <div class="time-slot-1" data-time="02:00-03:00">02:00-03:00</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
+<!-- Script Section -->
 <script>
-    document.getElementById("flexibleArrival_1").addEventListener("click", function() {
-        document.getElementById("timeSlots_1").style.display = "none";
-        this.classList.add("selected");
-        document.getElementById("scheduledArrival_1").classList.remove("pro_selected");
-    });
+  const yesOption = document.getElementById("packing_yes");
+  const noOption = document.getElementById("packing_no");
+  const supplySection = document.getElementById("supply_timeslot_section");
 
-    document.getElementById("scheduledArrival_1").addEventListener("click", function() {
-        document.getElementById("timeSlots_1").style.display = "block";
-        this.classList.add("selected");
-        document.getElementById("flexibleArrival_1").classList.remove("pro_selected");
-    });
+  yesOption.addEventListener("click", () => {
+      yesOption.classList.add("selected");
+      noOption.classList.remove("selected");
+      supplySection.style.display = "block";
+      // Add delivery-related data in sessionStorage
+      sessionStorage.setItem("packing_selected", "true");
+      updateSummary(); // Update the summary after packing option is selected
+  });
+
+  noOption.addEventListener("click", () => {
+      noOption.classList.add("selected");
+      yesOption.classList.remove("selected");
+      supplySection.style.display = "none";
+      // Remove delivery-related data from sessionStorage if no packing selected
+      sessionStorage.setItem("packing_selected", "false");
+      updateSummary(); // Update the summary after packing option is selected
+  });
+
+  document.getElementById("flexibleArrival_1").addEventListener("click", function () {
+    document.getElementById("timeSlots_1").style.display = "none";
+    this.classList.add("selected");
+    document.getElementById("scheduledArrival_1").classList.remove("selected");
+  });
+
+  document.getElementById("scheduledArrival_1").addEventListener("click", function () {
+    document.getElementById("timeSlots_1").style.display = "block";
+    this.classList.add("selected");
+    document.getElementById("flexibleArrival_1").classList.remove("selected");
+  });
 </script>
 
 <style>
-    .pro_delivery{
-        width:100%;
-        padding: 0;
-    }
-    .pro_delivery_warper{
-        width: 100%;
-        display: flex;
-        gap: 30px;
-    }
-    .pro_Delivery_col{
-        width: 50%;
-        padding: 0;
-    }
 
-.option_1 {
+  .pro_delivery{
+      width:100%;
+      padding: 0;
+  }
+
+  .pro_delivery_warper{
+      width: 100%;
+      display: flex;
+      gap: 30px;
+  }
+
+  .pro_Delivery_col{
+      width: 50%;
+      padding: 0;
+  }
+
+  .option_1 {
+    position: relative; /* <-- Add this */
     border: 2px solid #ddd;
-    padding: 15px 15px 0px 15px;
+    padding: 15px;
     margin-bottom: 10px;
     border-radius: 10px;
     cursor: pointer;
@@ -148,7 +182,6 @@
     align-items: center;
     width: 100%;
 }
-
 
 /* ================= */
 .pro_calendar { 
@@ -227,8 +260,23 @@
   color: white;
 }
 
+/* Price Labels */
+.price-label {
+    display: block;
+    font-size: 12px;
+    color: #777;
+    margin-top: 4px;
+}
 
+/* Styling for "FREE" and Prices */
+.price-label:contains("FREE") {
+    color: #29a399;
+    font-weight: bold;
+}
 
+.price-label:not(:contains("FREE")) {
+    color: #333;
+}
 
 @media (max-width: 768px) {
     .pro_delivery .pro_delivery_warper {
@@ -242,91 +290,56 @@
         width: 100%;
     }
 }
+
+/* style for Packing Materials Section*/
+.packing-options {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.packing-option {
+    width: 48%; /* Make each box take half the row */
+    text-align: center;
+    border: 2px solid #ddd;
+    padding: 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    background-color: #fff;
+    box-sizing: border-box; /* Ensure padding/borders don't overflow */
+}
+
+.packing-option.selected {
+    background-color: #009a94;
+    color: #fff;
+    border-color: #007b76;
+}
+
+.packing-option.selected p {
+    color: #fff;
+}
+
+.packing-option img {
+    width: 80px;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.packing-option:hover {
+    border-color: #04a799;
+    transform: scale(1.02);
+}
+
+#supply_timeslot_section{
+    margin-top: 25px;
+}
+
+@media (max-width: 600px) {
+  .packing-option {
+    width: 100%;
+  }
+}
+
 </style>
-
-<script>
-
-const calendarDates = document.getElementById('calendar-dates');
-const monthYear = document.getElementById('month-year');
-const prevMonthBtn = document.getElementById('prev-month');
-const nextMonthBtn = document.getElementById('next-month');
-
-let viewDate = new Date(); // Date we are currently viewing
-const today = new Date();
-
-function getSelectableDays(year, month) {
-  // Customize logic per month/year if needed
-  return [9, 10, 11, 16, 17,18, today.getDate()];
-}
-
-function renderFixedCalendar() {
-  const year = viewDate.getFullYear();
-  const month = viewDate.getMonth();
-  const firstDay = new Date(year, month, 1).getDay();
-  const lastDate = new Date(year, month + 1, 0).getDate();
-  const selectableDays = getSelectableDays(year, month);
-
-  monthYear.textContent = `${viewDate.toLocaleString('default', { month: 'long' })} ${year}`;
-  calendarDates.innerHTML = '';
-
-  for (let i = 0; i < firstDay; i++) {
-    calendarDates.innerHTML += `<div></div>`;
-  }
-
-  for (let i = 1; i <= lastDate; i++) {
-    const isToday =
-      i === today.getDate() &&
-      month === today.getMonth() &&
-      year === today.getFullYear();
-
-    const isSelectable = selectableDays.includes(i);
-    const isSelected = isToday && isSelectable;
-
-    calendarDates.innerHTML += `
-      <div class="
-        ${isToday ? 'today' : ''}
-        ${isSelectable ? 'selectable' : ''}
-        ${isSelected ? 'selected' : ''}
-      " data-day="${i}">
-        ${i}
-      </div>`;
-  }
-
-  document.querySelectorAll('.calendar-dates div.selectable').forEach(day => {
-    day.addEventListener('click', () => {
-      day.classList.toggle('selected');
-    });
-  });
-}
-
-prevMonthBtn.addEventListener('click', () => {
-  viewDate.setMonth(viewDate.getMonth() - 1);
-  renderFixedCalendar();
-});
-
-nextMonthBtn.addEventListener('click', () => {
-  viewDate.setMonth(viewDate.getMonth() + 1);
-  renderFixedCalendar();
-});
-
-renderFixedCalendar();
-document.querySelectorAll('.calendar-dates div.selectable').forEach(day => {
-  day.addEventListener('click', () => {
-    // Remove .selected from all
-    document.querySelectorAll('.calendar-dates .selected').forEach(el => {
-      el.classList.remove('selected');
-    });
-
-    // Add to the clicked one
-    day.classList.add('selected');
-
-    // Get the date
-    const selectedDay = parseInt(day.getAttribute('data-day'));
-    const selectedDate = new Date(viewDate.getFullYear(), viewDate.getMonth(), selectedDay);
-
-    console.log("Selected Date:", selectedDate.toDateString());
-  });
-});
-
-
-</script>

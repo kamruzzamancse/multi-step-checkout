@@ -1,19 +1,21 @@
 <!-- Step 3: Collection Timeslot -->
 <div class="step" id="step-3">
-    <h2>Pickup Timeslot</h2>
+    <h2>Pickup Appointment</h2>
     <div class="pro_pickup">
-        <div class=" pro_picup_warper">
+        <div class="pro_picup_warper">
             <div id="date_time_picker" class="pro_picup_col">
+                
                 <label for="collection_timeslot">Select a Collection Date:</label>
                 <input type="text" id="collection_timeslot" name="collection_timeslot" readonly>
                 
                 <div class="prev_next_button">
                     <button class="next-step">Continue</button>
-                </div> 
+                </div>
+
             </div>
             
             <div id="arrival_window" class="pro_col">
-                <h6>Select an arrival window</h6>
+                <h6><b>Select an arrival window</b></h6>
         
                 <div class="option" id="flexibleArrival">
                     <strong>Flexible Arrival</strong> <span class="calendar-price">Free</span>
@@ -233,16 +235,6 @@
     font-size: 12px;
     color: #777;
     margin-top: 4px;
-}
-
-/* Styling for "FREE" and Prices */
-.price-label:contains("FREE") {
-    color: #29a399;
-    font-weight: bold;
-}
-
-.price-label:not(:contains("FREE")) {
-    color: #333;
 }
 
 @media (max-width: 768px) {

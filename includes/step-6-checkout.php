@@ -305,14 +305,12 @@ document.addEventListener("DOMContentLoaded", () => {
     background: #f8f8f8;
     border-radius: 8px;
 }
-
 .edit-link {
     font-size: 12px;
     color: #007bff;
     text-decoration: underline;
     cursor: pointer;
 }
-
 .payment-box {
     width: 100%;
     background: white;
@@ -396,33 +394,25 @@ document.addEventListener("DOMContentLoaded", () => {
     color: #333;
     gap: 15px;
 }
-
-
-
-
 .booking-info-box {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     max-width: 100%;
 }
-
 .booking-row {
     display: flex;
     justify-content: space-between;
     width: 48%; /* Adjust width as needed */
     margin-bottom: 10px;
 }
-
 .left-align {
     text-align: left;
 }
-
 .right-align {
     text-align: right;
     margin-left: auto; /* Push to the right */
 }
-
 
 </style>
 

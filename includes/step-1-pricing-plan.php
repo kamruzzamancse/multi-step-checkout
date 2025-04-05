@@ -12,25 +12,6 @@
         </section>
     </div>
 
-    <div class="pro_col mt-4">
-        <h3><b>Boxes</b></h3>
-        <p>
-            We provide <b>FREE</b> storage boxes with tape, delivered to you at your Supply Appointment.
-        </p>
-        <div >
-                <div>
-                    <p class="pragraph mt-3">
-                        <img src="https://app.storagehotel.ca/assets/item-icons/notes-icon.svg" alt="png" width="20" height="20">
-                        <b>You won't be charged for boxes you don't use. Simply return any unused boxes during Pickup</b>. We recommend you order more boxes than you think you need. The typical student uses at least 7 Storagehotel Large Boxes.
-                        
-                        <span class="tooltipContainer">
-                            <img class="tooltipIcon" src="https://app.storagehotel.ca/assets/item-icons/help-icon.svg" alt="png" width="20" height="20">
-                            <span class="tooltipBox">18” x 18” x 16” each. 50 lb weight limit each. Boxes are free, provided they are stored in your storage plan.</span>
-                        </span>
-                    </p>
-                </div>   
-        </div>
-    </div>
     <!-- Dynamic Product Selection -->
     <div class="pro_row">
         <div id="product_list">
@@ -76,7 +57,41 @@
             foreach (['box', 'common', 'mattresses'] as $category) {
                 if (!empty($categorized_products[$category])) {
                     echo '<h4 class="pro_heading2">' . ucfirst($category) . '</h4>';
-                    echo '<div class="pro_text"><p><b>Note:</b> The prices shown are estimates and may vary based on the actual size and weight of your items.</p></div>';
+
+                    switch (strtolower($category)) {
+                        case 'box':
+                            echo '
+                            <div class="pro_col mt-4">
+                                <p>
+                                    We provide <b>FREE</b> storage boxes with tape, delivered to you at your Supply Appointment.
+                                </p>
+                                <div>
+                                    <p class="pragraph mt-3">
+                                        <img src="https://app.storagehotel.ca/assets/item-icons/notes-icon.svg" alt="Note Icon" width="20" height="20">
+                                        <b>You won\'t be charged for boxes you don\'t use.</b> Simply return any unused boxes during Pickup.
+                                        We recommend you order more boxes than you think you need. The typical student uses at least 7 Storagehotel Large Boxes.
+                                        <span class="tooltipContainer">
+                                            <img class="tooltipIcon" src="https://app.storagehotel.ca/assets/item-icons/help-icon.svg" alt="Help Icon" width="20" height="20">
+                                            <span class="tooltipBox">
+                                                18” x 18” x 16” each. 50 lb weight limit each. Boxes are free, provided they are stored in your storage plan.
+                                            </span>
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>';
+                            break;
+            
+                        case 'common':
+                            echo '<div class="pro_text"><p>For those things that don\'t fit in a box.</p></div>';
+                            break;
+            
+                        case 'mattresses':
+                            echo '<div class="pro_text">
+                                    <p>Mattresses are required to be in a sealed mattress bag for hygienic reasons.<br>
+                                    If needed, we can provide a mattress bag to you at your Supply or Pickup Appointment.</p>
+                                </div>';
+                            break;
+                    }
     
                     // Set grid layout based on category
                     $grid_class = ($category == 'common' || $category == 'mattresses') ? 'product-grid-two' : 'product-grid-one';
@@ -109,6 +124,9 @@
                         </div>
                         <?php
                     }
+                    if (strtolower($category) === 'box') {
+                        echo '<div class="pro_text"><p><strong>Already have your own boxes?</strong> Add them as Custom Items below!</p></div>';
+                    }                    
                     echo '</div>'; // Close grid container
                 }
             }
