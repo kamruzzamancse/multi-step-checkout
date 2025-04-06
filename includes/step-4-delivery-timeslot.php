@@ -62,13 +62,13 @@
 <script>
     document.getElementById("flexibleArrival_1").addEventListener("click", function() {
         document.getElementById("timeSlots_1").style.display = "none";
-        this.classList.add("selected");
+        this.classList.add("pro_selected"); // Fixed class name
         document.getElementById("scheduledArrival_1").classList.remove("pro_selected");
     });
 
     document.getElementById("scheduledArrival_1").addEventListener("click", function() {
         document.getElementById("timeSlots_1").style.display = "block";
-        this.classList.add("selected");
+        this.classList.add("pro_selected"); // Fixed class name
         document.getElementById("flexibleArrival_1").classList.remove("pro_selected");
     });
 </script>
