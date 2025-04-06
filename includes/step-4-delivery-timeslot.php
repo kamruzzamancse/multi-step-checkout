@@ -76,18 +76,16 @@
       yesOption.classList.add("selected");
       noOption.classList.remove("selected");
       supplySection.style.display = "block";
-      // Add delivery-related data in sessionStorage
       sessionStorage.setItem("packing_selected", "true");
-      updateSummary(); // Update the summary after packing option is selected
+      updateSummary();
   });
 
   noOption.addEventListener("click", () => {
-      noOption.classList.add("selected");
-      yesOption.classList.remove("selected");
-      supplySection.style.display = "none";
-      // Remove delivery-related data from sessionStorage if no packing selected
-      sessionStorage.setItem("packing_selected", "false");
-      updateSummary(); // Update the summary after packing option is selected
+    noOption.classList.add("selected");
+    yesOption.classList.remove("selected");
+    supplySection.style.display = "none";
+    sessionStorage.setItem("packing_selected", "false");
+    updateSummary();
   });
 
   document.getElementById("flexibleArrival_1").addEventListener("click", function () {

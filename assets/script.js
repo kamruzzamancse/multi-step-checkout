@@ -250,97 +250,98 @@ jQuery(document).ready(function ($) {
         }
     } */
 
-        function updateSummary() {
-            let totalPrice = 0;
+    function updateSummary() {
         
-            // Load all base subtotals
-            let storedSubtotal = parseFloat(sessionStorage.getItem("subtotal_pre") || "0");
-            let storedSubtotalCustom = parseFloat(sessionStorage.getItem("subtotal_custom") || "0");
-        
-            let pickupPrice = 0;
-            let deliveryPrice = 0;
-        
-            // Handle Pickup
-            let pickupDetails = sessionStorage.getItem("pickup_date");
-            if (pickupDetails && pickupDetails !== "null") {
-                let pickupData = JSON.parse(pickupDetails);
-                pickupPrice = parseFloat(pickupData.price?.replace(/[^\d.]/g, "") || "0");
-        
-                // Save individual pickup price
-                sessionStorage.setItem("subtotal_pickup", pickupPrice.toFixed(2));
-        
-                // Display Pickup Info
-                $("#pickup_label").show();
-                $("#pickup_date").html(`
-                    <span>${pickupData.date}, ${pickupData.time}</span>
-                    <span>€${pickupPrice.toFixed(2)}</span>
-                `).css({
-                    "display": "flex", 
-                    "justify-content": "space-between", 
-                    "align-items": "center",
-                    "width": "100%"
-                }).show();
-            } else {
-                $("#pickup_label").show();
-                $("#pickup_date").html(`<span>No Pickup</span>`).css({
-                    "display": "flex", 
-                    "justify-content": "space-between", 
-                    "align-items": "center",
-                    "width": "100%"
-                }).show();
-            }
-        
-            // Handle Delivery (Only if packing_yes is selected)
-            const packingSelected = sessionStorage.getItem("packing_selected") === "true"; // Check session storage for packing selection
-        
-            let deliveryDetails = sessionStorage.getItem("delivery_date");
-        
-            if (packingSelected && deliveryDetails && deliveryDetails !== "null") {
-                let deliveryData = JSON.parse(deliveryDetails);
-                deliveryPrice = parseFloat(deliveryData.price?.replace(/[^\d.]/g, "") || "0");
-        
-                // Save individual delivery price
-                sessionStorage.setItem("subtotal_delivery", deliveryPrice.toFixed(2));
-        
-                // Display Delivery Info
-                $("#delivery_label").show();
-                $("#delivery_date").html(`
-                    <span>${deliveryData.date}, ${deliveryData.time}</span>
-                    <span>€${deliveryPrice.toFixed(2)}</span>
-                `).css({
-                    "display": "flex", 
-                    "justify-content": "space-between", 
-                    "align-items": "center",
-                    "width": "100%"
-                }).show();
-            } else {
-                // If not selected or no delivery data, hide section and set subtotal to 0
-                $("#delivery_label, #delivery_date").hide();
-                sessionStorage.setItem("subtotal_delivery", "0");
-            }
-        
-            // Final Total Calculation
-            totalPrice = storedSubtotal + storedSubtotalCustom + pickupPrice + deliveryPrice;
-        
-            // Update UI and session
-            $("#subtotal, #total_due").text(`€${totalPrice.toFixed(2)}`);
-            sessionStorage.setItem("subtotal", totalPrice.toFixed(2));
-            sessionStorage.setItem("total_due", totalPrice.toFixed(2));
-        
-            // Collection Address
-            let savedAddress = sessionStorage.getItem("collection_address");
-            if (savedAddress && savedAddress.trim() !== "") {
-                $("#collection_address").text(savedAddress).show();
-                $("#collection_label").show();
-            } else {
-                $("#collection_address, #collection_label").hide();
-            }
-        }               
+        let totalPrice = 0;
+    
+        // Load all base subtotals
+        let storedSubtotal = parseFloat(sessionStorage.getItem("subtotal_pre") || "0");
+        let storedSubtotalCustom = parseFloat(sessionStorage.getItem("subtotal_custom") || "0");
+    
+        let pickupPrice = 0;
+        let deliveryPrice = 0;
+    
+        // Handle Pickup
+        let pickupDetails = sessionStorage.getItem("pickup_date");
+        if (pickupDetails && pickupDetails !== "null") {
+            let pickupData = JSON.parse(pickupDetails);
+            pickupPrice = parseFloat(pickupData.price?.replace(/[^\d.]/g, "") || "0");
+    
+            // Save individual pickup price
+            sessionStorage.setItem("subtotal_pickup", pickupPrice.toFixed(2));
+    
+            // Display Pickup Info
+            $("#pickup_label").show();
+            $("#pickup_date").html(`
+                <span>${pickupData.date}, ${pickupData.time}</span>
+                <span>€${pickupPrice.toFixed(2)}</span>
+            `).css({
+                "display": "flex", 
+                "justify-content": "space-between", 
+                "align-items": "center",
+                "width": "100%"
+            }).show();
+        } else {
+            $("#pickup_label").show();
+            $("#pickup_date").html(`<span>No Pickup</span>`).css({
+                "display": "flex", 
+                "justify-content": "space-between", 
+                "align-items": "center",
+                "width": "100%"
+            }).show();
+        }
+    
+        // Handle Delivery (Only if packing_yes is selected)
+        const packingSelected = sessionStorage.getItem("packing_selected") === "true"; // Check session storage for packing selection
+    
+        let deliveryDetails = sessionStorage.getItem("delivery_date");
+    
+        if (packingSelected && deliveryDetails && deliveryDetails !== "null") {
+            let deliveryData = JSON.parse(deliveryDetails);
+            deliveryPrice = parseFloat(deliveryData.price?.replace(/[^\d.]/g, "") || "0");
+    
+            // Save individual delivery price
+            sessionStorage.setItem("subtotal_delivery", deliveryPrice.toFixed(2));
+    
+            // Display Delivery Info
+            $("#delivery_label").show();
+            $("#delivery_date").html(`
+                <span>${deliveryData.date}, ${deliveryData.time}</span>
+                <span>€${deliveryPrice.toFixed(2)}</span>
+            `).css({
+                "display": "flex", 
+                "justify-content": "space-between", 
+                "align-items": "center",
+                "width": "100%"
+            }).show();
+        } else {
+            // If not selected or no delivery data, hide section and set subtotal to 0
+            $("#delivery_label, #delivery_date").hide();
+            sessionStorage.setItem("subtotal_delivery", "0");
+        }
+    
+        // Final Total Calculation
+        totalPrice = storedSubtotal + storedSubtotalCustom + pickupPrice + deliveryPrice;
+    
+        // Update UI and session
+        $("#subtotal, #total_due").text(`€${totalPrice.toFixed(2)}`);
+        sessionStorage.setItem("subtotal", totalPrice.toFixed(2));
+        sessionStorage.setItem("total_due", totalPrice.toFixed(2));
+    
+        // Collection Address
+        let savedAddress = sessionStorage.getItem("collection_address");
+        if (savedAddress && savedAddress.trim() !== "") {
+            $("#collection_address").text(savedAddress).show();
+            $("#collection_label").show();
+        } else {
+            $("#collection_address, #collection_label").hide();
+        }
+    }               
 
     // ========================== ON PAGE LOAD ==========================
     showStep(1);                  // Start from step 1
     updateSummary();              // Load stored data
-    $(document).ready(updateSummary); // Also call on ready (redundant, safe)
+    //$(document).ready(updateSummary); // Also call on ready (redundant, safe)
 
 
     // ========================== PICKUP DATE & TIMESLOT ==========================
@@ -537,8 +538,6 @@ jQuery(document).ready(function ($) {
     
         // Check if there are custom items in sessionStorage
         let customItems = JSON.parse(sessionStorage.getItem("custom_items")) || [];
-        console.log("Custom Items from SessionStorage:", sessionStorage.getItem("custom_items"));
-        console.log("Debugging Message: Hire larka");
     
         // Only proceed if there are custom items in sessionStorage
         if (customItems.length > 0) {
