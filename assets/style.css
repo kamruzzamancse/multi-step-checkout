@@ -1,11 +1,15 @@
 :root {
   --praimary: #00a899;
   --lightGray: #b3b3b3de;
-  --Bellefair: Bellefair;
+  --Cormorant : Cormorant;
+  --Montserrat: Montserrat;
+  --Cardo: Cardo;
+  --JosefinSlab: Josefin Slab;
 }
-* {
-  font-family: "Montserrat", sans-serif;
-}
+/* * {
+  font-family: "Cormorant", sans-serif;
+} */
+body{background-color: rgba(240, 238, 234, 0.979);}
 article {
   margin: 0;
   padding: 0 !important ;
@@ -220,3 +224,16 @@ a {
   background-color: #127878 !important;
 }
 
+.form-control:focus {
+  color: var(--bs-body-color);
+  background-color: white;
+  border-color: #00a899 !important;
+  outline: 0;
+  box-shadow: 0 0 0 .25rem #00a89a44;
+}
+
+.qty-btn {
+  border: none !important;
+  outline: none !important;
+  border-radius: 3px !important;
+}

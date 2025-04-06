@@ -79,6 +79,9 @@
         padding:20px 10px;
         margin:0;
     }
+    #price_details span{
+        font-weight: 600;
+    }
     .storagePerMonth{
         width: 100%;
         padding: 5px 0;

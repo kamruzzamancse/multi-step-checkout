@@ -5,10 +5,8 @@
         <div class="pro_delivery_warper">
             <div id="date_time_picker" class="pro_Delivery_col">
                 <!-- <label for="supply_timeslot">Select a Supply Date:</label>
-                <input type="text" id="supply_timeslot" name="supply_timeslot" readonly>
-                <div class="prev_next_button">
-                    <button class="next-step">Continue</button>
-                </div>  -->
+                <input type="text" id="supply_timeslot" name="supply_timeslot" readonly> -->
+                
                 <div class="pro_calendar">
                     <div class="pro_calendar_header">
                         <button id="prev-month">&lt;</button>
@@ -22,7 +20,9 @@
                     <div class="calendar-dates" id="calendar-dates"></div>
                 </div>
 
-                
+                <div class="prev_next_button">
+                    <button class="next-step">Continue</button>
+                </div> 
 
             </div>
             
@@ -152,8 +152,8 @@
 
 /* ================= */
 .pro_calendar { 
-  width: fit-content;
-  max-width: 350px;
+  width: 100%;
+  max-width: 100%;
   background-color: white;
   border: 1px solid #ddd;
   border-radius: 12px;
@@ -163,7 +163,6 @@
 }
 
 .pro_calendar_header {
-  background: #23aca5;
   color: white;
   padding: 12px;
   text-align: center;
@@ -175,16 +174,16 @@
 }
 
 .pro_calendar_header button {
-  background: #23aca5;
-  color: #23aca5;
-  color: #04a799;
-  border: none;
-  outline: none;
+  background: #fff;
+  color: #04a799 !important;
+  border: none !important;
+  outline: none !important;
   padding: 5px 10px;
   font-size: 18px;
   border-radius: 6px;
   cursor: pointer;
 }
+#month-year{color: #04a799;}
 
 .calendar-days, .calendar-dates {
   display: grid;
@@ -193,14 +192,21 @@
   padding: 10px;
   gap: 5px;
 }
+.calendar-days{padding-bottom: 0;}
 
 .calendar-days div {
-  font-weight: bold;
-  color: #333;
+  width: 100%;
+  font-weight: 400;
+  color: gray;
+  border: 1px solid #ddd;
+  padding: 5px 2px;
+  border-radius: 3px;
 }
-
+.calendar-dates {
+  padding-top: 5px;
+}
 .calendar-dates div {
-  padding: 10px;
+  padding: 6px 10px;
   border: 1px solid #ddd;
   border-radius: 6px;
   cursor: pointer;
@@ -242,6 +248,8 @@
         width: 100%;
     }
 }
+
+
 </style>
 
 <script>
@@ -313,6 +321,8 @@ renderFixedCalendar();
 document.querySelectorAll('.calendar-dates div.selectable').forEach(day => {
   day.addEventListener('click', () => {
     // Remove .selected from all
+    console.log(day);
+    
     document.querySelectorAll('.calendar-dates .selected').forEach(el => {
       el.classList.remove('selected');
     });

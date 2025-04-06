@@ -8,7 +8,12 @@
         <svg id="pro_pullDown_arrow_Up" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M480-528 296-344l-56-56 240-240 240 240-56 56-184-184Z"/></svg>
     </div>
     <!-- =======hidden pull down===== -->
-     <div id="pro_pullDown_window" ></div>
+     <div id="pro_pullDown_window" >
+        <!-- ====footer_price_summary==== -->
+        <div id="footer_price_summary">
+            <?php include( plugin_dir_path(__FILE__) . 'price-summary.php'); ?>
+        </div>
+     </div>
 </div>
 
 <style>
@@ -74,11 +79,13 @@
         left: 0;
         z-index: 9990;
         /* display: none;  */
-        transform: translateY(110%);
+        transform: translateY(120%);
         transition: transform 0.3s ease-in-out;
+        z-index: -1;
     }
     .pro-pulldown-window_active {
          transform: translateY(0%) !important;
+         z-index: 9990 !important;
     }
 
     @media(min-width: 1024px) {

@@ -22,8 +22,12 @@ register_activation_hook( __FILE__, 'msc_check_woocommerce' );
 
 // Load CSS & JS
 function msc_enqueue_scripts() {
+    // Preconnect to Google Fonts and Fonts Static
+    echo '<link rel="preconnect" href="https://fonts.googleapis.com">';
+    echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>';
      // Enqueue Google Font Montserrat
-     wp_enqueue_style('google-font-montserrat', 'https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap', array(), null);
+    //  wp_enqueue_style('google-font-montserrat', 'https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap', array(), null);
+     wp_enqueue_style('google-font-montserrat', 'https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&family=Cormorant:ital,wght@0,300..700;1,300..700&family=Josefin+Slab:ital,wght@0,100..700;1,100..700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap', array(), null);
     // Enqueue Bootstrap CSS
     wp_enqueue_style('bootstrap-css', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css');
 
@@ -47,6 +51,7 @@ function msc_custom_checkout_form() {
         <div id="nav-bar-wrapper">
             <?php include( plugin_dir_path(__FILE__) . 'includes/nav-bar.php'); ?>
         </div>
+        
         <div id="mainWarpper" class="pro_row">
             <!-- Left Content (Checkout Steps) -->
             <div class="pro_col pro_col_70">
@@ -62,6 +67,7 @@ function msc_custom_checkout_form() {
                 <?php include( plugin_dir_path(__FILE__) . 'includes/price-summary.php'); ?>
             </div>
         </div>
+
         <div id="pro_checkout">
             <?php include( plugin_dir_path(__FILE__) . 'includes/step-6-checkout.php'); ?>
         </div>
@@ -82,9 +88,13 @@ add_shortcode( 'multi_step_checkout', 'msc_custom_checkout_form' );
     max-width: 1440px;
     padding: 0 10px;
     margin: 0 auto;
+    margin-top: -90px;
+    font-family: var(--JosefinSlab) !important;
+    font-weight: 500!important;
     }
     #multi-step-checkout p{
-        font-size:16px;
+        font-size:18px;
+        font-weight: 500;
     }
     #nav-bar-wrapper{
         width: 100%;

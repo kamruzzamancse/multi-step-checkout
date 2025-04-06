@@ -1,9 +1,9 @@
 <!-- Step 6: Checkout -->
 
 <div class="step" id="step-6">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-7 left-section">
+    <div class="pro_container">
+        <div class="pro_row checkout_wraper">
+            <div class="pro_col_60 left-section">
                 <h2>Your Booking Summary</h2>
                 <p>Enter your email and payment information to secure your appointment.</p>
 
@@ -62,7 +62,7 @@
                 </div>
             </div>
 
-            <div class="col-md-5 right-section">
+            <div class="pro_col_40 right-section">
                 <!-- ✅ Right Side: Booking Info + Payment -->
                 <div class="right-side-panel">
                     <!-- Booking Info -->
@@ -225,6 +225,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
 <!-- ✅ CSS -->
 <style>
+    #step-6 .pro_container{
+       width: 145%; 
+    }
+    .checkout_wraper{
+        width: 100%;
+        display: flex;
+        align-items: start;
+        justify-content: space-between;
+    }
+    .pro_col_60{
+        width: 60%;
+    }
+    .pro_col_40{
+        width: 40%;
+    }
 /* Booking Summary Table */
 .booking-summary-table {
     width: 100%;
@@ -422,7 +437,32 @@ document.addEventListener("DOMContentLoaded", () => {
     text-align: right;
     margin-left: auto; /* Push to the right */
 }
-
+@media (max-width: 768px) {
+    #step-6 .pro_container{
+       width: 100%;
+       max-width: 100vw; 
+    }
+    .checkout_wraper{
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        justify-content: space-between;
+    }
+    .pro_col_60{
+        width: 100%;
+    }
+    .pro_col_40{
+        width: 100%;
+    }
+    .charges-section{
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+    
+    
+}
 
 </style>
 

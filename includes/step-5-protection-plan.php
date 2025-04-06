@@ -247,12 +247,12 @@ jQuery(document).ready(function ($) {
     background-color: #e6f0ff;
 }
 
-.option-container .product-image {
-    width: 100px;
-    height: 100px;
+#disposal-options .option-container .product-image {
+    width: 80px;
+    height: 80px;
     flex-shrink: 0;
 }
-.option-container .product-image img {
+#disposal-options .option-container .product-image img {
     width: 100%;
     height: 100%;
     object-fit:contain;

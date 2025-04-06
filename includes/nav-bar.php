@@ -53,10 +53,14 @@ nav .box_warpper {
 nav .box_warpper .box {
   width: 60px;
   height: 60px;
-  border: 2px solid var(--lightGray);
+  border: 2px solid var(--lightGray) !important;
+  background-color: #fff;
   padding: 15px;
   border-radius: 4px;
   cursor: pointer;
+}
+.box-label{
+  font-size: 15px !important;
 }
 nav .box_warpper .box.active {
     background-color: var(--praimary) !important;
@@ -68,10 +72,7 @@ nav .box_warpper .box .miniBox {
   background: #fff;
   border-radius: 3px;
 }
-nav .box_warpper .box:nth-child(1) {
-  background-color: var(--praimary);
-  border: var(--praimary);
-}
+
 nav .box_warpper .line {
   width: 80px;
   height: 2px;
@@ -84,7 +85,13 @@ nav .box_warpper .line {
   flex-direction: column;
   align-items: center;
 }
-
+.box-container .box {
+  background-color: red;
+}
+nav .box_warpper .box-container:nth-child(1) .box {
+  background-color: var(--praimary);
+  border: var(--praimary);
+}
 .box-label {
   margin-top: 8px;
   font-size: 11px;
