@@ -248,14 +248,30 @@ jQuery(document).ready(function ($) {
 }
 
 #disposal-options .option-container .product-image {
-    width: 80px;
-    height: 80px;
+    width: 80px !important;
+    height: 80px !important;
     flex-shrink: 0;
 }
 #disposal-options .option-container .product-image img {
-    width: 100%;
-    height: 100%;
-    object-fit:contain;
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit:fill;
+}
+#protection-plans .option-container .product-image {
+    width: 80px !important;
+    height: 80px !important;
+    flex-shrink: 0;
+}
+#protection-plans .option-container .product-image img {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit:fill;
 }
 
 /* .product-info {

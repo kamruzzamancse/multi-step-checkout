@@ -109,7 +109,7 @@
                                 <!-- Product Info -->
                                 <div class="product-info">
                                     <strong><?php echo esc_html($product->get_name()); ?></strong>
-                                    <p><?php echo $product->get_short_description(); ?></p>
+                                    <p class="pro_short_desc"><?php echo $product->get_short_description(); ?></p>
                                     <p class="price">€<?php echo esc_html($product->get_price()); ?> /month</p>
                                 </div>
     
@@ -416,6 +416,30 @@
     flex-direction: column;
     justify-content: space-evenly;
     flex-grow: 1;
+}
+
+.product-info > strong{
+    width: 100%;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-clamp: 1;
+}
+.product-info  .pro_short_desc{
+    width: 100%;
+    height: fit-content;
+    max-height: 40px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* white-space: nowrap; */
+    font-size: 12px;
+    color: #555;
+    margin: 0;
+    padding: 0;
+    font-weight: 400;
+    line-height: 1.2;
+    line-clamp: 2;
 }
 
 .product-info strong {

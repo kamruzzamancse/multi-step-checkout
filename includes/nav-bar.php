@@ -99,7 +99,26 @@ nav .box_warpper .box-container:nth-child(1) .box {
   text-align: center;
   font-weight: bold;
 }
-
+@media (max-width: 576px) {
+  nav .box_warpper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+  nav .box_warpper .box {
+    width: 50px;
+    height: 50px;
+    margin: 0;
+  }
+  nav .box_warpper .line {
+    width: 60px;
+    height: 2px;
+  }
+  .box-label{
+    font-size: 10px !important;
+  }
+}
 </style>
 
 <script>
