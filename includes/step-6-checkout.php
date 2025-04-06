@@ -22,7 +22,7 @@
                 </table>
 
                 <!-- Charges + Notice Layout -->
-                <div class="charges-section">
+                <div class="charges-section">   
                     <!-- ⚠️ Left Notice -->
                     <div class="charges-note">
                         <div class="warning-icon">⚠️</div>
@@ -42,18 +42,18 @@
                             <tbody>
                                 <tr>
                                     <td>Subtotal</td>
-                                    <td id="oneTimeSubtotal">£0.00</td>
-                                    <td id="monthlySubtotal">£0.00</td>
+                                    <td id="oneTimeSubtotal">€0.00</td>
+                                    <td id="monthlySubtotal">€0.00</td>
                                 </tr>
                                 <tr>
                                     <td>HST</td>
-                                    <td id="oneTimeHST">£0.00</td>
-                                    <td id="monthlyHST">£0.00</td>
+                                    <td id="oneTimeHST">€0.00</td>
+                                    <td id="monthlyHST">€0.00</td>
                                 </tr>
                                 <tr class="total-row">
                                     <td><strong>Total</strong></td>
-                                    <td id="oneTimeTotal"><strong>£0.00</strong></td>
-                                    <td id="monthlyTotal"><strong>£0.00</strong></td>
+                                    <td id="oneTimeTotal"><strong>€0.00</strong></td>
+                                    <td id="monthlyTotal"><strong>€0.00</strong></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -133,45 +133,73 @@
 
 <!-- ✅ JavaScript -->
 <script>
-
-// Load and render booking table
 function loadPriceDetailsIntoTable() {
-    const priceHTML = sessionStorage.getItem("price_details");
-    const tbody = document.getElementById("price_table_body");
-    tbody.innerHTML = "";
+  const prePriceHTML = sessionStorage.getItem("price_details");
+  const customPriceHTML = sessionStorage.getItem("custom_items");
+  const tbody = document.getElementById("price_table_body");
+  tbody.innerHTML = "";
 
-    if (!priceHTML) {
-        console.warn("⚠️ No sessionStorage 'price_details' found.");
-        tbody.innerHTML = `<tr><td colspan="3" style="padding: 12px;">No items in your booking.</td></tr>`;
-        return;
-    }
+  // === Handle Predefined Items ===
+  if (!prePriceHTML || prePriceHTML.trim() === "") {
+    tbody.innerHTML += `<tr><td colspan="3" style="padding: 12px;">No items in your booking.</td></tr>`;
+  } else {
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = prePriceHTML;
 
-    const lines = priceHTML.split("<br>").filter(line => line.trim() !== "");
+    const rows = tempDiv.querySelectorAll(".storage-item-row");
 
-    lines.forEach(line => {
-        const match = line.match(/(\d+)\s*x\s*(.*?)\s*=\s*[£$]?([\d.]+)/);
-        if (match) {
-            const quantity = match[1];
-            const name = match[2].trim();
-            const price = match[3];
-            const isStorageBox = name.toLowerCase().includes("storagehotel large box");
+    rows.forEach(row => {
+      const leftText = row.querySelector("div span")?.textContent.trim(); // "1 x Skis/Snowboard"
+      const priceText = row.querySelector("span[style*='min-width']")?.textContent.trim(); // "€25.00/mo"
 
-            const row = `
-                <tr style="border-bottom: 1px solid #eee; vertical-align: top;">
-                    <td style="padding: 12px;">
-                        <strong>${name}</strong><br>
-                        ${isStorageBox
-                            ? `<span style="color: green;">First 2 Months FREE for 1 Storagehotel Large Box</span><br>
-                               <small>4-month minimum required</small>` : ""
-                        }
-                    </td>
-                    <td style="padding: 12px;">${quantity}</td>
-                    <td style="padding: 12px;">£${price}</td>
-                </tr>
-            `;
-            tbody.innerHTML += row;
-        }
+      if (!leftText || !priceText) return;
+
+      const match = leftText.match(/^(\d+)\s*x\s*(.+)$/);
+      if (!match) return;
+
+      const quantity = match[1];
+      const itemName = match[2];
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><strong>${itemName}</strong></td>
+        <td>${quantity}</td>
+        <td>${priceText}</td>
+      `;
+      tbody.appendChild(tr);
     });
+  }
+
+  // === Handle Custom Items ===
+  if (!customPriceHTML || customPriceHTML.trim() === "") {
+    tbody.innerHTML += `<tr><td colspan="3" style="padding: 12px;">No custom items added.</td></tr>`;
+    return;
+  }
+
+  let customItems;
+  try {
+    customItems = JSON.parse(customPriceHTML);
+  } catch (e) {
+    console.error("Invalid JSON in custom_items", e);
+    return;
+  }
+
+  if (!Array.isArray(customItems) || customItems.length === 0) {
+    tbody.innerHTML += `<tr><td colspan="3" style="padding: 12px;">No custom items found.</td></tr>`;
+    return;
+  }
+
+  customItems.forEach(item => {
+    const { name, cubicFeet, price } = item;
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><strong>${name}</strong></td>
+      <td>${cubicFeet} cu ft</td>
+      <td>€${price.toFixed(2)}</td>
+    `;
+    tbody.appendChild(tr);
+  });
 }
 
 // Update charges summary based on subtotal
@@ -188,12 +216,12 @@ function updateStyledChargesSummary() {
     const oneTimeTotal = oneTimeSubtotal + oneTimeHST;
     const monthlyTotal = monthlySubtotal + monthlyHST;
 
-    document.getElementById("oneTimeSubtotal").innerText = `£${oneTimeSubtotal.toFixed(2)}`;
-    document.getElementById("monthlySubtotal").innerText = `£${monthlySubtotal.toFixed(2)}`;
-    document.getElementById("oneTimeHST").innerText = `£${oneTimeHST.toFixed(2)}`;
-    document.getElementById("monthlyHST").innerText = `£${monthlyHST.toFixed(2)}`;
-    document.getElementById("oneTimeTotal").innerText = `£${oneTimeTotal.toFixed(2)}`;
-    document.getElementById("monthlyTotal").innerText = `£${monthlyTotal.toFixed(2)}`;
+    document.getElementById("oneTimeSubtotal").innerText = `€${oneTimeSubtotal.toFixed(2)}`;
+    document.getElementById("monthlySubtotal").innerText = `€${monthlySubtotal.toFixed(2)}`;
+    document.getElementById("oneTimeHST").innerText = `€${oneTimeHST.toFixed(2)}`;
+    document.getElementById("monthlyHST").innerText = `€${monthlyHST.toFixed(2)}`;
+    document.getElementById("oneTimeTotal").innerText = `€${oneTimeTotal.toFixed(2)}`;
+    document.getElementById("monthlyTotal").innerText = `€${monthlyTotal.toFixed(2)}`;
 
     sessionStorage.setItem("hst", (oneTimeHST + monthlyHST).toFixed(2));
     sessionStorage.setItem("total_due", (oneTimeTotal + monthlyTotal).toFixed(2));
@@ -416,12 +444,3 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </style>
 
-<!-- <button onclick="resetBooking()">Reset Booking</button>
-
-<script>
-function resetBooking() {
-    sessionStorage.clear();
-    alert("Session cleared. Booking reset.");
-    location.reload(); // Optional: reload to reflect changes
-}
-</script> -->

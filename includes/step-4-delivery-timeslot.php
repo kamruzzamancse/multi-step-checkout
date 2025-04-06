@@ -66,43 +66,7 @@
   </div>
 </div>
 
-<!-- Script Section -->
-<script>
-  const yesOption = document.getElementById("packing_yes");
-  const noOption = document.getElementById("packing_no");
-  const supplySection = document.getElementById("supply_timeslot_section");
-
-  yesOption.addEventListener("click", () => {
-      yesOption.classList.add("selected");
-      noOption.classList.remove("selected");
-      supplySection.style.display = "block";
-      sessionStorage.setItem("packing_selected", "true");
-      updateSummary();
-  });
-
-  noOption.addEventListener("click", () => {
-    noOption.classList.add("selected");
-    yesOption.classList.remove("selected");
-    supplySection.style.display = "none";
-    sessionStorage.setItem("packing_selected", "false");
-    updateSummary();
-  });
-
-  document.getElementById("flexibleArrival_1").addEventListener("click", function () {
-    document.getElementById("timeSlots_1").style.display = "none";
-    this.classList.add("selected");
-    document.getElementById("scheduledArrival_1").classList.remove("selected");
-  });
-
-  document.getElementById("scheduledArrival_1").addEventListener("click", function () {
-    document.getElementById("timeSlots_1").style.display = "block";
-    this.classList.add("selected");
-    document.getElementById("flexibleArrival_1").classList.remove("selected");
-  });
-</script>
-
 <style>
-
   .pro_delivery{
       width:100%;
       padding: 0;

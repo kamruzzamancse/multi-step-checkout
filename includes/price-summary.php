@@ -34,6 +34,8 @@
     <!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ -->
     <div id="custom_items_summary"></div>
     <p id="price_details"></p>
+    <p id="disposal_label" style="display: none;"></p>
+    <p id="protection_plan_label" style="display: none;"></p>
     <p id="collection_label"><strong>Collection Address:</strong></p>
     <p id="collection_address" style="display: none;"></p>
     <p id="pickup_label" style="display: none;"><strong>Pickup Date:</strong></p>

@@ -145,123 +145,126 @@ jQuery(document).ready(function ($) {
         showStep(currentStep);
     });
     
-
-    // ========================== UPDATE SUMMARY DISPLAY ==========================
-    /* function updateSummary() {
-        let totalPrice = 0;
+    // ==================== Disposal Selection Handling ========================
+    $(".disposal-option").click(function () {
+        $(".disposal-option").removeClass("selected");
+        $(this).addClass("selected");
     
-        // Load all base subtotals
-        let storedSubtotal = parseFloat(sessionStorage.getItem("subtotal_pre") || "0");
-        let storedSubtotalCustom = parseFloat(sessionStorage.getItem("subtotal_custom") || "0");
+        let disposalName = ($(this).data("name") || "").trim().toLowerCase();
+        let disposalPrice = parseFloat($(this).data("price")) || 0;
     
-        let pickupPrice = 0;
-        let deliveryPrice = 0;
-    
-        // Handle Pickup
-        let pickupDetails = sessionStorage.getItem("pickup_date");
-        if (pickupDetails && pickupDetails !== "null") {
-            let pickupData = JSON.parse(pickupDetails);
-            pickupPrice = parseFloat(pickupData.price?.replace(/[^\d.]/g, "") || "0");
-    
-            // Save individual pickup price
-            sessionStorage.setItem("subtotal_pickup", pickupPrice.toFixed(2));
-    
-            // Display Pickup Info
-            $("#pickup_label").show();
-            $("#pickup_date").html(`
-                <span>${pickupData.date}, ${pickupData.time}</span>
-                <span>€${pickupPrice.toFixed(2)}</span>
-            `).css({
-                "display": "flex", 
-                "justify-content": "space-between", 
-                "align-items": "center",
-                "width": "100%"
-            }).show();
-        }
-
-
-        // Handle Delivery (Only if packing_yes is selected)
-        const packingSelected = document.getElementById("packing_yes").classList.contains("selected");
-
-        let deliveryDetails = sessionStorage.getItem("delivery_date");
-
-        if (packingSelected && deliveryDetails && deliveryDetails !== "null") {
-            let deliveryData = JSON.parse(deliveryDetails);
-            deliveryPrice = parseFloat(deliveryData.price?.replace(/[^\d.]/g, "") || "0");
-
-            // Save individual delivery price
-            sessionStorage.setItem("subtotal_delivery", deliveryPrice.toFixed(2));
-
-            // Display Delivery Info
-            $("#delivery_label").show();
-            $("#delivery_date").html(`
-                <span>${deliveryData.date}, ${deliveryData.time}</span>
-                <span>€${deliveryPrice.toFixed(2)}</span>
-            `).css({
-                "display": "flex", 
-                "justify-content": "space-between", 
-                "align-items": "center",
-                "width": "100%"
-            }).show();
-
+        if (disposalName === "not now") {
+            sessionStorage.removeItem("disposal_price");
+            disposalPriceStored = 0;
         } else {
-            // If not selected or no delivery data, hide section and set subtotal to 0
-            $("#delivery_label, #delivery_date").hide();
-            sessionStorage.setItem("subtotal_delivery", "0");
+            sessionStorage.setItem("disposal_price", disposalPrice);
+            disposalPriceStored = disposalPrice;
         }
     
-        // Handle Delivery
-        let deliveryDetails = sessionStorage.getItem("delivery_date");
-        if (deliveryDetails && deliveryDetails !== "null") {
-            let deliveryData = JSON.parse(deliveryDetails);
-            deliveryPrice = parseFloat(deliveryData.price?.replace(/[^\d.]/g, "") || "0");
-    
-            // Save individual delivery price
-            sessionStorage.setItem("subtotal_delivery", deliveryPrice.toFixed(2));
-    
-            // Display Delivery Info
-            $("#delivery_label").show();
-            $("#delivery_date").html(`
-                <span>${deliveryData.date}, ${deliveryData.time}</span>
-                <span>€${deliveryPrice.toFixed(2)}</span>
-            `).css({
-                "display": "flex", 
-                "justify-content": "space-between", 
-                "align-items": "center",
-                "width": "100%"
-            }).show();
-        }
-    
-        // Final Total Calculation
-        totalPrice = storedSubtotal + storedSubtotalCustom + pickupPrice + deliveryPrice;
-    
-        // Update UI and session
-        $("#subtotal, #total_due").text(`€${totalPrice.toFixed(2)}`);
-        sessionStorage.setItem("subtotal", totalPrice.toFixed(2));
-        sessionStorage.setItem("total_due", totalPrice.toFixed(2));
-    
-        // Collection Address
-        let savedAddress = sessionStorage.getItem("collection_address");
-        if (savedAddress && savedAddress.trim() !== "") {
-            $("#collection_address").text(savedAddress).show();
-            $("#collection_label").show();
-        } else {
-            $("#collection_address, #collection_label").hide();
-        }
-    } */
+        updateSummary(); // Updates UI summary based on sessionStorage
+    });
 
+    // ================= Protection Plan Selection Handling ===================
+    $(".protection-option").click(function () {
+        $(".protection-option").removeClass("selected");
+        $("#skip-protection").prop("checked", false);
+        $(this).addClass("selected");
+
+        let planDetails = {
+            title: $(this).data("name"),
+            price: parseFloat($(this).data("price")) || 0
+        };
+
+        sessionStorage.setItem("protection_plan", JSON.stringify(planDetails));
+        updateSummary(); // Do not update subtotal and total due
+    });
+
+    // ==================== Skip Protection Plan Handling =====================
+    $("#skip-protection").change(function () {
+        $(".protection-option").removeClass("selected");
+        sessionStorage.removeItem("protection_plan");
+        updateSummary();
+    });
+
+    // ==================== FlexibleArrival_1 Handling ========================
+    $("#flexibleArrival_1").click(function () {
+        $("#timeSlots_1").hide();
+        $(this).addClass("selected");
+        $("#scheduledArrival_1").removeClass("selected");
+    });
+    
+    $("#scheduledArrival_1").click(function () {
+        $("#timeSlots_1").show();
+        $(this).addClass("selected");
+        $("#flexibleArrival_1").removeClass("selected");
+    });
+
+    // ==================== Packing Handling =====================
+    const $yesOption = $("#packing_yes");
+    const $noOption = $("#packing_no");
+    const $supplySection = $("#supply_timeslot_section");
+
+    $yesOption.click(function () {
+        $yesOption.addClass("selected");
+        $noOption.removeClass("selected");
+        $supplySection.show();
+        sessionStorage.setItem("packing_selected", "true");
+        updateSummary();
+    });
+
+    $noOption.click(function () {
+        $noOption.addClass("selected");
+        $yesOption.removeClass("selected");
+        $supplySection.hide();
+        sessionStorage.setItem("packing_selected", "false");
+        updateSummary();
+    });
+
+    // ==================== Update Summary Function ===========================
     function updateSummary() {
-        
+
         let totalPrice = 0;
     
-        // Load all base subtotals
+        // Load all base subtotals ===========================
         let storedSubtotal = parseFloat(sessionStorage.getItem("subtotal_pre") || "0");
         let storedSubtotalCustom = parseFloat(sessionStorage.getItem("subtotal_custom") || "0");
     
         let pickupPrice = 0;
         let deliveryPrice = 0;
+        let disposalPrice = parseFloat(sessionStorage.getItem("disposal_price")) || 0;
+        let protectionPrice = 0;
+
+        // Handle Disposal ===========================
+        let disposalDetails = "";
+        if (disposalPrice > 0) {
+            disposalDetails += `
+                <div style="margin-bottom: -18px; font-size: 14px; display: flex; justify-content: space-between; width: 100%;">
+                    <span>Disposal:</span>
+                    <span style="text-align: right;">€${disposalPrice.toFixed(2)}</span>
+                </div><br>`;
+            $("#disposal_label").show().html(disposalDetails);
+        } else {
+            $("#disposal_label").hide();
+        }
+
+        // Handle Protection Plan ===========================
+        let protectionDetails = "";
+        let protectionPlanData = sessionStorage.getItem("protection_plan");
+
+        if (protectionPlanData) {
+            let planDetails = JSON.parse(protectionPlanData);
+            protectionDetails += `
+                <div style="display: flex; justify-content: space-between; width: 100%; font-size: 14px">
+                    <span>Protection Plan: ${planDetails.title}</span>
+                    <span style="text-align: right;">€${planDetails.price.toFixed(2)}/mo</span>
+                </div><br>`;
+            protectionPrice = planDetails.price;
+            $("#protection_plan_label").show().html(protectionDetails);
+        } else {
+            $("#protection_plan_label").hide();
+        }
     
-        // Handle Pickup
+        // Handle Pickup ===========================
         let pickupDetails = sessionStorage.getItem("pickup_date");
         if (pickupDetails && pickupDetails !== "null") {
             let pickupData = JSON.parse(pickupDetails);
@@ -291,7 +294,7 @@ jQuery(document).ready(function ($) {
             }).show();
         }
     
-        // Handle Delivery (Only if packing_yes is selected)
+        // Handle Delivery (Only if packing_yes is selected) ===========================
         const packingSelected = sessionStorage.getItem("packing_selected") === "true"; // Check session storage for packing selection
     
         let deliveryDetails = sessionStorage.getItem("delivery_date");
@@ -321,9 +324,9 @@ jQuery(document).ready(function ($) {
         }
     
         // Final Total Calculation
-        totalPrice = storedSubtotal + storedSubtotalCustom + pickupPrice + deliveryPrice;
+        totalPrice = storedSubtotal + storedSubtotalCustom + pickupPrice + deliveryPrice + disposalPrice + protectionPrice;
     
-        // Update UI and session
+        // Update UI and session ===========================
         $("#subtotal, #total_due").text(`€${totalPrice.toFixed(2)}`);
         sessionStorage.setItem("subtotal", totalPrice.toFixed(2));
         sessionStorage.setItem("total_due", totalPrice.toFixed(2));
@@ -336,7 +339,7 @@ jQuery(document).ready(function ($) {
         } else {
             $("#collection_address, #collection_label").hide();
         }
-    }               
+    }
 
     // ========================== ON PAGE LOAD ==========================
     showStep(1);                  // Start from step 1
@@ -515,10 +518,10 @@ jQuery(document).ready(function ($) {
     
         totalPrice += subtotalCustom + storedSubtotalPickup + storedSubtotalDelivery;
     
-        // Display updated details
-        document.getElementById("price_details").innerHTML = details;
-        document.getElementById("subtotal").innerText = `€${totalPrice.toFixed(2)}`;
-        document.getElementById("total_due").innerText = `€${totalPrice.toFixed(2)}`;
+        // Display updated details using jQuery
+        $("#price_details").html(details);
+        $("#subtotal").text(`€${totalPrice.toFixed(2)}`);
+        $("#total_due").text(`€${totalPrice.toFixed(2)}`);
     
         // Save in sessionStorage
         sessionStorage.setItem("price_details", details);
