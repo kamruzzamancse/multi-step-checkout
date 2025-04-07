@@ -134,24 +134,23 @@
 <!-- ✅ JavaScript -->
 
 <script>
-
-let hasLoadedPriceDetails = false; // 🔒 Guard flag
+let hasLoadedPriceDetails = false; // ✅ Guard flag to prevent re-execution
 
 function loadPriceDetailsIntoTable() {
-    if (hasLoadedPriceDetails) return; // ✅ Prevent duplicate execution
+    if (hasLoadedPriceDetails) return;
     hasLoadedPriceDetails = true;
 
     const tbody = document.getElementById("price_table_body");
+    if (!tbody) return;
     tbody.innerHTML = "";
 
     // =================== Showing Predefined Items ===================
     const prePriceHTML = sessionStorage.getItem("price_details");
-    if (prePriceHTML && prePriceHTML.trim() !== "") {
+    if (prePriceHTML?.trim()) {
         const tempDiv = document.createElement("div");
         tempDiv.innerHTML = prePriceHTML;
 
         const rows = tempDiv.querySelectorAll(".storage-item-row");
-
         rows.forEach(row => {
             const leftText = row.querySelector("div span")?.textContent.trim();
             const priceText = row.querySelector("span[style*='min-width']")?.textContent.trim();
@@ -176,17 +175,15 @@ function loadPriceDetailsIntoTable() {
 
     // =================== Showing Custom Items ===================
     const customPriceHTML = sessionStorage.getItem("custom_items");
-    if (customPriceHTML && customPriceHTML.trim() !== "") {
+    if (customPriceHTML?.trim()) {
         try {
             const customItems = JSON.parse(customPriceHTML);
-            if (Array.isArray(customItems) && customItems.length > 0) {
-                customItems.forEach(item => {
-                    const { name, cubicFeet, price } = item;
-
+            if (Array.isArray(customItems) && customItems.length) {
+                customItems.forEach(({ name, cubicFeet, price }) => {
                     const tr = document.createElement("tr");
                     tr.innerHTML = `
                         <td><strong>${name}</strong></td>
-                        <td>${cubicFeet} cu ft</td>
+                        <td>${cubicFeet} cu. ft.</td>
                         <td>€${price.toFixed(2)}/mo</td>
                     `;
                     tbody.appendChild(tr);
@@ -199,26 +196,26 @@ function loadPriceDetailsIntoTable() {
 
     // =================== Showing Pickup Details ===================
     const pickupPriceHTML = sessionStorage.getItem("subtotal_pickup");
-    const pickupPrice = parseFloat(pickupPriceHTML);
-    if (!isNaN(pickupPrice) && pickupPrice > 0) {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-            <td><strong>Pickup (Scheduled Arrival)</strong></td>
-            <td></td>
-            <td>€${pickupPrice.toFixed(2)}</td>
-        `;
-        tbody.appendChild(tr);
+    if (pickupPriceHTML?.trim()) {
+        const cleanedPickup = pickupPriceHTML.replace(/[^\d.-]/g, '');
+        const pickupPrice = parseFloat(cleanedPickup);
+
+        if (!isNaN(pickupPrice) && pickupPrice > 0) {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td><strong>Pickup (Scheduled Arrival)</strong></td>
+                <td></td>
+                <td>€${pickupPrice.toFixed(2)}</td>
+            `;
+            tbody.appendChild(tr);
+        }
     }
 
-   // =================== Showing Supply Details ===================
+    // =================== Showing Supply Details ===================
     const deliveryPriceHTML = sessionStorage.getItem("subtotal_delivery");
-    console.log("Delivery Price HTML:", deliveryPriceHTML);
-
-    // If there's no value in sessionStorage or it's an empty string, skip
-    if (deliveryPriceHTML) {
-        const cleanedPrice = deliveryPriceHTML.replace(/[^\d.-]/g, ''); // Clean up any unwanted characters
+    if (deliveryPriceHTML?.trim()) {
+        const cleanedPrice = deliveryPriceHTML.replace(/[^\d.-]/g, '');
         const deliveryPrice = parseFloat(cleanedPrice);
-        console.log("Parsed Delivery Price:", deliveryPrice);
 
         if (!isNaN(deliveryPrice) && deliveryPrice > 0) {
             const tr = document.createElement("tr");
@@ -228,14 +225,10 @@ function loadPriceDetailsIntoTable() {
                 <td>€${deliveryPrice.toFixed(2)}</td>
             `;
             tbody.appendChild(tr);
-        } else {
-            console.log("No valid delivery price found.");
         }
-    } else {
-        console.log("No delivery price found in sessionStorage.");
     }
-
 }
+
 
 // Update charges summary based on subtotal
 function updateStyledChargesSummary() {
