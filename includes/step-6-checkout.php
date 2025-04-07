@@ -227,6 +227,49 @@ function loadPriceDetailsIntoTable() {
             tbody.appendChild(tr);
         }
     }
+
+    // =================== Showing Disposal Details ===================
+    const disposalPriceHTML = sessionStorage.getItem("disposal_price");
+    if (disposalPriceHTML?.trim()) {
+        const cleanedDisposal = disposalPriceHTML.replace(/[^\d.-]/g, '');
+        const disposalPrice = parseFloat(cleanedDisposal);
+
+        if (!isNaN(disposalPrice) && disposalPrice > 0) {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td><strong>Disposal Fee</strong></td>
+                <td></td>
+                <td>€${disposalPrice.toFixed(2)}</td>
+            `;
+            tbody.appendChild(tr);
+        }
+    }
+
+    // =================== Showing Protection Plan ===================
+    const protectionPriceHTML = sessionStorage.getItem("protection_plan");
+    if (protectionPriceHTML?.trim()) {
+        const cleanedProtection = protectionPriceHTML.replace(/[^\d.-]/g, '');
+        const protectionPrice = parseFloat(cleanedProtection);
+
+        let title = "";
+        if (protectionPrice === 25) {
+            title = "Protection Plan - Premium";
+        } else if (protectionPrice === 15) {
+            title = "Protection Plan - Standard";
+        }
+
+        if (title) {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td><strong>${title}</strong></td>
+                <td></td>
+                <td>€${protectionPrice.toFixed(2)}</td>
+            `;
+            tbody.appendChild(tr);
+        }
+    }
+
+
 }
 
 
