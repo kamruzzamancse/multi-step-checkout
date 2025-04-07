@@ -76,7 +76,6 @@
       width:100%;
       padding: 0;
   }
-
   .pro_delivery_warper{
       width: 100%;
       display: flex;
