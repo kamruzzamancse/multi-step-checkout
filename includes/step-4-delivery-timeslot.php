@@ -2,7 +2,7 @@
 <div class="step" id="step-4">
   <!-- Packing Materials Section -->
   <div class="packing-materials-section">
-    <h3>Would you like packing materials?</h3>
+    <h2 class="pro_heading2 mb-3">Would you like packing materials?</h2>
     <p>We’ll send you enough to pack everything you want to store.</p>
 
     <div class="packing-options">
@@ -20,7 +20,7 @@
 
   <!-- Hidden by default, controlled via JS -->
   <div id="supply_timeslot_section" style="display: block;">
-    <h2>Supply Appointment</h2>
+    <h2 class="pro_heading2 mb-2">Supply Appointment</h2>
     <div class="pro_delivery">
       <div class="pro_delivery_warper">
         <div id="date_time_picker" class="pro_Delivery_col">

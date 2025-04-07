@@ -3,7 +3,7 @@
     <div class="pro_row">
         <div class="pro_col">
             <img src="https://cdn-icons-png.flaticon.com/512/4797/4797387.png" alt="png" width="70">
-            <h3 class="mt-2 mb-3">Address & Details</h3>
+            <h3 class="mt-2 mb-3 pro_heading2">Address & Details</h3>
             <h6><b>Tell us where to collect your stuff from</b></h6>
         </div>
     </div>

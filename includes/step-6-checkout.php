@@ -4,7 +4,7 @@
     <div class="pro_container">
         <div class="pro_row checkout_wraper">
             <div class="pro_col_60 left-section">
-                <h2>Your Booking Summary</h2>
+                <h2 class="pro_heading2 pb-3">Your Booking Summary</h2>
                 <p>Enter your email and payment information to secure your appointment.</p>
 
                 <!-- Booking Summary Table -->
