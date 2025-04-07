@@ -71,20 +71,6 @@
   </div>
 </div>
 
-<script>
-    document.getElementById("flexibleArrival_1").addEventListener("click", function() {
-        document.getElementById("timeSlots_1").style.display = "none";
-        this.classList.add("pro_selected"); // Fixed class name
-        document.getElementById("scheduledArrival_1").classList.remove("pro_selected");
-    });
-
-    document.getElementById("scheduledArrival_1").addEventListener("click", function() {
-        document.getElementById("timeSlots_1").style.display = "block";
-        this.classList.add("pro_selected"); // Fixed class name
-        document.getElementById("flexibleArrival_1").classList.remove("pro_selected");
-    });
-</script>
-
 <style>
   .pro_delivery{
       width:100%;
@@ -166,8 +152,8 @@
 
 /* ================= */
 .pro_calendar { 
-  width: 100%;
-  max-width: 100%;
+  width: fit-content;
+  max-width: 350px;
   background-color: white;
   border: 1px solid #ddd;
   border-radius: 12px;
@@ -177,6 +163,7 @@
 }
 
 .pro_calendar_header {
+  background: #23aca5;
   color: white;
   padding: 12px;
   text-align: center;
@@ -188,16 +175,16 @@
 }
 
 .pro_calendar_header button {
-  background: #fff;
-  color: #04a799 !important;
-  border: none !important;
-  outline: none !important;
+  background: #23aca5;
+  color: #23aca5;
+  color: #04a799;
+  border: none;
+  outline: none;
   padding: 5px 10px;
   font-size: 18px;
   border-radius: 6px;
   cursor: pointer;
 }
-#month-year{color: #04a799;}
 
 .calendar-days, .calendar-dates {
   display: grid;
@@ -206,21 +193,14 @@
   padding: 10px;
   gap: 5px;
 }
-.calendar-days{padding-bottom: 0;}
 
 .calendar-days div {
-  width: 100%;
-  font-weight: 400;
-  color: gray;
-  border: 1px solid #ddd;
-  padding: 5px 2px;
-  border-radius: 3px;
+  font-weight: bold;
+  color: #333;
 }
-.calendar-dates {
-  padding-top: 5px;
-}
+
 .calendar-dates div {
-  padding: 6px 10px;
+  padding: 10px;
   border: 1px solid #ddd;
   border-radius: 6px;
   cursor: pointer;
