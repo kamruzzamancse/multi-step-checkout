@@ -102,17 +102,41 @@
         align-items: center;
         justify-content: center;
     }
-    .footer_price_summary_wrapper #footer_price_summary{
+    /* .footer_price_summary_wrapper #footer_price_summary{
         width: fit-content;
         max-width: 320px;
         height: calc(100vh - 80px);
         overflow-y: scroll;
+    } */
+    .collectionSetails{
+        width: 100%;
+        height: fit-content;
     }
+    
     .pro-pulldown-window_active {
          transform: translateY(0%) !important;
          z-index: 9990 !important;
     }
 
+    @media (min-width: 576px) and (max-width: 1024px) {
+    .footer_price_summary_wrapper #footer_price_summary {
+        width: 100% ;
+        max-width: 520px ;
+        height: calc(100vh - 100px);
+        overflow-y: scroll;
+        scrollbar-width: none; 
+        -ms-overflow-style: none; 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .footer_price_summary_wrapper #footer_price_summary::-webkit-scrollbar {
+        display: none;
+    }
+    .footer_price_summary_wrapper #footer_price_summary .price-summary{
+        width: 100% !important;
+    }
+}
     @media(min-width: 1024px) {
         #checkout-footer {
             display: none;

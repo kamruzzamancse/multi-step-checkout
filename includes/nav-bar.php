@@ -53,7 +53,7 @@ nav .box_warpper {
 nav .box_warpper .box {
   width: 60px;
   height: 60px;
-  border: 2px solid var(--lightGray) !important;
+  /* border: 2px solid var(--lightGray) !important; */
   background-color: #fff;
   padding: 15px;
   border-radius: 4px;
@@ -86,7 +86,8 @@ nav .box_warpper .line {
   align-items: center;
 }
 .box-container .box {
-  background-color: red;
+  border: 2px solid var(--lightGray);
+  background-color: #fff;
 }
 nav .box_warpper .box-container:nth-child(1) .box {
   background-color: var(--praimary);

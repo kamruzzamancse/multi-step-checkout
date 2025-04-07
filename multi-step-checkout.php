@@ -83,6 +83,11 @@ add_shortcode( 'multi_step_checkout', 'msc_custom_checkout_form' );
 ?>
 
 <style>
+    /* #multi-step-checkout *{
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    } */
     #multi-step-checkout {
     width: 100%;
     max-width: 1440px;

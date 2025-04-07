@@ -90,7 +90,7 @@
 
     <!-- Navigation Buttons -->
     <div class="prev_next_button">
-        <button class="next-step">Continue</button>
+        <button class="next-step pro_protection_contimue">Continue</button>
     </div>
 </div>
 
