@@ -89,7 +89,7 @@
     <br>
 
     <!-- Navigation Buttons -->
-    <div class="prev_next_button">
+    <div class="prev_next_button prev_next_button_wrapper">
         <button class="next-step pro_protection_contimue">Continue</button>
     </div>
 </div>
@@ -282,7 +282,15 @@ jQuery(document).ready(function ($) {
     margin-top: 15px;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
+}
+.prev_next_button_wrapper{
+    display: flex;
+    justify-content: center;
+}
+.prev_next_button_wrapper .pro_protection_contimue{
+    width: 100% !important;
 }
 @media (max-width: 576px) {
     #disposal-options, #protection-plans {
