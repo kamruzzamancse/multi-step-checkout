@@ -117,26 +117,31 @@
          transform: translateY(0%) !important;
          z-index: 9990 !important;
     }
+    #pro_footer_price{
+        font-size: 18px;
+        font-weight: 500;
+        color: #fff;
+    }
 
     @media (min-width: 576px) and (max-width: 1024px) {
-    .footer_price_summary_wrapper #footer_price_summary {
-        width: 100% ;
-        max-width: 520px ;
-        height: calc(100vh - 100px);
-        overflow-y: scroll;
-        scrollbar-width: none; 
-        -ms-overflow-style: none; 
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        .footer_price_summary_wrapper #footer_price_summary {
+            width: 100% ;
+            max-width: 520px ;
+            height: calc(100vh - 100px);
+            overflow-y: scroll;
+            scrollbar-width: none; 
+            -ms-overflow-style: none; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .footer_price_summary_wrapper #footer_price_summary::-webkit-scrollbar {
+            display: none;
+        }
+        .footer_price_summary_wrapper #footer_price_summary .price-summary{
+            width: 100% !important;
+        }
     }
-    .footer_price_summary_wrapper #footer_price_summary::-webkit-scrollbar {
-        display: none;
-    }
-    .footer_price_summary_wrapper #footer_price_summary .price-summary{
-        width: 100% !important;
-    }
-}
     @media(min-width: 1024px) {
         #checkout-footer {
             display: none;
