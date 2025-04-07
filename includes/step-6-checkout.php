@@ -59,6 +59,7 @@
                         </table>
                         <p class="delivery-note">Delivery Fee applies at delivery <span title="This will be added later.">❔</span></p>
                     </div>
+                    
                 </div>
             </div>
 
@@ -268,25 +269,65 @@ function loadPriceDetailsIntoTable() {
             tbody.appendChild(tr);
         }
     }
-
-
 }
 
 
 // Update charges summary based on subtotal
 function updateStyledChargesSummary() {
-    const subtotalStr = sessionStorage.getItem("subtotal");
-    const subtotal = parseFloat(subtotalStr) || 0;
+    let oneTimeSubtotal = 0;
+    let monthlySubtotal = 0;
 
-    const oneTimeSubtotal = subtotal * 0.3;
-    const monthlySubtotal = subtotal * 0.7;
+    // Helper: Safely parse numeric values from strings like "€25.00"
+    const parseValue = val => parseFloat(val?.toString().replace(/[^\d.-]/g, '')) || 0;
 
+    // One-Time Charges
+    oneTimeSubtotal += parseValue(sessionStorage.getItem("subtotal_pickup"));
+    oneTimeSubtotal += parseValue(sessionStorage.getItem("subtotal_delivery"));
+    oneTimeSubtotal += parseValue(sessionStorage.getItem("disposal_price"));
+
+    // Protection Plan (monthly)
+    monthlySubtotal += parseValue(sessionStorage.getItem("protection_plan"));
+
+    // Predefined Monthly Items
+    const predefinedHTML = sessionStorage.getItem("price_details");
+    if (predefinedHTML?.trim()) {
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = predefinedHTML;
+
+        const priceSpans = tempDiv.querySelectorAll("span[style*='min-width']");
+        priceSpans.forEach(span => {
+            const price = parseValue(span.textContent);
+            if (price > 0) {
+                monthlySubtotal += price;
+            }
+        });
+    }
+
+    // Custom Items
+    const customItemsJSON = sessionStorage.getItem("custom_items");
+    if (customItemsJSON?.trim()) {
+        try {
+            const customItems = JSON.parse(customItemsJSON);
+            if (Array.isArray(customItems)) {
+                customItems.forEach(item => {
+                    if (!isNaN(item.price)) {
+                        monthlySubtotal += parseFloat(item.price);
+                    }
+                });
+            }
+        } catch (err) {
+            console.error("Invalid JSON in custom_items:", err);
+        }
+    }
+
+    // HST Calculations
     const oneTimeHST = +(oneTimeSubtotal * 0.13).toFixed(2);
     const monthlyHST = +(monthlySubtotal * 0.13).toFixed(2);
 
     const oneTimeTotal = oneTimeSubtotal + oneTimeHST;
     const monthlyTotal = monthlySubtotal + monthlyHST;
 
+    // DOM Updates
     document.getElementById("oneTimeSubtotal").innerText = `€${oneTimeSubtotal.toFixed(2)}`;
     document.getElementById("monthlySubtotal").innerText = `€${monthlySubtotal.toFixed(2)}`;
     document.getElementById("oneTimeHST").innerText = `€${oneTimeHST.toFixed(2)}`;
@@ -294,9 +335,11 @@ function updateStyledChargesSummary() {
     document.getElementById("oneTimeTotal").innerText = `€${oneTimeTotal.toFixed(2)}`;
     document.getElementById("monthlyTotal").innerText = `€${monthlyTotal.toFixed(2)}`;
 
+    // Store for later use (like payment processing)
     sessionStorage.setItem("hst", (oneTimeHST + monthlyHST).toFixed(2));
     sessionStorage.setItem("total_due", (oneTimeTotal + monthlyTotal).toFixed(2));
 }
+
 
 // ✅ Right-side panel render
 function renderBookingDetailsRightSide() {
