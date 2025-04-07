@@ -116,12 +116,12 @@ add_shortcode( 'multi_step_checkout', 'msc_custom_checkout_form' );
     flex-wrap: wrap !important;
     }
     .pro_col_70{
-    width:100% !important;
+    width:70% !important;
     }
     .pro_col_30{
-        display: none !important;
+        width: 30% !important;
     }
-}
+
 @media (min-width: 576px) and (max-width: 768px) {
     #mainWarpper{
     width: 100% !important;
@@ -132,6 +132,8 @@ add_shortcode( 'multi_step_checkout', 'msc_custom_checkout_form' );
     .pro_col_70{
     width:100% !important;
     }
+
+}
     @media (min-width: 576px) and (max-width: 992px) {
         #mainWarpper{
         width: 100% !important;
