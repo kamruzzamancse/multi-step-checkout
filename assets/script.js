@@ -47,8 +47,15 @@ jQuery(document).ready(function ($) {
 
     // ========================== NEXT BUTTON ==========================
     $('.next-step').click(function () {
+        // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+        let boxes = document.querySelectorAll(".box");
+        let miniBoxes = document.querySelectorAll(".miniBox");
+        let lines = document.querySelectorAll(".line");
 
         if (currentStep === 1) {
+            lines[0].style.backgroundColor = '#00a899';
+            boxes[1].style.backgroundColor = '#00a899';
+
              // Validation check before proceeding
             let subtotalPre = parseFloat(sessionStorage.getItem("subtotal_pre")) || 0;
             let subtotalCustom = parseFloat(sessionStorage.getItem("subtotal_custom")) || 0;
@@ -60,6 +67,8 @@ jQuery(document).ready(function ($) {
         }
 
         if (currentStep === 2) {
+            lines[1].style.backgroundColor = '#00a899';
+            boxes[2].style.backgroundColor = '#00a899';
             if (!validateAddressForm()) {
                 return; // Stop progression if address is invalid
             }
@@ -67,10 +76,14 @@ jQuery(document).ready(function ($) {
         }
 
         if (currentStep === 3) {
+            lines[2].style.backgroundColor = '#00a899';
+            boxes[3].style.backgroundColor = '#00a899';
             savePickupDetails(); // Save pickup info before moving forward
         }
 
         if (currentStep === 4) {
+            lines[3].style.backgroundColor = '#00a899';
+            boxes[4].style.backgroundColor = '#00a899';
             saveDeliveryDetails(); // Save Delivery info before moving forward
         }
 
@@ -543,3 +556,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+
+// ====navigator steps====
+

@@ -53,7 +53,7 @@ nav .box_warpper {
 nav .box_warpper .box {
   width: 60px;
   height: 60px;
-  border: 2px solid var(--lightGray) !important;
+  /* border: 2px solid var(--lightGray) !important; */
   background-color: #fff;
   padding: 15px;
   border-radius: 4px;
@@ -86,7 +86,8 @@ nav .box_warpper .line {
   align-items: center;
 }
 .box-container .box {
-  background-color: red;
+  border: 2px solid var(--lightGray);
+  background-color: #fff;
 }
 nav .box_warpper .box-container:nth-child(1) .box {
   background-color: var(--praimary);
@@ -99,7 +100,26 @@ nav .box_warpper .box-container:nth-child(1) .box {
   text-align: center;
   font-weight: bold;
 }
-
+@media (max-width: 576px) {
+  nav .box_warpper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+  nav .box_warpper .box {
+    width: 50px;
+    height: 50px;
+    margin: 0;
+  }
+  nav .box_warpper .line {
+    width: 60px;
+    height: 2px;
+  }
+  .box-label{
+    font-size: 10px !important;
+  }
+}
 </style>
 
 <script>

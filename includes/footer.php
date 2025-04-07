@@ -10,9 +10,11 @@
     <!-- =======hidden pull down===== -->
      <div id="pro_pullDown_window" >
         <!-- ====footer_price_summary==== -->
-        <div id="footer_price_summary">
-            <?php include( plugin_dir_path(__FILE__) . 'price-summary.php'); ?>
-        </div>
+         <div class="footer_price_summary_wrapper">
+             <div id="footer_price_summary">
+                 <?php include( plugin_dir_path(__FILE__) . 'price-summary.php'); ?>
+             </div>
+         </div>
      </div>
 </div>
 
@@ -51,6 +53,9 @@
     .pro_button:hover {
         background-color: #1d958f;
     }
+    .pro_button.active{
+        background-color: #1d958f;
+    }
     #pro_pullDown_arrow{
         width: fit-content;
         padding: 5px 30px;
@@ -61,8 +66,13 @@
         position: absolute;
         top: -15px;
         left: 50%;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
         transform: translateX(-50%);
         z-index: 9991;
+    }
+    #pro_pullDown_arrow.active_btn{
+        background-color: #00776d5e;
     }
     #pro_pullDown_arrow_down{
         display: none;
@@ -72,22 +82,61 @@
     }
     #pro_pullDown_window{
         width: 100%;
-        height: calc(100vh - 79px);
+        height: 100%;
+        min-height: 100vh;
         background-color: #1d958f;
         position: absolute;
-        bottom: 80px !important;
+        bottom: 79px !important;
         left: 0;
         z-index: 9990;
         /* display: none;  */
-        transform: translateY(120%);
+        transform: translateY(130%);
         transition: transform 0.3s ease-in-out;
         z-index: -1;
     }
+    .footer_price_summary_wrapper{
+        width: 100%;
+        height: 100%;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    /* .footer_price_summary_wrapper #footer_price_summary{
+        width: fit-content;
+        max-width: 320px;
+        height: calc(100vh - 80px);
+        overflow-y: scroll;
+    } */
+    .collectionSetails{
+        width: 100%;
+        height: fit-content;
+    }
+    
     .pro-pulldown-window_active {
          transform: translateY(0%) !important;
          z-index: 9990 !important;
     }
 
+    @media (min-width: 576px) and (max-width: 1024px) {
+    .footer_price_summary_wrapper #footer_price_summary {
+        width: 100% ;
+        max-width: 520px ;
+        height: calc(100vh - 100px);
+        overflow-y: scroll;
+        scrollbar-width: none; 
+        -ms-overflow-style: none; 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .footer_price_summary_wrapper #footer_price_summary::-webkit-scrollbar {
+        display: none;
+    }
+    .footer_price_summary_wrapper #footer_price_summary .price-summary{
+        width: 100% !important;
+    }
+}
     @media(min-width: 1024px) {
         #checkout-footer {
             display: none;
@@ -117,8 +166,10 @@
         });
         // Add event listener to the arrow to toggle its visibility
         document.getElementById("pro_pullDown_arrow").addEventListener("click", function () {
+
             const arrowDown = document.getElementById("pro_pullDown_arrow_down");
             const arrowUp = document.getElementById("pro_pullDown_arrow_Up");
+            document.getElementById("pro_pullDown_arrow").classList.toggle("active_btn");
             // Toggle the visibility of the arrows
             const isArrowUpVisible = window.getComputedStyle(arrowUp).display !== "none";
             if (isArrowUpVisible) {

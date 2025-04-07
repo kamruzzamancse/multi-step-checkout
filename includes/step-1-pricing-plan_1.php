@@ -4,7 +4,7 @@
 
     <div class="pro_col">
         <section class="buildPlan">
-            <h2>Build Your Storage Plan</h2>
+            <h2 class="buildPlan_title">Build Your Storage Plan</h2>
             <p>Book now, pay later. You will not be charged until your Pickup appointment.</p>
             <div class="note">
                 <p><b> 💵 LIMITED-TIME PROMO: </b>: Get 2 Months of FREE Storage for a Storagehotel Large Box!</p>
@@ -90,14 +90,12 @@
                                 <div class="product-image">
                                     <?php echo $product->get_image(); ?>
                                 </div>
-    
                                 <!-- Product Info -->
                                 <div class="product-info">
                                     <strong><?php echo esc_html($product->get_name()); ?></strong>
                                     <p><?php echo $product->get_short_description(); ?></p>
                                     <p class="price">€<?php echo esc_html($product->get_price()); ?> /month</p>
                                 </div>
-    
                                 <!-- Quantity Selector -->
                                 <div class="product-quantity">
                                     <button class="qty-btn minus" onclick="updateQuantity(this, -1)">-</button>
@@ -109,20 +107,19 @@
                         </div>
                         <?php
                     }
-                    echo '</div>'; // Close grid container
+                    echo '</div> </br>'; // Close grid container
                 }
             }
             ?>
         </div>
     </div>
-
     <!-- ======custom items====== -->
     <div class="pro_row">
         <div class="pro_col ">
             <section id="CustomItems">
                 <div class="pro_row">
-                    <div class=" CustomItem mt-4">
-                        <h2 class="p-0 m-0 mb-3" >Custom Items</h2>
+                    <div class=" CustomItem">
+                        <h2 class="p-0 m-0 mb-3 pt-3" >Custom Items</h2>
                         <p class="m-0 mb-4">Don't see your item above? Enter the dimensions of your item below to create a custom item! <b>from $5/month!</b> </p>
                         <p class="m-0 mb-4">
                             Please review our <a href="#">FAQ page</a> to know what you can store.
@@ -293,7 +290,7 @@
 
 <style>
 
-.buildPlan h2 {
+.buildPlan h2.buildPlan_title {
     font-size: 28px;
     padding: 10px 0;
     font-weight: 700;
@@ -454,6 +451,9 @@
 #CustomItems {
     width: 100%;
     max-width: 600px;
+    background-color: #00A899;
+    display: block;
+    padding: 20px;
 }
 
 /* Responsive Styles */

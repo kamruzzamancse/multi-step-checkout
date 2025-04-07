@@ -13,16 +13,16 @@
             </div>
             
             <div id="arrival_window" class="pro_col">
-                <h6>Select an arrival window</h6>
+                <h6><b>Select an arrival window</b></h6>
         
                 <div class="option" id="flexibleArrival">
-                    <strong>Flexible Arrival</strong> <span class="calendar-price">Free</span>
+                    <strong class="arival_title">Flexible Arrival</strong> <span class="calendar-price">Free</span>
                     <p>Receive a 3-hour arrival window the day before your appointment.
                     The earliest possible arrival is at 7 AM and the latest possible arrival is at 3 PM.</p>
                 </div>
         
                 <div class="option" id="scheduledArrival">
-                    <strong>Scheduled Arrival</strong> <span class="calendar-price">$29</span>
+                    <strong class="arival_title">Scheduled Arrival</strong> <span class="calendar-price">$29</span>
                     <p>Select a set arrival window. Limited availability.</p>
                 </div>
         
@@ -64,6 +64,11 @@
         width: 100%;
         display: flex;
         gap:30px;
+    }
+    .arival_title{
+        font-weight: 900 !important;
+        font-family: var(--JosefinSlab) !important;
+        font-size: 18px !important;
     }
 /* Calendar Container */
 .ui-datepicker {

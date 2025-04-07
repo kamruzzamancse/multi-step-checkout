@@ -6,9 +6,10 @@
   --Cardo: Cardo;
   --JosefinSlab: Josefin Slab;
 }
-/* * {
-  font-family: "Cormorant", sans-serif;
-} */
+* {
+  box-sizing: border-box;
+  /* font-family: "Cormorant", sans-serif; */
+}
 body{background-color: rgba(240, 238, 234, 0.979);}
 article {
   margin: 0;
@@ -29,8 +30,9 @@ input[type="number"] {
 
 .pro_row {
   width: 100%;
+  height: fit-content;
   padding: 0;
-  /* background-color: #00a89a3b; */
+  /* background-color: #00776d5e; */
 }
 .pro_col{
   padding: 0;

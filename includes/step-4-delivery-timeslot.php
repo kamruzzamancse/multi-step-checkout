@@ -32,13 +32,13 @@
         
                 <!-- *****an conflict would be happening here, so I will just comment it out***** -->
                 <div class="option" id="flexibleArrival flexibleArrival_1">
-                    <strong>Flexible Arrival</strong> <span class="calendar-price-1">Free</span>
+                    <strong class="arival_title">Flexible Arrival</strong> <span class="calendar-price-1">Free</span>
                     <p>Receive a 3-hour arrival window the day before your appointment.
                     The earliest possible arrival is at 7 AM and the latest possible arrival is at 3 PM.</p>
                 </div>
         
                 <div class="option" id="scheduledArrival_1">
-                    <strong>Scheduled Arrival</strong> <span class="calendar-price-1">$29</span>
+                    <strong class="arival_title">Scheduled Arrival</strong> <span class="calendar-price-1">$29</span>
                     <p>Select a set arrival window. Limited availability.</p>
                 </div>
         
@@ -62,13 +62,13 @@
 <script>
     document.getElementById("flexibleArrival_1").addEventListener("click", function() {
         document.getElementById("timeSlots_1").style.display = "none";
-        this.classList.add("selected");
+        this.classList.add("pro_selected"); // Fixed class name
         document.getElementById("scheduledArrival_1").classList.remove("pro_selected");
     });
 
     document.getElementById("scheduledArrival_1").addEventListener("click", function() {
         document.getElementById("timeSlots_1").style.display = "block";
-        this.classList.add("selected");
+        this.classList.add("pro_selected"); // Fixed class name
         document.getElementById("flexibleArrival_1").classList.remove("pro_selected");
     });
 </script>
@@ -232,8 +232,9 @@
   background-color: #23aca5;
   color: white;
 }
-
-
+.selectable.selected:hover{
+  background-color: #23aca5 !important;
+}
 
 
 @media (max-width: 768px) {
@@ -301,7 +302,12 @@ function renderFixedCalendar() {
   }
 
   document.querySelectorAll('.calendar-dates div.selectable').forEach(day => {
+
     day.addEventListener('click', () => {
+      document.querySelectorAll('.calendar-dates div.selectable').forEach(el => {
+        el.classList.remove('selected');
+      });
+      // Add to the clicked one
       day.classList.toggle('selected');
     });
   });

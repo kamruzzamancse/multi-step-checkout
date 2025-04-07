@@ -83,6 +83,11 @@ add_shortcode( 'multi_step_checkout', 'msc_custom_checkout_form' );
 ?>
 
 <style>
+    /* #multi-step-checkout *{
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    } */
     #multi-step-checkout {
     width: 100%;
     max-width: 1440px;
@@ -137,7 +142,7 @@ add_shortcode( 'multi_step_checkout', 'msc_custom_checkout_form' );
             display: none !important;
         }
     }
-    @media (min-width: 576px) and (max-width: 768px) {
+    @media (min-width: 576px) and (max-width: 992px) {
         #mainWarpper{
         width: 100% !important;
         display: flex !important;
