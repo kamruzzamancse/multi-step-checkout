@@ -1,6 +1,8 @@
 <!-- Step 3: Collection Timeslot -->
 <div class="step" id="step-3">
-    <h2>Pickup Appointment</h2>
+
+    <h2 class="pro_heading2 mb-3">Pickup Timeslot</h2>
+
     <div class="pro_pickup">
         <div class="pro_picup_warper">
             <div id="date_time_picker" class="pro_picup_col">

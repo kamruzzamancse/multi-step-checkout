@@ -1,6 +1,6 @@
 <!-- Step 5: Protection Plan -->
 <div class="step" id="step-5">
-    <h2>Do you have any items to dispose of?</h2>
+    <h2 class="pro_heading2 mb-3">Do you have any items to dispose of?</h2>
     <p>Use our disposal service and check one more thing off of your to-do list.</p>
     
     <!-- Disposal Options -->
@@ -48,7 +48,7 @@
     <br><br>
 
     <!-- Protection Plan Selection -->
-    <h2>Add a protection plan?</h2>
+    <h2 class="pro_heading2 mb-3">Add a protection plan?</h2>
     <p>Choose how much coverage you need.</p>
     
     <div id="protection-plans" class="product-grid">
