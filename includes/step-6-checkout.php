@@ -96,11 +96,11 @@
                         <h3>Email & Payment</h3>
                         <form id="checkout-form">
                             <label>Email *</label>
-                            <input type="email" required>
+                            <input type="email" id="client_email" required>
 
                             <label>Card number</label>
                             <div class="card-input">
-                                <input type="text" placeholder="Card number" required>
+                                <input type="text" id="client_card" placeholder="Card number" required>
                                 <button type="button" class="autofill-btn">Autofill link</button>
                             </div>
 
@@ -116,7 +116,7 @@
 
                             <p class="tos">By clicking Reserve Smart Storage, you are agreeing to Clutter’s <a href="#">Terms of Use</a> and to receive SMS messages related to your appointment.</p>
 
-                            <button type="submit" class="submit-booking" disabled>Submit Booking</button>
+                            <button type="submit" id="submit_booking" class="submit-booking" disabled>Submit Booking</button>
                             <p class="note">You won’t be charged until your Pickup appointment</p>
                         </form>
 
@@ -125,6 +125,7 @@
                             <div>💬 No-risk booking: you can<br>cancel your free reservation online.</div>
                         </div>
                     </div>
+
                 </div>
             </div>
 
@@ -271,7 +272,6 @@ function loadPriceDetailsIntoTable() {
     }
 }
 
-
 // Update charges summary based on subtotal
 function updateStyledChargesSummary() {
     let oneTimeSubtotal = 0;
@@ -361,6 +361,46 @@ document.addEventListener("DOMContentLoaded", () => {
     loadPriceDetailsIntoTable();
     updateStyledChargesSummary();
     renderBookingDetailsRightSide(); // ✅ Right-side content rendering
+});
+
+// Validation for Email and Card
+document.addEventListener("DOMContentLoaded", function () {
+    const emailInput = document.getElementById("client_email");
+    const cardInput = document.getElementById("client_card");
+    const submitButton = document.getElementById("submit_booking");
+    const form = document.getElementById("checkout-form");
+
+    function validateFields() {
+        const email = emailInput.value.trim();
+        const card = cardInput.value.trim();
+
+        const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        const isCardValid = card.length >= 12; // Simplified check
+
+        submitButton.disabled = !(isEmailValid && isCardValid);
+    }
+
+    emailInput.addEventListener("input", validateFields);
+    cardInput.addEventListener("input", validateFields);
+
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const email = emailInput.value.trim();
+        const card = cardInput.value.trim();
+
+        if (!email || !card) {
+            alert("Please fill in all required fields.");
+            return;
+        }
+
+        // Simulate form submission (you'd call an API here)
+        console.log("Booking submitted with:");
+        console.log("Email:", email);
+        console.log("Card:", card);
+
+        alert("✅ Booking submitted successfully!");
+    });
 });
 
 </script>

@@ -152,11 +152,17 @@ jQuery(document).ready(function ($) {
         showStep(currentStep);
     });
     
-    $(document).on("click", "#boxLast", function(e) {
+    $(document).on("click", "#boxLast", function (e) {
         e.preventDefault();
+    
         currentStep = 6;
-        showStep(currentStep);
-    });
+        showStep(currentStep); // Show the correct section
+    
+        // 🧠 Populate the Booking Summary table & totals
+        loadPriceDetailsIntoTable();
+        updateStyledChargesSummary();
+        renderBookingDetailsRightSide();
+    });    
     
     // ==================== Disposal Selection Handling ========================
     $(".disposal-option").click(function () {
