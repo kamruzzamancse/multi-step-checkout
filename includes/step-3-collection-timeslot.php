@@ -1,42 +1,49 @@
 <!-- Step 3: Collection Timeslot -->
 <div class="step" id="step-3">
+
     <h2 class="pro_heading2 mb-3">Pickup Timeslot</h2>
+
     <div class="pro_pickup">
-        <div class=" pro_picup_warper">
+        <div class="pro_picup_warper">
             <div id="date_time_picker" class="pro_picup_col">
+                
                 <label for="collection_timeslot">Select a Collection Date:</label>
                 <input type="text" id="collection_timeslot" name="collection_timeslot" readonly>
                 
                 <div class="prev_next_button">
                     <button class="next-step">Continue</button>
-                </div> 
+                </div>
+
             </div>
             
             <div id="arrival_window" class="pro_col">
-                <h6><b>Select an arrival window</b></h6>
-        
-                <div class="option" id="flexibleArrival">
-                    <strong class="arival_title">Flexible Arrival</strong> <span class="calendar-price">Free</span>
-                    <p>Receive a 3-hour arrival window the day before your appointment.
-                    The earliest possible arrival is at 7 AM and the latest possible arrival is at 3 PM.</p>
-                </div>
-        
-                <div class="option" id="scheduledArrival">
-                    <strong class="arival_title">Scheduled Arrival</strong> <span class="calendar-price">$29</span>
-                    <p>Select a set arrival window. Limited availability.</p>
-                </div>
-        
-                <div class="time-slots" id="timeSlots">
-                    <div class="time-slot" data-time="07:00-08:00">07:00-08:00</div>
-                    <div class="time-slot" data-time="08:00-09:00">08:00-09:00</div>
-                    <div class="time-slot" data-time="09:00-10:00">09:00-10:00</div>
-                    <div class="time-slot" data-time="10:00-11:00">10:00-11:00</div>
-                    <div class="time-slot" data-time="11:00-12:00">11:00-12:00</div>
-                    <div class="time-slot" data-time="12:00-01:00">12:00-01:00</div>
-                    <div class="time-slot" data-time="01:00-02:00">01:00-02:00</div>
-                    <div class="time-slot" data-time="02:00-03:00">02:00-03:00</div>
+                <div id="arrival_window_inner" style="display:none">
+                    <h6><b>Select an arrival window</b></h6>
+            
+                    <div class="option" id="flexibleArrival">
+                        <strong class="arrival-title">Flexible Arrival</strong> <span class="calendar-price">Free</span>
+                        <p>Receive a 3-hour arrival window the day before your appointment.
+                        The earliest possible arrival is at 7 AM and the latest possible arrival is at 3 PM.</p>
+                    </div>
+            
+                    <div class="option" id="scheduledArrival">
+                        <strong class="arrival-title">Scheduled Arrival</strong> <span class="calendar-price">$29</span>
+                        <p>Select a set arrival window. Limited availability.</p>
+                    </div>
+            
+                    <div class="time-slots" id="timeSlots">
+                        <div class="time-slot" data-time="07:00-08:00">07:00-08:00</div>
+                        <div class="time-slot" data-time="08:00-09:00">08:00-09:00</div>
+                        <div class="time-slot" data-time="09:00-10:00">09:00-10:00</div>
+                        <div class="time-slot" data-time="10:00-11:00">10:00-11:00</div>
+                        <div class="time-slot" data-time="11:00-12:00">11:00-12:00</div>
+                        <div class="time-slot" data-time="12:00-01:00">12:00-01:00</div>
+                        <div class="time-slot" data-time="01:00-02:00">01:00-02:00</div>
+                        <div class="time-slot" data-time="02:00-03:00">02:00-03:00</div>
+                    </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
@@ -65,7 +72,7 @@
         display: flex;
         gap:30px;
     }
-    .arival_title{
+    .arrival-title{
         font-weight: 900 !important;
         font-family: var(--JosefinSlab) !important;
         font-size: 18px !important;
@@ -238,16 +245,6 @@
     font-size: 12px;
     color: #777;
     margin-top: 4px;
-}
-
-/* Styling for "FREE" and Prices */
-.price-label:contains("FREE") {
-    color: #29a399;
-    font-weight: bold;
-}
-
-.price-label:not(:contains("FREE")) {
-    color: #333;
 }
 
 @media (max-width: 768px) {

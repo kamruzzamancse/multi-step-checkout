@@ -111,37 +111,29 @@ add_shortcode( 'multi_step_checkout', 'msc_custom_checkout_form' );
         z-index: 999;
     }
     #mainWarpper{
-        width: 100% !important;
-        display: flex !important;
-        flex-wrap: nowrap !important;
-        gap: 70px;
+    width: 100% !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
     }
     .pro_col_70{
-        width:70% !important;
-        padding: 0 !important;
+    width:70% !important;
     }
     .pro_col_30{
-        width:30% !important;
+        width: 30% !important;
     }
-    
-    #price-summary-wrapper.pro_col_30{
-        position: sticky;
-        top: 170px;
-        padding: 0 ;
+
+@media (min-width: 576px) and (max-width: 768px) {
+    #mainWarpper{
+    width: 100% !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 20px;
     }
-    @media (max-width: 576px) {
-        #mainWarpper{
-        width: 100% !important;
-        display: flex !important;
-        flex-wrap: wrap !important;
-        }
-        .pro_col_70{
-        width:100% !important;
-        }
-        .pro_col_30{
-            display: none !important;
-        }
+    .pro_col_70{
+    width:100% !important;
     }
+
+}
     @media (min-width: 576px) and (max-width: 992px) {
         #mainWarpper{
         width: 100% !important;

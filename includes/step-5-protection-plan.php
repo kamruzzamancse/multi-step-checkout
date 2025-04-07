@@ -94,132 +94,6 @@
     </div>
 </div>
 
-<!-- JavaScript for Selection Handling -->
-<script>
-jQuery(document).ready(function ($) {
-    // Track disposal price to avoid multiple additions
-    let disposalPriceStored = parseFloat(sessionStorage.getItem("disposal_price")) || 0;
-
-    // ✅ Disposal Selection Handling
-    $(".disposal-option").click(function () {
-        $(".disposal-option").removeClass("selected");
-        $(this).addClass("selected");
-
-        let disposalName = $(this).data("name");
-        let disposalPrice = parseFloat($(this).data("price")) || 0;
-
-        if (disposalName.toLowerCase() === "not now") {
-            if (sessionStorage.getItem("disposal_price")) {
-                sessionStorage.removeItem("disposal_price"); // Remove price from session
-                disposalPriceStored = 0; // Reset disposal price
-            }
-        } else {
-            if (disposalPriceStored === 0) {
-                sessionStorage.setItem("disposal_price", disposalPrice);
-                disposalPriceStored = disposalPrice; // Store new disposal price
-            }
-        }
-
-        updateSummary(false); // Do not update subtotal and total due
-    });
-
-    // ✅ Protection Plan Selection Handling
-    $(".protection-option").click(function () {
-        $(".protection-option").removeClass("selected");
-        $("#skip-protection").prop("checked", false);
-        $(this).addClass("selected");
-
-        let planDetails = {
-            title: $(this).data("name"),
-            price: parseFloat($(this).data("price")) || 0
-        };
-
-        sessionStorage.setItem("protection_plan", JSON.stringify(planDetails));
-        updateSummary(false); // Do not update subtotal and total due
-    });
-
-    // ✅ Skip Protection Plan Handling
-    $("#skip-protection").change(function () {
-        $(".protection-option").removeClass("selected");
-        sessionStorage.removeItem("protection_plan");
-        updateSummary(false); // Do not update subtotal and total due
-    });
-
-    // ✅ Update Summary Function
-    function updateSummary(updateTotals = true) {
-        let subtotal = 0;
-        let details = "";
-
-        // ✅ Load and display storage price details
-        if (sessionStorage.getItem("price_details")) {
-            details += sessionStorage.getItem("price_details");
-            subtotal += parseFloat(sessionStorage.getItem("subtotal")) || 0;
-        }
-
-        // ✅ Load and display disposal price if selected
-        let disposalPrice = parseFloat(sessionStorage.getItem("disposal_price")) || 0;
-        if (disposalPrice > 0) {
-            details += `<strong>Disposal:</strong> £${disposalPrice.toFixed(2)} <br>`;
-            subtotal += disposalPrice;
-            $("#disposal_label").css("display", "block");  // Ensure it's visible
-        } else {
-            $("#disposal_label").css("display", "none");
-        }
-
-        // ✅ Load and display protection plan if selected
-        let protectionPlanData = sessionStorage.getItem("protection_plan");
-        if (protectionPlanData) {
-            let planDetails = JSON.parse(protectionPlanData);
-            details += `<strong>Protection Plan:</strong> ${planDetails.title} - £${planDetails.price.toFixed(2)}/mo <br>`;
-            subtotal += planDetails.price;
-            $("#protection_plan_label").css("display", "block");  // Ensure it's visible
-        } else {
-            $("#protection_plan_label").css("display", "none");
-        }
-
-        // ✅ Load and display collection address
-        /* let savedAddress = sessionStorage.getItem("collection_address");
-        if (savedAddress && savedAddress.trim() !== "") {
-            $("#collection_address").text(savedAddress).css("display", "block");
-            $("#collection_label").css("display", "block");
-        } else {
-            $("#collection_address, #collection_label").css("display", "none");
-        } */
-
-        // ✅ Load and display pickup details
-       /*  let pickupDetails = sessionStorage.getItem("pickup_date");
-        if (pickupDetails) {
-            let pickupData = JSON.parse(pickupDetails);
-            $("#pickup_label").css("display", "block");
-            $("#pickup_date").text(`${pickupData.date} (${pickupData.time})`);
-        } else {
-            $("#pickup_label").css("display", "none");
-        } */
-
-        // ✅ Update price summary UI
-        $("#price_details").html(details);
-
-        // ✅ Update subtotal and total due only if updateTotals is true
-        if (updateTotals) {
-            $("#subtotal").text(`£${subtotal.toFixed(2)}`);
-            $("#total_due").text(`£${subtotal.toFixed(2)}`);
-
-            // Save updated values in session storage
-            sessionStorage.setItem("subtotal", subtotal.toFixed(2));
-            sessionStorage.setItem("total_due", subtotal.toFixed(2));
-        }
-    }
-
-    // ✅ Ensure Summary Updates on Page Load
-    updateSummary(false); // Do not update subtotal and total due on page load
-
-    // ✅ Next Button Click Event
-    $(".next-step").click(function () {
-        updateSummary(true); // Update subtotal and total due on "Next" button click
-    });
-});
-</script>
-
 <!-- CSS for Styling -->
 <style>
 #disposal-options, #protection-plans {
@@ -228,7 +102,6 @@ jQuery(document).ready(function ($) {
     gap: 20px;
     margin-bottom: 20px;
 }
-
 
 .option-container {
     display: flex;
@@ -273,10 +146,6 @@ jQuery(document).ready(function ($) {
     height: 100% !important;
     object-fit:fill;
 }
-
-/* .product-info {
-    
-} */
 
 .skip-option {
     margin-top: 15px;
