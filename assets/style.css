@@ -194,6 +194,10 @@ input[type="number"] {
   cursor: pointer;
 }
 
+.pro_row .CustomItem {
+  margin-top: 20px;
+}
+
 /*add by kamruzzaman*/
 
 

@@ -127,7 +127,7 @@
                     if (strtolower($category) === 'box') {
                         echo '<div class="pro_text"><p><strong>Already have your own boxes?</strong> Add them as Custom Items below!</p></div>';
                     }                    
-                    echo '</div>'; // Close grid container
+                    echo '</div><br>'; // Close grid container
                 }
             }
             ?>
@@ -139,7 +139,7 @@
         <div class="pro_col ">
             <section id="CustomItems">
                 <div class="pro_row">
-                    <div class=" CustomItem mt-4">
+                    <div class="CustomItem mt-4">
                         <h2 class="p-0 m-0 mb-3" >Custom Items</h2>
                         <p class="m-0 mb-4">Don't see your item above? Enter the dimensions of your item below to create a custom item! <b>from $5/month!</b> </p>
                         <p class="m-0 mb-4">

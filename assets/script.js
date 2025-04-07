@@ -402,6 +402,7 @@ jQuery(document).ready(function ($) {
         dateFormat: "yy-mm-dd",
         minDate: 0,
         onSelect: function (selectedDateC) {
+            $("#arrival_window_inner").css("display", "block");
             // Save the details when a date is selected
             savePickupDetails();
         }
@@ -469,6 +470,7 @@ jQuery(document).ready(function ($) {
         dateFormat: "yy-mm-dd",
         minDate: 0,
         onSelect: function (selectedDate) {
+            $("#arrival_window_inner1").css("display", "block");
             // Save the details when a date is selected
             saveDeliveryDetails();
         }

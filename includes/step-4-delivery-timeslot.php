@@ -33,34 +33,39 @@
         </div>
 
         <div id="arrival_window" class="pro_col">
-          <h6><b>Select an arrival window</b></h6>
+          
+          <div id="arrival_window_inner1" style="display:none">
+              <h6><b>Select an arrival window</b></h6>
 
-          <div class="option_1" id="flexibleArrival_1" style="position: relative;">
-            <strong>Flexible Arrival</strong>
-            <span class="calendar-price-1">Free</span>
-            <p>Receive a 3-hour arrival window the day before your appointment.
-              The earliest possible arrival is at 7 AM and the latest possible arrival is at 3 PM.
-            </p>
-          </div>
+              <div class="option_1" id="flexibleArrival_1" style="position: relative;">
+                <strong>Flexible Arrival</strong>
+                <span class="calendar-price-1">Free</span>
+                <p>Receive a 3-hour arrival window the day before your appointment.
+                  The earliest possible arrival is at 7 AM and the latest possible arrival is at 3 PM.
+                </p>
+              </div>
 
-          <div class="option_1" id="scheduledArrival_1" style="position: relative;">
-            <strong>Scheduled Arrival</strong>
-            <span class="calendar-price-1">$29</span>
-            <p>Select a set arrival window. Limited availability.</p>
-          </div>
+              <div class="option_1" id="scheduledArrival_1" style="position: relative;">
+                <strong>Scheduled Arrival</strong>
+                <span class="calendar-price-1">$29</span>
+                <p>Select a set arrival window. Limited availability.</p>
+              </div>
 
-          <div class="time-slots-1" id="timeSlots_1">
-            <div class="time-slot-1" data-time="07:00-08:00">07:00-08:00</div>
-            <div class="time-slot-1" data-time="08:00-09:00">08:00-09:00</div>
-            <div class="time-slot-1" data-time="09:00-10:00">09:00-10:00</div>
-            <div class="time-slot-1" data-time="10:00-11:00">10:00-11:00</div>
-            <div class="time-slot-1" data-time="11:00-12:00">11:00-12:00</div>
-            <div class="time-slot-1" data-time="12:00-01:00">12:00-01:00</div>
-            <div class="time-slot-1" data-time="01:00-02:00">01:00-02:00</div>
-            <div class="time-slot-1" data-time="02:00-03:00">02:00-03:00</div>
-          </div>
+              <div class="time-slots-1" id="timeSlots_1">
+                <div class="time-slot-1" data-time="07:00-08:00">07:00-08:00</div>
+                <div class="time-slot-1" data-time="08:00-09:00">08:00-09:00</div>
+                <div class="time-slot-1" data-time="09:00-10:00">09:00-10:00</div>
+                <div class="time-slot-1" data-time="10:00-11:00">10:00-11:00</div>
+                <div class="time-slot-1" data-time="11:00-12:00">11:00-12:00</div>
+                <div class="time-slot-1" data-time="12:00-01:00">12:00-01:00</div>
+                <div class="time-slot-1" data-time="01:00-02:00">01:00-02:00</div>
+                <div class="time-slot-1" data-time="02:00-03:00">02:00-03:00</div>
+              </div>
 
+            </div>
+            
         </div>
+        
       </div>
     </div>
   </div>

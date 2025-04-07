@@ -132,74 +132,109 @@
 </div>
 
 <!-- ✅ JavaScript -->
+
 <script>
+
+let hasLoadedPriceDetails = false; // 🔒 Guard flag
+
 function loadPriceDetailsIntoTable() {
-  const prePriceHTML = sessionStorage.getItem("price_details");
-  const customPriceHTML = sessionStorage.getItem("custom_items");
-  const tbody = document.getElementById("price_table_body");
-  tbody.innerHTML = "";
+    if (hasLoadedPriceDetails) return; // ✅ Prevent duplicate execution
+    hasLoadedPriceDetails = true;
 
-  // === Handle Predefined Items ===
-  if (!prePriceHTML || prePriceHTML.trim() === "") {
-    tbody.innerHTML += `<tr><td colspan="3" style="padding: 12px;">No items in your booking.</td></tr>`;
-  } else {
-    const tempDiv = document.createElement("div");
-    tempDiv.innerHTML = prePriceHTML;
+    const tbody = document.getElementById("price_table_body");
+    tbody.innerHTML = "";
 
-    const rows = tempDiv.querySelectorAll(".storage-item-row");
+    // =================== Showing Predefined Items ===================
+    const prePriceHTML = sessionStorage.getItem("price_details");
+    if (prePriceHTML && prePriceHTML.trim() !== "") {
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = prePriceHTML;
 
-    rows.forEach(row => {
-      const leftText = row.querySelector("div span")?.textContent.trim(); // "1 x Skis/Snowboard"
-      const priceText = row.querySelector("span[style*='min-width']")?.textContent.trim(); // "€25.00/mo"
+        const rows = tempDiv.querySelectorAll(".storage-item-row");
 
-      if (!leftText || !priceText) return;
+        rows.forEach(row => {
+            const leftText = row.querySelector("div span")?.textContent.trim();
+            const priceText = row.querySelector("span[style*='min-width']")?.textContent.trim();
 
-      const match = leftText.match(/^(\d+)\s*x\s*(.+)$/);
-      if (!match) return;
+            if (!leftText || !priceText) return;
 
-      const quantity = match[1];
-      const itemName = match[2];
+            const match = leftText.match(/^(\d+)\s*x\s*(.+)$/);
+            if (!match) return;
 
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td><strong>${itemName}</strong></td>
-        <td>${quantity}</td>
-        <td>${priceText}</td>
-      `;
-      tbody.appendChild(tr);
-    });
-  }
+            const quantity = match[1];
+            const itemName = match[2];
 
-  // === Handle Custom Items ===
-  if (!customPriceHTML || customPriceHTML.trim() === "") {
-    tbody.innerHTML += `<tr><td colspan="3" style="padding: 12px;">No custom items added.</td></tr>`;
-    return;
-  }
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td><strong>${itemName}</strong></td>
+                <td>${quantity}</td>
+                <td>${priceText}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
 
-  let customItems;
-  try {
-    customItems = JSON.parse(customPriceHTML);
-  } catch (e) {
-    console.error("Invalid JSON in custom_items", e);
-    return;
-  }
+    // =================== Showing Custom Items ===================
+    const customPriceHTML = sessionStorage.getItem("custom_items");
+    if (customPriceHTML && customPriceHTML.trim() !== "") {
+        try {
+            const customItems = JSON.parse(customPriceHTML);
+            if (Array.isArray(customItems) && customItems.length > 0) {
+                customItems.forEach(item => {
+                    const { name, cubicFeet, price } = item;
 
-  if (!Array.isArray(customItems) || customItems.length === 0) {
-    tbody.innerHTML += `<tr><td colspan="3" style="padding: 12px;">No custom items found.</td></tr>`;
-    return;
-  }
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td><strong>${name}</strong></td>
+                        <td>${cubicFeet} cu ft</td>
+                        <td>€${price.toFixed(2)}/mo</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        } catch (e) {
+            console.error("Invalid JSON in custom_items", e);
+        }
+    }
 
-  customItems.forEach(item => {
-    const { name, cubicFeet, price } = item;
+    // =================== Showing Pickup Details ===================
+    const pickupPriceHTML = sessionStorage.getItem("subtotal_pickup");
+    const pickupPrice = parseFloat(pickupPriceHTML);
+    if (!isNaN(pickupPrice) && pickupPrice > 0) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td><strong>Pickup (Scheduled Arrival)</strong></td>
+            <td></td>
+            <td>€${pickupPrice.toFixed(2)}</td>
+        `;
+        tbody.appendChild(tr);
+    }
 
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td><strong>${name}</strong></td>
-      <td>${cubicFeet} cu ft</td>
-      <td>€${price.toFixed(2)}</td>
-    `;
-    tbody.appendChild(tr);
-  });
+   // =================== Showing Supply Details ===================
+    const deliveryPriceHTML = sessionStorage.getItem("subtotal_delivery");
+    console.log("Delivery Price HTML:", deliveryPriceHTML);
+
+    // If there's no value in sessionStorage or it's an empty string, skip
+    if (deliveryPriceHTML) {
+        const cleanedPrice = deliveryPriceHTML.replace(/[^\d.-]/g, ''); // Clean up any unwanted characters
+        const deliveryPrice = parseFloat(cleanedPrice);
+        console.log("Parsed Delivery Price:", deliveryPrice);
+
+        if (!isNaN(deliveryPrice) && deliveryPrice > 0) {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td><strong>Supply (Scheduled Arrival)</strong></td>
+                <td></td>
+                <td>€${deliveryPrice.toFixed(2)}</td>
+            `;
+            tbody.appendChild(tr);
+        } else {
+            console.log("No valid delivery price found.");
+        }
+    } else {
+        console.log("No delivery price found in sessionStorage.");
+    }
+
 }
 
 // Update charges summary based on subtotal

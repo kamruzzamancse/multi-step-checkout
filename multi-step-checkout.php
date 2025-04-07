@@ -78,10 +78,10 @@ add_shortcode( 'multi_step_checkout', 'msc_custom_checkout_form' );
 
 <style>
 #multi-step-checkout {
-width: 100%;
-max-width: 1440px;
-padding: 0 10px;
-margin: 0 auto;
+    width: 100%;
+    max-width: 1440px;
+    padding: 0 10px;
+    margin: 0 auto;
 }
 #multi-step-checkout p{
     font-size:16px;
