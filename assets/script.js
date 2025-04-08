@@ -222,11 +222,13 @@ jQuery(document).ready(function ($) {
     const $yesOption = $("#packing_yes");
     const $noOption = $("#packing_no");
     const $supplySection = $("#supply_timeslot_section");
+    const $nextButton = $("#next_button");
 
     $yesOption.click(function () {
         $yesOption.addClass("selected");
         $noOption.removeClass("selected");
         $supplySection.show();
+        $nextButton.hide();
         sessionStorage.setItem("packing_selected", "true");
         updateSummary();
     });
@@ -235,6 +237,7 @@ jQuery(document).ready(function ($) {
         $noOption.addClass("selected");
         $yesOption.removeClass("selected");
         $supplySection.hide();
+        $nextButton.show();
         sessionStorage.setItem("packing_selected", "false");
         updateSummary();
     });

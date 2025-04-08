@@ -82,21 +82,6 @@
                         </div>
                     </div>
     
-                    <!-- Address Type (Optional) -->
-                    <!-- <div class="pro_Row">
-                        <div class="pro_col" style="display: none;">
-                            <div class="inline-label ls-select form-group">
-                                <label class="label">Address type *</label>
-                                <select class="form-select valid mb-0 not-empty form-control" id="address_type">
-                                    <option value="">Address type *</option>
-                                    <option value="Home">Home</option>
-                                    <option value="Work">Work</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div> -->
-    
                     <!-- Special Instructions -->
                     <div class="pro_Row">
                         <div class="pro_col">

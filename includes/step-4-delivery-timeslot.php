@@ -18,6 +18,10 @@
     </div>
   </div>
 
+  <div class="prev_next_button" id="next_button" style="display: none; margin-top: 25px">
+    <button class="next-step">Continue</button>
+  </div>
+
   <!-- Hidden by default, controlled via JS -->
   <div id="supply_timeslot_section" style="display: block;">
     <h2>Supply Appointment</h2>
