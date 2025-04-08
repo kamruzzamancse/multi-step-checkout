@@ -40,6 +40,13 @@ function msc_enqueue_scripts() {
 
     // Enqueue custom script
     wp_enqueue_script('msc-script', plugin_dir_url(__FILE__) . 'assets/script.js', array('jquery', 'jquery-ui-datepicker'), null, true);
+
+    wp_enqueue_script('msc-checkout', plugin_dir_url(__FILE__) . 'assets/checkout.js', [], null, true);
+
+    wp_localize_script('msc-checkout', 'msc_ajax_obj', [
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce'    => wp_create_nonce('msc_nonce')
+    ]);
 }
 add_action('wp_enqueue_scripts', 'msc_enqueue_scripts');
 
@@ -80,14 +87,13 @@ function msc_custom_checkout_form() {
 }
 
 add_shortcode( 'multi_step_checkout', 'msc_custom_checkout_form' );
+
+// Load Ajax Checkout Handler
+include_once plugin_dir_path(__FILE__) . 'includes/msc-ajax-handler.php';
+
 ?>
 
 <style>
-    /* #multi-step-checkout *{
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    } */
     #multi-step-checkout {
     width: 100%;
     max-width: 1440px;

@@ -116,8 +116,11 @@
                                 <!-- Quantity Selector -->
                                 <div class="product-quantity">
                                     <button class="qty-btn minus" onclick="updateQuantity(this, -1)">-</button>
+
                                     <input type="number" id="product_<?php echo esc_attr($product->get_id()); ?>" min="0" value="0" 
-                                        data-price="<?php echo esc_attr($product->get_price()); ?>" oninput="updateTotal()">
+                                    data-id="<?php echo esc_attr($product->get_id()); ?>" data-name="<?php echo esc_attr($product->get_name()); ?>" 
+                                    data-price="<?php echo esc_attr($product->get_price()); ?>" oninput="updateTotal()" />
+                                    
                                     <button class="qty-btn plus" onclick="updateQuantity(this, 1)">+</button>
                                 </div>
                             </div>

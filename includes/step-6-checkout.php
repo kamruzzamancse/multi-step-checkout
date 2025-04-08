@@ -98,6 +98,9 @@
                             <label>Email *</label>
                             <input type="email" id="client_email" required>
 
+                            <label>Contact Number *</label>
+                            <input type="tel" id="client_phone" name="client_phone" pattern="^\+?[0-9\s\-]{7,15}$" required placeholder="+44 7123 456 789">
+
                             <label>Card number</label>
                             <div class="card-input">
                                 <input type="text" id="client_card" placeholder="Card number" required>
@@ -136,11 +139,8 @@
 <!-- ✅ JavaScript -->
 
 <script>
-let hasLoadedPriceDetails = false; // ✅ Guard flag to prevent re-execution
 
 function loadPriceDetailsIntoTable() {
-    if (hasLoadedPriceDetails) return;
-    hasLoadedPriceDetails = true;
 
     const tbody = document.getElementById("price_table_body");
     if (!tbody) return;
@@ -363,41 +363,47 @@ document.addEventListener("DOMContentLoaded", () => {
     renderBookingDetailsRightSide(); // ✅ Right-side content rendering
 });
 
-// Validation for Email and Card
+// Validation for Email, Card, and Phone
 document.addEventListener("DOMContentLoaded", function () {
     const emailInput = document.getElementById("client_email");
     const cardInput = document.getElementById("client_card");
+    const phoneInput = document.getElementById("client_phone");
     const submitButton = document.getElementById("submit_booking");
     const form = document.getElementById("checkout-form");
 
     function validateFields() {
         const email = emailInput.value.trim();
         const card = cardInput.value.trim();
+        const phone = phoneInput.value.trim();
 
         const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
         const isCardValid = card.length >= 12; // Simplified check
+        const isPhoneValid = /^\+?[0-9\s\-()]{7,}$/.test(phone); // Basic phone number check
 
-        submitButton.disabled = !(isEmailValid && isCardValid);
+        submitButton.disabled = !(isEmailValid && isCardValid && isPhoneValid);
     }
 
     emailInput.addEventListener("input", validateFields);
     cardInput.addEventListener("input", validateFields);
+    phoneInput.addEventListener("input", validateFields);
 
     form.addEventListener("submit", function (e) {
         e.preventDefault();
 
         const email = emailInput.value.trim();
         const card = cardInput.value.trim();
+        const phone = phoneInput.value.trim();
 
-        if (!email || !card) {
+        if (!email || !card || !phone) {
             alert("Please fill in all required fields.");
             return;
         }
 
-        // Simulate form submission (you'd call an API here)
+        // Simulate form submission
         console.log("Booking submitted with:");
         console.log("Email:", email);
         console.log("Card:", card);
+        console.log("Phone:", phone);
 
         alert("✅ Booking submitted successfully!");
     });
@@ -519,7 +525,8 @@ document.addEventListener("DOMContentLoaded", function () {
     margin-top: 0;
 }
 .payment-box input[type="email"],
-.payment-box input[type="text"] {
+.payment-box input[type="text"],
+.payment-box input[type="tel"] {
     width: 100%;
     padding: 10px;
     margin: 5px 0 15px 0;
