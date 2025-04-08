@@ -4,10 +4,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const cardInput = document.getElementById("client_card");
     const submitBtn = document.getElementById("submit_booking");
 
-    // Assume this value is passed from PHP to JS (e.g., via wp_localize_script or inline script)
-    const isUserLoggedIn = msc_ajax_obj.is_user_logged_in === '1';
-
-
     function isValidEmail(email) {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
@@ -25,15 +21,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     submitBtn.addEventListener("click", function (e) {
         e.preventDefault();
-
-        // 🔒 User must be logged in to continue
-        if (!isUserLoggedIn) {
-            alert("❌ You must log in to complete the booking.");
-            const currentUrl = window.location.href;
-            const baseUrl = window.location.origin + "/leonardoemlh";
-            window.location.href = baseUrl + "/login?redirect_to=" + encodeURIComponent(currentUrl);
-            return;
-        }
 
         const email = emailInput.value.trim();
         const phone = phoneInput.value.trim();
@@ -68,17 +55,18 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
             const rawAddress = sessionStorage.getItem("collection_address_checkout");
             if (rawAddress) {
-                collectionAddress = JSON.parse(rawAddress);
+                collectionAddress = JSON.parse(rawAddress); // Parse the structured address
             }
         } catch (err) {
             console.error("❌ Address parsing error:", err);
             alert("Invalid address format.");
-            return;
+            return; // Stop further execution if there's an error parsing the address
         }
 
+        // Ensure the address has the correct structure
         const formattedAddress = {
             billing: collectionAddress,
-            shipping: collectionAddress
+            shipping: collectionAddress // Assuming the shipping address is the same as billing, modify if needed
         };
 
         fetch(msc_ajax_obj.ajax_url, {
@@ -96,10 +84,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 productItems: JSON.stringify(productItems),
                 pickup,
                 delivery,
-                collectionAddress: JSON.stringify(formattedAddress)
+                collectionAddress: JSON.stringify(formattedAddress) // Send the formatted address
             })
         })
-        .then(res => res.text())
+        .then(res => res.text()) // Get raw text
         .then(text => {
             try {
                 const data = JSON.parse(text);

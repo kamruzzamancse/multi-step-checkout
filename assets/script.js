@@ -78,6 +78,13 @@ jQuery(document).ready(function ($) {
         if (currentStep === 3) {
             lines[2].style.backgroundColor = '#00a899';
             boxes[3].style.backgroundColor = '#00a899';
+            var dateInput = $("#collection_timeslot").val();
+            
+            if (!dateInput) {
+                alert("❌ Please select a collection date before continuing.");
+                e.preventDefault();
+                return;
+            }
             savePickupDetails(); // Save pickup info before moving forward
         }
 
@@ -428,7 +435,7 @@ jQuery(document).ready(function ($) {
             // Save the details when a date is selected
             savePickupDetails();
         }
-    });
+    });    
 
     // Arrival Option Selection
     $(document).on("click", ".option", function () {
