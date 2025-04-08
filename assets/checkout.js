@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const card = cardInput.value.trim();
 
         if (!email || !phone || !card || !isValidEmail(email)) {
-            alert("Please enter a valid email, phone and card number.");
+            alert("Please enter a valid email, phone, and card number.");
             return;
         }
 
@@ -63,8 +63,11 @@ document.addEventListener("DOMContentLoaded", function () {
             return; // Stop further execution if there's an error parsing the address
         }
 
-        console.log("Parsed Address: ", collectionAddress); // Verify the parsed object
-
+        // Ensure the address has the correct structure
+        const formattedAddress = {
+            billing: collectionAddress,
+            shipping: collectionAddress // Assuming the shipping address is the same as billing, modify if needed
+        };
 
         fetch(msc_ajax_obj.ajax_url, {
             method: "POST",
@@ -81,7 +84,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 productItems: JSON.stringify(productItems),
                 pickup,
                 delivery,
-                collectionAddress: JSON.stringify(collectionAddress)
+                collectionAddress: JSON.stringify(formattedAddress) // Send the formatted address
             })
         })
         .then(res => res.text()) // Get raw text
@@ -98,6 +101,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.error("❌ Response not valid JSON:", text);
                 alert("❌ Server returned unexpected response. Check console.");
             }
-        })
+        });
     });
 });

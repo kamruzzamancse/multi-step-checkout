@@ -17,7 +17,7 @@ function msc_handle_ajax_checkout() {
     // Validate essential fields
     if (empty($email) || empty($phone) || empty($card) || empty($collection_address)) {
         wp_send_json_error(['message' => 'Email, card number, and address are required.']);
-    }    
+    }
 
     // Make sure WooCommerce is ready
     if (!function_exists('WC') || !WC()->cart) {
@@ -73,7 +73,7 @@ function msc_handle_ajax_checkout() {
         $order->add_product($cart_item['data'], $cart_item['quantity'], ['subtotal' => $cart_item['line_subtotal']]);
     }
 
-    // Ensure the collection address contains both billing and shipping information
+    // Set billing address
     if (isset($collection_address['billing'])) {
         $billing_address = $collection_address['billing'];
 
@@ -86,14 +86,14 @@ function msc_handle_ajax_checkout() {
             'address_2'  => $billing_address['address_line2'] ?? '',
             'city'       => $billing_address['town'] ?? '',
             'postcode'   => $billing_address['postcode'] ?? '',
-            'country'    => 'US', // Ensure to modify based on real country code
-            'state'      => 'CA' // Ensure to modify based on real state code
+            'country'    => 'US',
+            'state'      => 'CA'
         ], 'billing');
     } else {
         wp_send_json_error(['message' => 'Missing billing address information.']);
     }
 
-    // Set shipping address (same as billing address in this case)
+    // Set shipping address
     if (isset($collection_address['shipping'])) {
         $shipping_address = $collection_address['shipping'];
         $order->set_address([
@@ -103,10 +103,13 @@ function msc_handle_ajax_checkout() {
             'address_2'  => $shipping_address['address_line2'] ?? '',
             'city'       => $shipping_address['town'] ?? '',
             'postcode'   => $shipping_address['postcode'] ?? '',
-            'country'    => 'US', // Ensure to modify based on real country code
-            'state'      => 'CA' // Ensure to modify based on real state code
+            'country'    => 'US',
+            'state'      => 'CA'
         ], 'shipping');
     }
+
+    // ✅ Save order now to persist address
+    $order->save();
 
     // Calculate totals & update status
     $order->calculate_totals();
