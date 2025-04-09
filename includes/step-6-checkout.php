@@ -59,6 +59,7 @@
                         </table>
                         <p class="delivery-note">Delivery Fee applies at delivery <span title="This will be added later.">❔</span></p>
                     </div>
+                    
                 </div>
             </div>
 
@@ -95,11 +96,14 @@
                         <h3>Email & Payment</h3>
                         <form id="checkout-form">
                             <label>Email *</label>
-                            <input type="email" required>
+                            <input type="email" id="client_email" required>
+
+                            <label>Contact Number *</label>
+                            <input type="tel" id="client_phone" name="client_phone" pattern="^\+?[0-9\s\-]{7,15}$" required placeholder="+44 7123 456 789">
 
                             <label>Card number</label>
                             <div class="card-input">
-                                <input type="text" placeholder="Card number" required>
+                                <input type="text" id="client_card" placeholder="Card number" required>
                                 <button type="button" class="autofill-btn">Autofill link</button>
                             </div>
 
@@ -115,7 +119,7 @@
 
                             <p class="tos">By clicking Reserve Smart Storage, you are agreeing to Clutter’s <a href="#">Terms of Use</a> and to receive SMS messages related to your appointment.</p>
 
-                            <button type="submit" class="submit-booking" disabled>Submit Booking</button>
+                            <button type="submit" id="submit_booking" class="submit-booking" disabled>Submit Booking</button>
                             <p class="note">You won’t be charged until your Pickup appointment</p>
                         </form>
 
@@ -124,6 +128,7 @@
                             <div>💬 No-risk booking: you can<br>cancel your free reservation online.</div>
                         </div>
                     </div>
+
                 </div>
             </div>
 
@@ -134,11 +139,8 @@
 <!-- ✅ JavaScript -->
 
 <script>
-let hasLoadedPriceDetails = false; // ✅ Guard flag to prevent re-execution
 
 function loadPriceDetailsIntoTable() {
-    if (hasLoadedPriceDetails) return;
-    hasLoadedPriceDetails = true;
 
     const tbody = document.getElementById("price_table_body");
     if (!tbody) return;
@@ -227,23 +229,105 @@ function loadPriceDetailsIntoTable() {
             tbody.appendChild(tr);
         }
     }
-}
 
+    // =================== Showing Disposal Details ===================
+    const disposalPriceHTML = sessionStorage.getItem("disposal_price");
+    if (disposalPriceHTML?.trim()) {
+        const cleanedDisposal = disposalPriceHTML.replace(/[^\d.-]/g, '');
+        const disposalPrice = parseFloat(cleanedDisposal);
+
+        if (!isNaN(disposalPrice) && disposalPrice > 0) {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td><strong>Disposal Fee</strong></td>
+                <td></td>
+                <td>€${disposalPrice.toFixed(2)}</td>
+            `;
+            tbody.appendChild(tr);
+        }
+    }
+
+    // =================== Showing Protection Plan ===================
+    const protectionPriceHTML = sessionStorage.getItem("protection_plan");
+    if (protectionPriceHTML?.trim()) {
+        const cleanedProtection = protectionPriceHTML.replace(/[^\d.-]/g, '');
+        const protectionPrice = parseFloat(cleanedProtection);
+
+        let title = "";
+        if (protectionPrice === 25) {
+            title = "Protection Plan - Premium";
+        } else if (protectionPrice === 15) {
+            title = "Protection Plan - Standard";
+        }
+
+        if (title) {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td><strong>${title}</strong></td>
+                <td></td>
+                <td>€${protectionPrice.toFixed(2)}</td>
+            `;
+            tbody.appendChild(tr);
+        }
+    }
+}
 
 // Update charges summary based on subtotal
 function updateStyledChargesSummary() {
-    const subtotalStr = sessionStorage.getItem("subtotal");
-    const subtotal = parseFloat(subtotalStr) || 0;
+    let oneTimeSubtotal = 0;
+    let monthlySubtotal = 0;
 
-    const oneTimeSubtotal = subtotal * 0.3;
-    const monthlySubtotal = subtotal * 0.7;
+    // Helper: Safely parse numeric values from strings like "€25.00"
+    const parseValue = val => parseFloat(val?.toString().replace(/[^\d.-]/g, '')) || 0;
 
+    // One-Time Charges
+    oneTimeSubtotal += parseValue(sessionStorage.getItem("subtotal_pickup"));
+    oneTimeSubtotal += parseValue(sessionStorage.getItem("subtotal_delivery"));
+    oneTimeSubtotal += parseValue(sessionStorage.getItem("disposal_price"));
+
+    // Protection Plan (monthly)
+    monthlySubtotal += parseValue(sessionStorage.getItem("protection_plan"));
+
+    // Predefined Monthly Items
+    const predefinedHTML = sessionStorage.getItem("price_details");
+    if (predefinedHTML?.trim()) {
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = predefinedHTML;
+
+        const priceSpans = tempDiv.querySelectorAll("span[style*='min-width']");
+        priceSpans.forEach(span => {
+            const price = parseValue(span.textContent);
+            if (price > 0) {
+                monthlySubtotal += price;
+            }
+        });
+    }
+
+    // Custom Items
+    const customItemsJSON = sessionStorage.getItem("custom_items");
+    if (customItemsJSON?.trim()) {
+        try {
+            const customItems = JSON.parse(customItemsJSON);
+            if (Array.isArray(customItems)) {
+                customItems.forEach(item => {
+                    if (!isNaN(item.price)) {
+                        monthlySubtotal += parseFloat(item.price);
+                    }
+                });
+            }
+        } catch (err) {
+            console.error("Invalid JSON in custom_items:", err);
+        }
+    }
+
+    // HST Calculations
     const oneTimeHST = +(oneTimeSubtotal * 0.13).toFixed(2);
     const monthlyHST = +(monthlySubtotal * 0.13).toFixed(2);
 
     const oneTimeTotal = oneTimeSubtotal + oneTimeHST;
     const monthlyTotal = monthlySubtotal + monthlyHST;
 
+    // DOM Updates
     document.getElementById("oneTimeSubtotal").innerText = `€${oneTimeSubtotal.toFixed(2)}`;
     document.getElementById("monthlySubtotal").innerText = `€${monthlySubtotal.toFixed(2)}`;
     document.getElementById("oneTimeHST").innerText = `€${oneTimeHST.toFixed(2)}`;
@@ -251,9 +335,11 @@ function updateStyledChargesSummary() {
     document.getElementById("oneTimeTotal").innerText = `€${oneTimeTotal.toFixed(2)}`;
     document.getElementById("monthlyTotal").innerText = `€${monthlyTotal.toFixed(2)}`;
 
+    // Store for later use (like payment processing)
     sessionStorage.setItem("hst", (oneTimeHST + monthlyHST).toFixed(2));
     sessionStorage.setItem("total_due", (oneTimeTotal + monthlyTotal).toFixed(2));
 }
+
 
 // ✅ Right-side panel render
 function renderBookingDetailsRightSide() {
@@ -275,6 +361,52 @@ document.addEventListener("DOMContentLoaded", () => {
     loadPriceDetailsIntoTable();
     updateStyledChargesSummary();
     renderBookingDetailsRightSide(); // ✅ Right-side content rendering
+});
+
+// Validation for Email, Card, and Phone
+document.addEventListener("DOMContentLoaded", function () {
+    const emailInput = document.getElementById("client_email");
+    const cardInput = document.getElementById("client_card");
+    const phoneInput = document.getElementById("client_phone");
+    const submitButton = document.getElementById("submit_booking");
+    const form = document.getElementById("checkout-form");
+
+    function validateFields() {
+        const email = emailInput.value.trim();
+        const card = cardInput.value.trim();
+        const phone = phoneInput.value.trim();
+
+        const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        const isCardValid = card.length >= 12; // Simplified check
+        const isPhoneValid = /^\+?[0-9\s\-()]{7,}$/.test(phone); // Basic phone number check
+
+        submitButton.disabled = !(isEmailValid && isCardValid && isPhoneValid);
+    }
+
+    emailInput.addEventListener("input", validateFields);
+    cardInput.addEventListener("input", validateFields);
+    phoneInput.addEventListener("input", validateFields);
+
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const email = emailInput.value.trim();
+        const card = cardInput.value.trim();
+        const phone = phoneInput.value.trim();
+
+        if (!email || !card || !phone) {
+            alert("Please fill in all required fields.");
+            return;
+        }
+
+        // Simulate form submission
+        console.log("Booking submitted with:");
+        console.log("Email:", email);
+        console.log("Card:", card);
+        console.log("Phone:", phone);
+
+        alert("✅ Booking submitted successfully!");
+    });
 });
 
 </script>
@@ -393,7 +525,8 @@ document.addEventListener("DOMContentLoaded", () => {
     margin-top: 0;
 }
 .payment-box input[type="email"],
-.payment-box input[type="text"] {
+.payment-box input[type="text"],
+.payment-box input[type="tel"] {
     width: 100%;
     padding: 10px;
     margin: 5px 0 15px 0;
