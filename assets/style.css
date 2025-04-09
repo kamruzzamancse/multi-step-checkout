@@ -272,7 +272,7 @@ a {
   #mainWarpper{
   width: 100% !important;
   display: flex !important;
-  flex-wrap: wrap !important;
+  gap: 50px;
   }
   .pro_col_70{
   width:70% !important;

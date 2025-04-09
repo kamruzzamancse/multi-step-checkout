@@ -114,7 +114,12 @@
     cursor: pointer;
     position: relative;
 }
-
+#disposal-options .option-container{
+    width: 100%;
+}
+#protection-plans .option-container{
+    width: 100%;
+}
 .option-container:hover, .option-container.selected {
     border-color: #007bff;
     background-color: #e6f0ff;

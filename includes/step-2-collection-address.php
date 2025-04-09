@@ -19,7 +19,7 @@
                 <div id="searchResult" class="hidden"></div>
             </div>
             <div id="hiddenField" class="hidden">
-                <form class="pro_Form_hidden">
+                <form class="pro_Form_hidden pro_Row">
                     <div class="pro_Row">
                         <!-- First Name -->
                         <div class="pro_col">
@@ -122,7 +122,7 @@
         flex-direction: column;
         gap: 20px;
     }
-    .pro_Form .pro_Row{
+    .pro_Form_hidden .pro_Row{
         width: 100%;
         display: flex;
         gap:20px;
