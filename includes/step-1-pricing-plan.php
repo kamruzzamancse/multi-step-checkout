@@ -310,6 +310,19 @@
         });
         
     });
+
+    // === Restore Dynamic Product Quantities from sessionStorage ===
+    const savedProducts = JSON.parse(sessionStorage.getItem("product_items")) || [];
+    savedProducts.forEach(product => {
+        const input = document.querySelector(`#product_${product.id}`);
+        if (input) {
+            input.value = product.quantity;
+        }
+    });
+    updateTotal(); // recalculate totals after restoration
+
+    // === Restore Custom Items from sessionStorage ===
+    updateSummary(); // re-render custom items and total
 </script>
 
 <style>

@@ -107,6 +107,102 @@
 
 </div>
 
+<script>
+
+document.querySelectorAll("#step-2 input, #special_instructions").forEach(input => {
+    input.addEventListener("input", saveAddressToSession);
+});
+
+function restoreAddressFromSession() {
+    const saved = sessionStorage.getItem("collection_address_checkout");
+    if (!saved) return;
+
+    const data = JSON.parse(saved);
+
+    document.getElementById("first_name").value = data.first_name || "";
+    document.getElementById("last_name").value = data.last_name || "";
+    document.getElementById("building_name").value = data.building_name || "";
+    document.getElementById("address_line1").value = data.address_line1 || "";
+    document.getElementById("address_line2").value = data.address_line2 || "";
+    document.getElementById("town").value = data.town || "";
+    document.getElementById("postcode").value = data.postcode || "";
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    restoreAddressFromSession(); // Load saved address values on refresh
+});
+
+document.getElementById("special_instructions").value = sessionStorage.getItem("special_instructions") || "";
+document.getElementById("special_instructions").addEventListener("input", function () {
+    sessionStorage.setItem("special_instructions", this.value);
+});
+
+</script>
+
+<script>
+
+    let schoolNames = [
+        "ASKAR KALIBARI SECONDARY SCHOOL AND COLLEGE",
+        "CHHOYGRAM SECONDARY SCHOOL AND COLLEGE",
+        "ADARSHA HIGH SCHOOL AND COLLAGE,MOHONKATHI",
+        "BAGDHA SECONDARY SCHOOL & COLLEGE",
+        "BAHADURPUR NISHIKANTA GAIN GIRL S SCHOOL & COLLEGE",
+        "BARISAL CADET COLLEGE",
+        "MADDHABPASHA CHANDRADIP HIGH SCHOOL AND COLLEGE",
+        "CHANDPASHA HIGH SCHOOL AND COLLEGE",
+        "MASJIDBARI SECONDARY SCHOOL AND COLLEGE",
+        "KASHIPUR GIRLS HIGH SCHOOL & COLLEGE",
+        "PALORDI SCHOOL AND COLLEGE",
+        "HALIMA KHATUN GIRLS SCHOOL & COLLEGE",
+        "SHAHID ZIA ADARSHA GIRLS HIGH SCHOOL",
+        "CHAR ZANGALIA SCHOOL & COLLEGE",
+        "PANGASHIA SCHOOL AND COLLEGE",
+
+    ]
+    function searchSchool() {
+        let input = document.getElementById("searchInput").value.toLowerCase();
+        let searchResult = document.getElementById("searchResult");
+        searchResult.innerHTML = ""; 
+        console.log(input);
+        console.log(searchResult);
+        
+
+        if (input.length < 3) {
+            searchResult.classList.add("hidden");
+        }
+        if (input.length >= 3) {
+            searchResult.classList.remove("hidden");
+            searchResult.style.display = "block";
+            console.log("kaj ki kore");
+            
+        } else {
+            searchResult.classList.add("hidden");
+            searchResult.style.display = "none";
+        }
+
+        let filteredSchools = schoolNames.filter(school => school.toLowerCase().startsWith(input));
+
+        if (filteredSchools.length === 0) {
+            searchResult.innerHTML = "<li>No matching schools found</li>";
+            console.log("not found");
+            
+        } else {
+            filteredSchools.forEach(school => {
+                let li = document.createElement("li");
+                li.textContent = school;
+                searchResult.appendChild(li);
+                console.log("school");
+                
+            });
+        }
+    }
+
+    document.getElementById("enterManually").addEventListener("click", (event) => {
+        document.querySelector("#hiddenField").classList.remove("hidden");
+        event.target.classList.add("hidden");
+    });
+
+</script>
 
 <style>
     #pro_address_form.pro_form{
@@ -166,70 +262,3 @@
 
    
 </style>
-
-
-
-
-<script>
-    let schoolNames = [
-        "ASKAR KALIBARI SECONDARY SCHOOL AND COLLEGE",
-        "CHHOYGRAM SECONDARY SCHOOL AND COLLEGE",
-        "ADARSHA HIGH SCHOOL AND COLLAGE,MOHONKATHI",
-        "BAGDHA SECONDARY SCHOOL & COLLEGE",
-        "BAHADURPUR NISHIKANTA GAIN GIRL S SCHOOL & COLLEGE",
-        "BARISAL CADET COLLEGE",
-        "MADDHABPASHA CHANDRADIP HIGH SCHOOL AND COLLEGE",
-        "CHANDPASHA HIGH SCHOOL AND COLLEGE",
-        "MASJIDBARI SECONDARY SCHOOL AND COLLEGE",
-        "KASHIPUR GIRLS HIGH SCHOOL & COLLEGE",
-        "PALORDI SCHOOL AND COLLEGE",
-        "HALIMA KHATUN GIRLS SCHOOL & COLLEGE",
-        "SHAHID ZIA ADARSHA GIRLS HIGH SCHOOL",
-        "CHAR ZANGALIA SCHOOL & COLLEGE",
-        "PANGASHIA SCHOOL AND COLLEGE",
-
-    ]
-        function searchSchool() {
-            let input = document.getElementById("searchInput").value.toLowerCase();
-            let searchResult = document.getElementById("searchResult");
-            searchResult.innerHTML = ""; 
-            console.log(input);
-            console.log(searchResult);
-            
-
-            if (input.length < 3) {
-                searchResult.classList.add("hidden");
-            }
-            if (input.length >= 3) {
-                searchResult.classList.remove("hidden");
-                searchResult.style.display = "block";
-                console.log("kaj ki kore");
-                
-            } else {
-                searchResult.classList.add("hidden");
-                searchResult.style.display = "none";
-            }
-
-            let filteredSchools = schoolNames.filter(school => school.toLowerCase().startsWith(input));
-
-            if (filteredSchools.length === 0) {
-                searchResult.innerHTML = "<li>No matching schools found</li>";
-                console.log("not found");
-                
-            } else {
-                filteredSchools.forEach(school => {
-                    let li = document.createElement("li");
-                    li.textContent = school;
-                    searchResult.appendChild(li);
-                    console.log("school");
-                    
-                });
-            }
-        }
-
-    document.getElementById("enterManually").addEventListener("click", (event) => {
-        document.querySelector("#hiddenField").classList.remove("hidden");
-        event.target.classList.add("hidden");
-    });
-
-</script>
