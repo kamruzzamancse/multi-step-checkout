@@ -47,7 +47,8 @@ function msc_enqueue_scripts() {
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce' => wp_create_nonce('msc_nonce'),
         'is_user_logged_in' => is_user_logged_in() ? '1' : '0',
-    ]);       
+    ]);  
+         
 }
 add_action('wp_enqueue_scripts', 'msc_enqueue_scripts');
 

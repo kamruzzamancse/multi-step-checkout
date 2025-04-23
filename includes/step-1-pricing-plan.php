@@ -6,7 +6,7 @@
         <section class="buildPlan">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <h2>Build Your Storage Plan</h2>
-                <a href="#" id="step1_clear">Clear</a>
+                <!-- <a href="#" id="step1_clear">Clear</a> -->
             </div>
             <p>Book now, pay later. You will not be charged until your Pickup appointment.</p>
             <div class="note">
