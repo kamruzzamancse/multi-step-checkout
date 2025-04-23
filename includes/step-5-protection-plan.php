@@ -25,6 +25,7 @@
                 $product = wc_get_product(get_the_ID());
                 ?>
                 <div class="option-container disposal-option" 
+                     data-id="<?php echo esc_attr($product->get_id()); ?>"
                      data-name="<?php echo esc_html($product->get_name()); ?>" 
                      data-price="<?php echo esc_html($product->get_price()); ?>">
                     <div class="product-image">
@@ -60,6 +61,7 @@
                 $product = wc_get_product(get_the_ID());
                 ?>
                 <div class="option-container protection-option" 
+                     data-id="<?php echo esc_attr($product->get_id()); ?>"
                      data-name="<?php echo esc_html($product->get_name()); ?>" 
                      data-price="<?php echo esc_html($product->get_price()); ?>">
                     <div class="product-image">
@@ -93,6 +95,65 @@
         <button class="next-step pro_protection_contimue">Continue</button>
     </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // ======== Restore Disposal Selection ========
+    const storedDisposal = sessionStorage.getItem("disposal_selection");
+
+    if (storedDisposal) {
+        try {
+            const disposalData = JSON.parse(storedDisposal);
+            const disposalPrice = disposalData.price;
+
+            // Remove "selected" class from all first
+            document.querySelectorAll(".disposal-option").forEach(option => option.classList.remove("selected"));
+
+            let selector = "";
+
+            if (parseFloat(disposalPrice) === 50) {
+                selector = '.disposal-option[data-name="Yes Please!"]';
+            } else {
+                selector = '.disposal-option[data-name="Not now"]';
+            }
+
+            const selectedOption = document.querySelector(selector);
+            if (selectedOption) {
+                selectedOption.classList.add("selected");
+                selectedOption.dispatchEvent(new Event("click"));
+            }
+        } catch (err) {
+            console.warn("❌ Invalid disposal_selection session data:", err);
+        }
+    }
+
+    // ======== Restore Protection Plan Selection ========
+    const storedPlan = sessionStorage.getItem("protection_plan");
+
+    if (storedPlan) {
+        try {
+            const planData = JSON.parse(storedPlan);
+            const planId = planData.id;
+
+            // Deselect all protection options
+            document.querySelectorAll(".protection-option").forEach(option => option.classList.remove("selected"));
+
+            const selectedPlan = document.querySelector(`.protection-option[data-id="${planId}"]`);
+            if (selectedPlan) {
+                selectedPlan.classList.add("selected");
+                selectedPlan.dispatchEvent(new Event("click"));
+            } else {
+                // If not matched, maybe skip option was chosen
+                document.getElementById("skip-protection").checked = true;
+            }
+        } catch (err) {
+            console.warn("❌ Invalid protection_plan session data:", err);
+        }
+    }
+});
+</script>
+
+
 
 <!-- CSS for Styling -->
 <style>

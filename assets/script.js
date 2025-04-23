@@ -17,10 +17,6 @@ jQuery(document).ready(function ($) {
         }
     }
 
-    
-    // ================= STORAGE PLAN VALIDATION (STEP-1) ===================
-
-
     // ==================== ADDRESS VALIDATION (STEP-2) =====================
     function validateAddressForm() {
         const requiredFields = ['#first_name', '#last_name', '#building_name', '#address_line1', '#town', '#postcode'];
@@ -39,15 +35,9 @@ jQuery(document).ready(function ($) {
         return isValid;
     }
 
-    // ==================== PICKUPDATE VALIDATION (STEP-3) ==================
-    // ==================== MATERIALS VALIDATION (STEP-4) ===================
-    // ==================== PROTECTION VALIDATION (STEP-5) ==================
-    // ==================== CHECKOUT VALIDATION (STEP-6) ====================
-
-
     // ========================== NEXT BUTTON ==========================
     $('.next-step').click(function () {
-        // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
         let boxes = document.querySelectorAll(".box");
         let miniBoxes = document.querySelectorAll(".miniBox");
         let lines = document.querySelectorAll(".line");
@@ -78,9 +68,9 @@ jQuery(document).ready(function ($) {
         if (currentStep === 3) {
             lines[2].style.backgroundColor = '#00a899';
             boxes[3].style.backgroundColor = '#00a899';
-            var dateInput = $("#collection_timeslot").val();
+            var dateInputCollection = $("#collection_timeslot").val();
             
-            if (!dateInput) {
+            if (!dateInputCollection) {
                 alert("❌ Please select a collection date before continuing.");
                 e.preventDefault();
                 return;
@@ -91,6 +81,14 @@ jQuery(document).ready(function ($) {
         if (currentStep === 4) {
             lines[3].style.backgroundColor = '#00a899';
             boxes[4].style.backgroundColor = '#00a899';
+
+            var dateInputSupply = $("#supply_timeslot").val();
+            
+            if (!dateInputSupply) {
+                alert("❌ Please select a Supply date before continuing.");
+                e.preventDefault();
+                return;
+            }
             saveDeliveryDetails(); // Save Delivery info before moving forward
         }
 
@@ -165,28 +163,37 @@ jQuery(document).ready(function ($) {
         currentStep = 6;
         showStep(currentStep); // Show the correct section
     
-        // 🧠 Populate the Booking Summary table & totals
+        // Populate the Booking Summary table & totals
         loadPriceDetailsIntoTable();
         updateStyledChargesSummary();
         renderBookingDetailsRightSide();
-    });    
-    
+    });
+
     // ==================== Disposal Selection Handling ========================
     $(".disposal-option").click(function () {
         $(".disposal-option").removeClass("selected");
         $(this).addClass("selected");
-    
-        let disposalName = ($(this).data("name") || "").trim().toLowerCase();
+
+        let disposalId = $(this).data("id");
+        let disposalName = ($(this).data("name") || "").trim();
         let disposalPrice = parseFloat($(this).data("price")) || 0;
-    
-        if (disposalName === "not now") {
+
+        if (disposalName.toLowerCase() === "not now") {
+            sessionStorage.removeItem("disposal_selection");
             sessionStorage.removeItem("disposal_price");
             disposalPriceStored = 0;
         } else {
+            let disposalDetails = {
+                id: disposalId,
+                title: disposalName,
+                price: disposalPrice,
+                quantity: 1
+            };
+            sessionStorage.setItem("disposal_selection", JSON.stringify(disposalDetails));
             sessionStorage.setItem("disposal_price", disposalPrice);
             disposalPriceStored = disposalPrice;
         }
-    
+
         updateSummary(); // Updates UI summary based on sessionStorage
     });
 
@@ -195,15 +202,17 @@ jQuery(document).ready(function ($) {
         $(".protection-option").removeClass("selected");
         $("#skip-protection").prop("checked", false);
         $(this).addClass("selected");
-
+    
         let planDetails = {
+            id: $(this).data("id"),
             title: $(this).data("name"),
-            price: parseFloat($(this).data("price")) || 0
+            price: parseFloat($(this).data("price")) || 0,
+            quantity: 1
         };
-
+    
         sessionStorage.setItem("protection_plan", JSON.stringify(planDetails));
         updateSummary(); // Do not update subtotal and total due
-    });
+    });    
 
     // ==================== Skip Protection Plan Handling =====================
     $("#skip-protection").change(function () {
@@ -241,6 +250,7 @@ jQuery(document).ready(function ($) {
     });
 
     $noOption.click(function () {
+        sessionStorage.removeItem("delivery_date");
         $noOption.addClass("selected");
         $yesOption.removeClass("selected");
         $supplySection.hide();
@@ -296,17 +306,26 @@ jQuery(document).ready(function ($) {
         // Handle Pickup ===========================
         let pickupDetails = sessionStorage.getItem("pickup_date");
         if (pickupDetails && pickupDetails !== "null") {
-            let pickupData = JSON.parse(pickupDetails);
-            pickupPrice = parseFloat(pickupData.price?.replace(/[^\d.]/g, "") || "0");
-    
+            let parsedPickup = JSON.parse(pickupDetails);
+            let pickupPrice = parseFloat(parsedPickup.price?.replace(/[^\d.]/g, "") || "0");
+
+            let pickupData = {
+                date: parsedPickup.date || '',
+                time: parsedPickup.time || '',
+                price: pickupPrice
+            };
+
+            // Save structured pickup details
+            sessionStorage.setItem("details_pickup", JSON.stringify(pickupData));
+
             // Save individual pickup price
             sessionStorage.setItem("subtotal_pickup", pickupPrice.toFixed(2));
-    
+
             // Display Pickup Info
             $("#pickup_label").show();
             $("#pickup_date").html(`
                 <span>${pickupData.date}, ${pickupData.time}</span>
-                <span>€${pickupPrice.toFixed(2)}</span>
+                <span>€${pickupData.price.toFixed(2)}</span>
             `).css({
                 "display": "flex", 
                 "justify-content": "space-between", 
@@ -325,21 +344,30 @@ jQuery(document).ready(function ($) {
     
         // Handle Delivery (Only if packing_yes is selected) ===========================
         const packingSelected = sessionStorage.getItem("packing_selected") === "true"; // Check session storage for packing selection
-    
+
         let deliveryDetails = sessionStorage.getItem("delivery_date");
-    
+
         if (packingSelected && deliveryDetails && deliveryDetails !== "null") {
-            let deliveryData = JSON.parse(deliveryDetails);
-            deliveryPrice = parseFloat(deliveryData.price?.replace(/[^\d.]/g, "") || "0");
-    
+            let parsedDelivery = JSON.parse(deliveryDetails);
+            let deliveryPrice = parseFloat(parsedDelivery.price?.replace(/[^\d.]/g, "") || "0");
+
+            let deliveryData = {
+                date: parsedDelivery.date || '',
+                time: parsedDelivery.time || '',
+                price: deliveryPrice
+            };
+
+            // Save structured delivery details
+            sessionStorage.setItem("details_delivery", JSON.stringify(deliveryData));
+
             // Save individual delivery price
             sessionStorage.setItem("subtotal_delivery", deliveryPrice.toFixed(2));
-    
+
             // Display Delivery Info
             $("#delivery_label").show();
             $("#delivery_date").html(`
                 <span>${deliveryData.date}, ${deliveryData.time}</span>
-                <span>€${deliveryPrice.toFixed(2)}</span>
+                <span>€${deliveryData.price.toFixed(2)}</span>
             `).css({
                 "display": "flex", 
                 "justify-content": "space-between", 
@@ -351,15 +379,15 @@ jQuery(document).ready(function ($) {
             $("#delivery_label, #delivery_date").hide();
             sessionStorage.setItem("subtotal_delivery", "0");
         }
-    
+
         // Final Total Calculation
         totalPrice = storedSubtotal + storedSubtotalCustom + pickupPrice + deliveryPrice + disposalPrice + protectionPrice;
-    
+
         // Update UI and session ===========================
         $("#subtotal, #total_due").text(`€${totalPrice.toFixed(2)}`);
         sessionStorage.setItem("subtotal", totalPrice.toFixed(2));
         sessionStorage.setItem("total_due", totalPrice.toFixed(2));
-    
+
         // Collection Address
         let savedAddress = sessionStorage.getItem("collection_address");
         if (savedAddress && savedAddress.trim() !== "") {
@@ -368,8 +396,8 @@ jQuery(document).ready(function ($) {
         } else {
             $("#collection_address, #collection_label").hide();
         }
-    }
 
+    }
     // ========================== ON PAGE LOAD ==========================
     showStep(1);                  // Start from step 1
     updateSummary();              // Load stored data
@@ -644,26 +672,6 @@ jQuery(document).ready(function ($) {
         updateTotal();
     };
 
-    /* function updateQuantity(button, change) {
-        const input = $(button).siblings('input[type="number"]');
-        let value = parseInt(input.val()) || 0;
-        value = Math.max(0, value + change);
-        input.val(value);
-    
-        // Save to sessionStorage
-        const productId = input.attr('id');
-        saveQuantityToSession(productId, value);
-    
-        updateTotal();
-    }
-    
-    function saveQuantityToSession(productId, quantity) {
-        let quantities = JSON.parse(sessionStorage.getItem('product_quantities') || '{}');
-        quantities[productId] = quantity;
-        sessionStorage.setItem('product_quantities', JSON.stringify(quantities));
-    } */    
-
-
     // ========================== SAVE ADDRESS TO SESSION ==========================
     function saveAddressToSession() {
         let addressDetailsCheckout = {
@@ -678,6 +686,10 @@ jQuery(document).ready(function ($) {
     
         // Save the address as an object in sessionStorage, not as a comma-separated string
         sessionStorage.setItem("collection_address_checkout", JSON.stringify(addressDetailsCheckout));
+
+        // Save special instructions to sessaion
+        let specialInstructions = document.getElementById("special_instructions").value.trim();
+        sessionStorage.setItem("special_instructions", specialInstructions);
     
         // If you need a simplified version for other purposes
         let addressDetails = {
@@ -691,13 +703,6 @@ jQuery(document).ready(function ($) {
         let formattedAddress = Object.values(addressDetails).filter(value => value !== "").join(', ');
         sessionStorage.setItem("collection_address", formattedAddress);
     }
-
-
-    // ========================== FINAL SAVE ON NEXT CLICK ==========================
-    /* document.querySelector(".next-step").addEventListener("click", function () {
-        saveAddressToSession();
-        updateSummary();
-    }); */
 
 });
 
@@ -720,6 +725,15 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+// ================== CLEAR SESSION FOR ALL STEPS ================================
+
+/* document.getElementById("step1_clear").addEventListener("click", function(e) {
+    e.preventDefault();
+    sessionStorage.removeItem("price_details");
+    sessionStorage.removeItem("product_items");
+    sessionStorage.removeItem("custom_items");
+    updateSummary();
+}); */
 
 // ====navigator steps====
 

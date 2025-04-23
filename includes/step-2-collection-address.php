@@ -108,34 +108,90 @@
 </div>
 
 <script>
+    const rawAddress = sessionStorage.getItem("collection_address_checkout");
+    const specialInstructions = sessionStorage.getItem("special_instructions");
 
-document.querySelectorAll("#step-2 input, #special_instructions").forEach(input => {
-    input.addEventListener("input", saveAddressToSession);
-});
+    if (rawAddress) {
+        try {
+            const addressData = JSON.parse(rawAddress);
+            const fields = {
+                first_name: 'first_name',
+                last_name: 'last_name',
+                building_name: 'building_name',
+                address_line1: 'address_line1',
+                address_line2: 'address_line2',
+                town: 'town',
+                postcode: 'postcode'
+            };
 
-function restoreAddressFromSession() {
-    const saved = sessionStorage.getItem("collection_address_checkout");
-    if (!saved) return;
+            // Populate standard address fields
+            for (const key in fields) {
+                const el = document.getElementById(fields[key]);
+                if (el && addressData[key]) {
+                    el.value = addressData[key];
+                }
+            }
 
-    const data = JSON.parse(saved);
+            // Set special instructions if available
+            if (specialInstructions) {
+                const specialEl = document.getElementById('special_instructions');
+                if (specialEl) {
+                    specialEl.value = specialInstructions;
+                }
+            }
 
-    document.getElementById("first_name").value = data.first_name || "";
-    document.getElementById("last_name").value = data.last_name || "";
-    document.getElementById("building_name").value = data.building_name || "";
-    document.getElementById("address_line1").value = data.address_line1 || "";
-    document.getElementById("address_line2").value = data.address_line2 || "";
-    document.getElementById("town").value = data.town || "";
-    document.getElementById("postcode").value = data.postcode || "";
-}
+            // Show the hidden form
+            document.getElementById("hiddenField").classList.remove("hidden");
+            document.getElementById("enterManually").classList.add("hidden");
 
-document.addEventListener("DOMContentLoaded", function () {
-    restoreAddressFromSession(); // Load saved address values on refresh
-});
+        } catch (e) {
+            console.error("Error parsing collection_address_checkout:", e);
+        }
+    }
 
-document.getElementById("special_instructions").value = sessionStorage.getItem("special_instructions") || "";
-document.getElementById("special_instructions").addEventListener("input", function () {
-    sessionStorage.setItem("special_instructions", this.value);
-});
+    // Manual entry fallback
+    document.getElementById("enterManually").addEventListener("click", (event) => {
+        document.getElementById("hiddenField").classList.remove("hidden");
+        event.target.classList.add("hidden");
+    });
+</script>
+
+<script>
+    document.getElementById("enterManually").addEventListener("click", (event) => {
+        document.querySelector("#hiddenField").classList.remove("hidden");
+        event.target.classList.add("hidden");
+    });
+</script>
+
+<script>
+
+    document.querySelectorAll("#step-2 input, #special_instructions").forEach(input => {
+        input.addEventListener("input", saveAddressToSession);
+    });
+
+    function restoreAddressFromSession() {
+        const saved = sessionStorage.getItem("collection_address_checkout");
+        if (!saved) return;
+
+        const data = JSON.parse(saved);
+
+        document.getElementById("first_name").value = data.first_name || "";
+        document.getElementById("last_name").value = data.last_name || "";
+        document.getElementById("building_name").value = data.building_name || "";
+        document.getElementById("address_line1").value = data.address_line1 || "";
+        document.getElementById("address_line2").value = data.address_line2 || "";
+        document.getElementById("town").value = data.town || "";
+        document.getElementById("postcode").value = data.postcode || "";
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        restoreAddressFromSession(); // Load saved address values on refresh
+    });
+
+    document.getElementById("special_instructions").value = sessionStorage.getItem("special_instructions") || "";
+    document.getElementById("special_instructions").addEventListener("input", function () {
+        sessionStorage.setItem("special_instructions", this.value);
+    });
 
 </script>
 
@@ -196,11 +252,6 @@ document.getElementById("special_instructions").addEventListener("input", functi
             });
         }
     }
-
-    document.getElementById("enterManually").addEventListener("click", (event) => {
-        document.querySelector("#hiddenField").classList.remove("hidden");
-        event.target.classList.add("hidden");
-    });
 
 </script>
 

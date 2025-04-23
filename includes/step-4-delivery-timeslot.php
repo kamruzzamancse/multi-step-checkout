@@ -16,6 +16,7 @@
         <img src="http://localhost/leonardoemlh/wp-content/uploads/2025/04/packing-no-1.png" alt="Packing No" />
       </div>
     </div>
+
   </div>
 
   <div class="prev_next_button" id="next_button" style="display: none; margin-top: 25px">

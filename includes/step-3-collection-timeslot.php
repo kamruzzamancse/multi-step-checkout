@@ -58,6 +58,47 @@
         this.classList.add("selected");
         document.getElementById("flexibleArrival").classList.remove("selected");
     });
+
+    // Auto-select from sessionStorage
+    const rawPickup = sessionStorage.getItem("pickup_date");
+
+    if (rawPickup) {
+        try {
+            const pickupData = JSON.parse(rawPickup);
+            const pickupDate = pickupData.date || '';
+            const pickupTime = pickupData.time || '';
+            const rawPrice = pickupData.price || '0';
+            const pickupPrice = parseFloat(String(rawPrice).replace(/[^\d.]/g, '')) || 0;
+
+            // Set the collection date
+            if (pickupDate) {
+                document.getElementById("collection_timeslot").value = pickupDate;
+            }
+
+            // Show the arrival window options
+            document.getElementById("arrival_window_inner").style.display = "block";
+
+            if (pickupPrice === 0) {
+                // Select Flexible Arrival
+                document.getElementById("flexibleArrival").click();
+
+            } else if (pickupPrice === 29) {
+                // Select Scheduled Arrival
+                document.getElementById("scheduledArrival").click();
+
+                // Highlight the corresponding time slot
+                const timeSlot = [...document.querySelectorAll('.time-slot')].find(
+                    slot => slot.dataset.time === pickupTime
+                );
+                if (timeSlot) {
+                    timeSlot.classList.add("selected");
+                }
+            }
+
+        } catch (err) {
+            console.warn("❌ Invalid pickup data in sessionStorage", err);
+        }
+    }
 </script>
 
 <style>

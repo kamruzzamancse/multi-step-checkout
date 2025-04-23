@@ -4,9 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const cardInput = document.getElementById("client_card");
     const submitBtn = document.getElementById("submit_booking");
 
-    // Assume this value is passed from PHP to JS (e.g., via wp_localize_script or inline script)
     const isUserLoggedIn = msc_ajax_obj.is_user_logged_in === '1';
-
 
     function isValidEmail(email) {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -26,7 +24,6 @@ document.addEventListener("DOMContentLoaded", function () {
     submitBtn.addEventListener("click", function (e) {
         e.preventDefault();
 
-        // 🔒 User must be logged in to continue
         if (!isUserLoggedIn) {
             alert("❌ You must log in to complete the booking.");
             const currentUrl = window.location.href;
@@ -46,24 +43,64 @@ document.addEventListener("DOMContentLoaded", function () {
 
         let customItems = [];
         let productItems = [];
+        let protectionPlan = null;
+        let disposalSelection = null;
 
         try {
             const storedCustomItems = sessionStorage.getItem("custom_items");
-            if (storedCustomItems) {
-                customItems = JSON.parse(storedCustomItems);
-            }
+            if (storedCustomItems) customItems = JSON.parse(storedCustomItems);
 
             const storedProductItems = sessionStorage.getItem("product_items");
-            if (storedProductItems) {
-                productItems = JSON.parse(storedProductItems);
-            }
+            if (storedProductItems) productItems = JSON.parse(storedProductItems);
+
+            const storedPlan = sessionStorage.getItem("protection_plan");
+            if (storedPlan) protectionPlan = JSON.parse(storedPlan);
+
+            const storedDisposal = sessionStorage.getItem("disposal_selection");
+            if (storedDisposal) disposalSelection = JSON.parse(storedDisposal);
         } catch (err) {
             console.error("❌ Session parsing error:", err);
         }
 
-        const pickup = parseFloat(sessionStorage.getItem("subtotal_pickup")) || 0;
-        const delivery = parseFloat(sessionStorage.getItem("subtotal_delivery")) || 0;
+        // for Pickup details
+        let pickup = {
+            date: '',
+            time: '',
+            price: 0
+        };
 
+        try {
+            const pickupData = JSON.parse(sessionStorage.getItem("pickup_date"));
+            if (pickupData && typeof pickupData === 'object') {
+                pickup.date = pickupData.date || '';
+                pickup.time = pickupData.time || '';
+                const rawPrice = pickupData.price || '0';
+                pickup.price = parseFloat(String(rawPrice).replace(/[^\d.]/g, '')) || 0;
+            }
+        } catch (err) {
+            console.warn("❌ Invalid pickup data in sessionStorage", err);
+        }
+
+        // for Delivery details
+        let delivery = {
+            date: '',
+            time: '',
+            price: 0
+        };
+
+        try {
+            const deliveryData = JSON.parse(sessionStorage.getItem("delivery_date"));
+            if (deliveryData && typeof deliveryData === 'object') {
+                delivery.date = deliveryData.date || '';
+                delivery.time = deliveryData.time || '';
+                const rawPrice = deliveryData.price || '0';
+                delivery.price = parseFloat(String(rawPrice).replace(/[^\d.]/g, '')) || 0;
+            }
+        } catch (err) {
+            console.warn("❌ Invalid delivery data in sessionStorage", err);
+        }
+
+        // Collection Address
         let collectionAddress = {};
         try {
             const rawAddress = sessionStorage.getItem("collection_address_checkout");
@@ -81,6 +118,14 @@ document.addEventListener("DOMContentLoaded", function () {
             shipping: collectionAddress
         };
 
+        // Special Instructions
+        let specialInstructions = '';
+        try {
+            specialInstructions = sessionStorage.getItem("special_instructions") || '';
+        } catch (err) {
+            console.warn("❌ Could not read special instructions from sessionStorage", err);
+        }
+
         fetch(msc_ajax_obj.ajax_url, {
             method: "POST",
             headers: {
@@ -94,9 +139,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 card,
                 customItems: JSON.stringify(customItems),
                 productItems: JSON.stringify(productItems),
-                pickup,
-                delivery,
-                collectionAddress: JSON.stringify(formattedAddress)
+                protectionPlan: JSON.stringify(protectionPlan),
+                disposalSelection: JSON.stringify(disposalSelection),
+                pickup: JSON.stringify(pickup),
+                delivery: JSON.stringify(delivery),
+                collectionAddress: JSON.stringify(formattedAddress),
+                specialInstructions: specialInstructions
             })
         })
         .then(res => res.text())

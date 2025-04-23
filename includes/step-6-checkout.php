@@ -19,6 +19,11 @@
                     <tbody id="price_table_body">
                         <!-- Dynamic items from session will load here -->
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <td class="last_line" colspan="3" style="text-align:right; font-weight:bold; border-top: 2px solid #ccc;"></td>
+                        </tr>
+                    </tfoot>
                 </table>
 
                 <!-- Charges + Notice Layout -->
@@ -56,6 +61,11 @@
                                     <td id="monthlyTotal"><strong>€0.00</strong></td>
                                 </tr>
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td class="last_line" colspan="3" style="text-align:right; font-weight:bold; border-top: 2px solid #ccc;"></td>
+                                </tr>
+                            </tfoot>
                         </table>
                         <p class="delivery-note">Delivery Fee applies at delivery <span title="This will be added later.">❔</span></p>
                     </div>
@@ -248,28 +258,49 @@ function loadPriceDetailsIntoTable() {
     }
 
     // =================== Showing Protection Plan ===================
-    const protectionPriceHTML = sessionStorage.getItem("protection_plan");
-    if (protectionPriceHTML?.trim()) {
-        const cleanedProtection = protectionPriceHTML.replace(/[^\d.-]/g, '');
-        const protectionPrice = parseFloat(cleanedProtection);
+    // const protectionPriceHTML = sessionStorage.getItem("protection_plan");
+    // if (protectionPriceHTML?.trim()) {
+    //     const cleanedProtection = protectionPriceHTML.replace(/[^\d.-]/g, '');
+    //     const protectionPrice = parseFloat(cleanedProtection);
 
-        let title = "";
-        if (protectionPrice === 25) {
-            title = "Protection Plan - Premium";
-        } else if (protectionPrice === 15) {
-            title = "Protection Plan - Standard";
-        }
+    //     let title = "";
+    //     if (protectionPrice === 25) {
+    //         title = "Protection Plan - Premium";
+    //     } else if (protectionPrice === 15) {
+    //         title = "Protection Plan - Standard";
+    //     }
 
-        if (title) {
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-                <td><strong>${title}</strong></td>
-                <td></td>
-                <td>€${protectionPrice.toFixed(2)}</td>
-            `;
-            tbody.appendChild(tr);
+    //     if (title) {
+    //         const tr = document.createElement("tr");
+    //         tr.innerHTML = `
+    //             <td><strong>${title}</strong></td>
+    //             <td></td>
+    //             <td>€${protectionPrice.toFixed(2)}/mo</td>
+    //         `;
+    //         tbody.appendChild(tr);
+    //     }
+    // }
+
+    // =================== Showing Protection Plan ===================
+    const protectionPlanData = sessionStorage.getItem("protection_plan");
+    if (protectionPlanData) {
+        try {
+            const plan = JSON.parse(protectionPlanData);
+
+            if (plan && plan.price > 0) {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td><strong>Protection Plan - ${plan.title}</strong></td>
+                    <td></td>
+                    <td>€${plan.price.toFixed(2)}/mo</td>
+                `;
+                tbody.appendChild(tr);
+            }
+        } catch (e) {
+            console.error("Invalid protection plan JSON:", e);
         }
     }
+
 }
 
 // Update charges summary based on subtotal
@@ -286,7 +317,18 @@ function updateStyledChargesSummary() {
     oneTimeSubtotal += parseValue(sessionStorage.getItem("disposal_price"));
 
     // Protection Plan (monthly)
-    monthlySubtotal += parseValue(sessionStorage.getItem("protection_plan"));
+    //monthlySubtotal += parseValue(sessionStorage.getItem("protection_plan"));
+    const storedPlan = sessionStorage.getItem("protection_plan");
+    if (storedPlan) {
+        try {
+            const plan = JSON.parse(storedPlan);
+            if (plan && plan.price) {
+                monthlySubtotal += parseFloat(plan.price);
+            }
+        } catch (e) {
+            console.error("Invalid protection plan format:", e);
+        }
+    }
 
     // Predefined Monthly Items
     const predefinedHTML = sessionStorage.getItem("price_details");
@@ -642,6 +684,19 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     
     
+}
+
+.last_line {
+    border-left: none;
+    border-right: none;
+}
+
+#submit_booking {
+    color: #000000 !important;
+}
+
+#submit_booking:hover {
+    color: #FFFFFF !important;
 }
 
 </style>
