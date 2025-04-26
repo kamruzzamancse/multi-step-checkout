@@ -127,46 +127,78 @@ jQuery(document).ready(function ($) {
     });
 
     // ========================== nav link handlers ==========================
-    $(document).on("click", "#boxOne", function(e) {
-        e.preventDefault();
-        currentStep = 1;
-        showStep(currentStep);
-    });
-    
-    $(document).on("click", "#boxTwo", function(e) {
-        e.preventDefault();
-        currentStep = 2;
-        showStep(currentStep);
-    });
-    
-    $(document).on("click", "#boxThree", function(e) {
-        e.preventDefault();
-        currentStep = 3;
-        showStep(currentStep);
-    });
-    
-    $(document).on("click", "#boxFour", function(e) {
-        e.preventDefault();
-        currentStep = 4;
-        showStep(currentStep);
-    });
-    
-    $(document).on("click", "#boxFive", function(e) {
-        e.preventDefault();
-        currentStep = 5;
-        showStep(currentStep);
-    });
-    
-    $(document).on("click", "#boxLast", function (e) {
-        e.preventDefault();
-    
-        currentStep = 6;
-        showStep(currentStep); // Show the correct section
-    
-        // Populate the Booking Summary table & totals
-        loadPriceDetailsIntoTable();
-        updateStyledChargesSummary();
-        renderBookingDetailsRightSide();
+    $(document).ready(function () {
+
+        $(document).on("click", "#boxOne", function(e) {
+            e.preventDefault();
+            currentStep = 1;
+            showStep(currentStep);
+        });
+
+        $(document).on("click", "#boxTwo", function(e) {
+            e.preventDefault();
+
+            const storedCustomItems = sessionStorage.getItem("custom_items");
+            const storedProductItems = sessionStorage.getItem("product_items");
+
+            // Check if at least one has a non-null, non-empty value
+            if ((storedCustomItems && storedCustomItems !== "[]") || (storedProductItems && storedProductItems !== "[]")) {
+                currentStep = 2;
+                showStep(currentStep);
+            } else {
+                alert("Please add a product before proceeding.");
+            }
+        });    
+        
+        $(document).on("click", "#boxThree", function (e) {
+            e.preventDefault();
+            const rawAddress = sessionStorage.getItem("collection_address_checkout");
+            if (rawAddress && rawAddress.trim() !== "") {
+                currentStep = 3;
+                showStep(currentStep);
+            } else {
+                alert("Please add a collection address before proceeding.");
+            }
+        });
+        
+        $(document).on("click", "#boxFour", function (e) {
+            e.preventDefault();
+            const pickupDataRaw = sessionStorage.getItem("pickup_date");
+            const pickupData = pickupDataRaw ? JSON.parse(pickupDataRaw) : null;
+        
+            if (pickupData && pickupData !== "") {
+                currentStep = 4;
+                showStep(currentStep);
+            } else {
+                alert("Please select a pickup date before proceeding.");
+            }
+        });        
+        
+        $(document).on("click", "#boxFive", function(e) {
+            e.preventDefault();
+            currentStep = 5;
+            showStep(currentStep);
+        });
+        
+        $(document).on("click", "#boxLast", function (e) {
+            e.preventDefault();
+            //sessionStorage.removeItem("pickup_date");
+            const pickupDataRaw = sessionStorage.getItem("pickup_date");
+            const pickupData = pickupDataRaw ? JSON.parse(pickupDataRaw) : null;
+        
+            if (pickupData && pickupData !== "") {
+                currentStep = 6;
+                showStep(currentStep); // Show the correct section
+            } else {
+                alert("Please select a pickup date before proceeding.");
+            }
+        
+            // Populate the Booking Summary table & totals
+            loadPriceDetailsIntoTable();
+            updateStyledChargesSummary();
+            renderBookingDetailsRightSide();
+        });
+
     });
 
     // ==================== Disposal Selection Handling ========================
