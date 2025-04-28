@@ -100,6 +100,11 @@
         }
     }
     
+
+    // =====workin with date tablle =====
+    let dateTable = document.querySelector("#date_time_picker");
+    console.log(dateTable);
+    console.log("dateTable",dateTable);
 </script>
 
 <style>

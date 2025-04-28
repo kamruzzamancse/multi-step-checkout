@@ -243,7 +243,79 @@ a {
   outline: none !important;
   border-radius: 3px !important;
 }
-
+/* ====picup date table==== */
+#ui-datepicker-div table.ui-datepicker-calendar{
+  border-spacing: 5px 10px !important;
+}
+#ui-datepicker-div .ui-datepicker-header .ui-datepicker-prev , .ui-datepicker-next {
+  color: #00a899 !important;
+  background-color: transparent !important;
+}
+#ui-datepicker-div .ui-datepicker-calendar tbody{
+  border-spacing: 5px 10px !important;
+  background-color: #eeeeee8a !important;
+}
+#ui-datepicker-div .ui-datepicker-calendar thead tr th{
+  border-spacing: 2px 5px !important;
+  background: transparent !important;
+  border: 4px solid transparent !important;
+  color: #fff !important;
+  border-radius: 5px;
+  padding: 0 !important;
+  width: 59px !important;
+  height: 59px !important;
+}
+#ui-datepicker-div .ui-datepicker-calendar thead tr th span{
+  /* background-color: #ebebeb; */
+  display: block;
+  width: 100%;
+  height: 100% !important;
+  /* border: 2px solid #00a899; */
+  border-radius: 4px;
+  padding:11px 6px 6px 6px;
+  color: #00a899;
+}
+#ui-datepicker-div .ui-datepicker-calendar tbody tr td {
+  border-spacing: 2px 5px !important;
+  background: #eeeeeeb9 !important;
+  border: 5px solid transparent !important;
+  color: #fff !important;
+  border-radius: 5px;
+  padding: 0 !important;
+  width: 59px !important;
+  height: 59px !important;
+}
+#ui-datepicker-div .ui-datepicker-calendar tbody tr td span{
+  background-color: #e7e7e78f;
+  color: #00a899 !important;
+  font-weight: 700;
+  display: block;
+  width: 100%;
+  height: 100% !important;
+  border: 1px solid #cfcfcf;
+  border-radius: 4px;
+  padding:11px 6px 6px 6px;
+  font-weight: 800;
+  font-size: 18px;
+}
+#ui-datepicker-div .ui-datepicker-calendar tbody tr td a{
+  background-color: #e7e7e7;
+  color: #00a899 !important;
+  font-weight: 700;
+  display: block;
+  width: 100%;
+  height: 100% !important;
+  border: 2px solid #00a899;
+  border-radius: 4px;
+  padding:11px 6px 6px 6px;
+  font-weight: 700;
+}
+#ui-datepicker-div .ui-datepicker-calendar tbody tr td .ui-state-active{
+  color: #fff !important;
+}
+#ui-datepicker-div .ui-datepicker-calendar tbody tr .ui-datepicker-unselectable span{
+  color: #9e9e9e !important;
+}
 
 /*css shifted from plugin main file*/
 
@@ -280,6 +352,25 @@ a {
   .pro_col_30{
       width: 30% !important;
   }
+  #price-summary-wrapper{
+    position: sticky;
+    top: 150px;
+    right: 0;
+  }
+  @media (max-width: 576px) {
+      #mainWarpper{
+      width: 100% !important;
+      display: flex !important;
+      flex-wrap: wrap !important;
+      gap: 20px;
+      }
+      .pro_col_70{
+      width:100% !important;
+      }
+      .pro_col_30{
+          display: none !important;
+      }
+  }
 
 @media (min-width: 576px) and (max-width: 768px) {
   #mainWarpper{
@@ -307,3 +398,6 @@ a {
           display: none !important;
       }
   } 
+
+
+

@@ -149,24 +149,12 @@
         let lastScrollY = window.scrollY;
         const footer = document.getElementById("checkout-footer");
         let pro_pullDown_window = document.getElementById("pro_pullDown_window");
-
-        // window.addEventListener("scroll", function () {
-        //     if (window.scrollY < lastScrollY) {
-                
-        //         footer.classList.remove("hidden");
-        //     } else {
-               
-        //         footer.classList.add("hidden");
-        //     }
-        //     lastScrollY = window.scrollY;
-        // });
-
+        // Function to show or hide the footer based on scroll direction
         document.getElementById("continue-button").addEventListener("click", function () {
             alert("Continue button clicked!");
         });
         // Add event listener to the arrow to toggle its visibility
         document.getElementById("pro_pullDown_arrow").addEventListener("click", function () {
-
             const arrowDown = document.getElementById("pro_pullDown_arrow_down");
             const arrowUp = document.getElementById("pro_pullDown_arrow_Up");
             document.getElementById("pro_pullDown_arrow").classList.toggle("active_btn");
@@ -183,6 +171,19 @@
             pro_pullDown_window.classList.toggle("pro-pulldown-window_active");
 
         });
+        
+        
     });
+
+
+document.addEventListener("click",()=>{
+    let subTotal = JSON.parse(sessionStorage.getItem("subtotal"));
+    console.log(subTotal);
+    
+    document.getElementById("pro_footer_price").innerHTML = `<b>${subTotal}</b>`;
+})
+
+
+
 
 </script>
