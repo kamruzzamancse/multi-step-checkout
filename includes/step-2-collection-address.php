@@ -8,80 +8,80 @@
         </div>
     </div>
 
-    <div class=" pro_col p-0" >
-        
+    <div class="pro_col p-0">
         <div id="pro_address_form" class="pro_form">
             <!-- Address Autocomplete Field -->
             <div class="pro_Row" id="searchBox">
                 <div class="pro_col">
-                    <input type="text" id="searchInput" oninput="searchSchool()" class="form-control address-search" placeholder="Start typing and select your address">
+                    <input type="text" id="searchInput" class="form-control address-search" placeholder="Start typing and select your address">
                 </div>
                 <div id="searchResult" class="hidden"></div>
             </div>
+
             <div id="hiddenField" class="hidden">
                 <form class="pro_Form_hidden pro_Row">
                     <div class="pro_Row">
                         <!-- First Name -->
                         <div class="pro_col">
-                            <div class=" pro_inputBox inline-label ls-input form-group">
+                            <div class="pro_inputBox inline-label ls-input form-group">
                                 <label class="label" for="first_name">First name *</label>
-                                <input class="form-control valid mb-0 not-empty" type="text" placeholder="" aria-label="First name *" id="first_name" required>
+                                <input class="form-control valid mb-0 not-empty" type="text" id="first_name" required>
                             </div>
                         </div>
                         <!-- Last Name -->
                         <div class="pro_col">
                             <div class="pro_inputBox inline-label ls-input form-group">
                                 <label class="label" for="last_name">Last name *</label>
-                                <input class="form-control valid mb-0 not-empty" type="text" placeholder="" aria-label="Last name *" id="last_name" required>
+                                <input class="form-control valid mb-0 not-empty" type="text" id="last_name" required>
                             </div>
                         </div>
                     </div>
-    
+
                     <div class="pro_Row">
                         <!-- Building number/name -->
                         <div class="pro_col">
                             <div class="pro_inputBox inline-label ls-input form-group">
                                 <label class="label" for="building_name">Building number/name *</label>
-                                <input class="form-control valid mb-0 not-empty" type="text" placeholder="" aria-label="Building number/name *" id="building_name" required>
+                                <input class="form-control valid mb-0 not-empty" type="text" id="building_name" required>
                             </div>
                         </div>
                         <!-- Address Line 1 -->
                         <div class="pro_col">
                             <div class="pro_inputBox inline-label ls-input form-group">
-                                <label class="label" for="address_line1" >Address line 1 *</label>
-                                <input class="form-control valid mb-0 not-empty" type="text" placeholder="" aria-label="Address line 1 *" id="address_line1" required>
+                                <label class="label" for="address_line1">Address line 1 *</label>
+                                <input class="form-control valid mb-0 not-empty" type="text" id="address_line1" required>
                             </div>
                         </div>
                     </div>
-    
+
                     <div class="pro_Row">
                         <!-- Address Line 2 -->
                         <div class="pro_col">
                             <div class="pro_inputBox inline-label ls-input form-group">
                                 <label class="label" for="address_line2">Address line 2</label>
-                                <input class="form-control valid mb-0" type="text" placeholder="" aria-label="Address line 2" id="address_line2">
+                                <input class="form-control valid mb-0" type="text" id="address_line2">
                             </div>
                         </div>
-    
+
                         <!-- Town -->
                         <div class="pro_col">
                             <div class="pro_inputBox inline-label ls-input form-group">
-                                <label class="label" for="town" >Town *</label>
-                                <input class="form-control valid mb-0 not-empty" type="text" placeholder="" aria-label="Town *" id="town" required>
+                                <label class="label" for="town">Town *</label>
+                                <input class="form-control valid mb-0 not-empty" type="text" id="town" required>
                             </div>
                         </div>
                     </div>
-    
+
                     <div class="pro_Row">
                         <!-- Postcode -->
                         <div class="pro_col">
                             <div class="pro_inputBox inline-label ls-input form-group">
-                                <label class="label" for="postcode" >Postcode *</label>
-                                <input class="form-control valid mb-0 not-empty" type="text" placeholder="" aria-label="Postcode *" id="postcode" required>
+                                <label class="label" for="postcode">Postcode *</label>
+                                <input class="form-control valid mb-0 not-empty" type="text" id="postcode" required>
                             </div>
                         </div>
                     </div>
-    
+
                     <!-- Special Instructions -->
                     <div class="pro_Row">
                         <div class="pro_col">
@@ -90,22 +90,65 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Additional Information -->
-                    <div class="">
+                    <div>
                         <span>Please enter special instructions here. Our drivers cannot always contact you by telephone on arrival so make sure that your door bell is working, that any reception point is informed, and that someone is able to meet the driver at the ground floor of the given address.</span>
                     </div>
                 </form>
             </div>
-            <div class="row text-start mt-3">
-                <span id ="enterManually"><em>Or enter manually</em></span>
-            </div>
 
+            <div class="row text-start mt-3">
+                <span id="enterManually" style="cursor:pointer; color:blue;"><em>Or enter manually</em></span>
+            </div>
         </div>
+
         <button class="next-step">Continue</button>
     </div>
-
 </div>
+
+<!-- Google Maps Places API (insert this via wp_enqueue_script ideally) -->
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const input = document.getElementById('searchInput');
+
+    if (typeof google !== 'undefined') {
+        const autocomplete = new google.maps.places.Autocomplete(input, {
+            types: ['address'],
+            componentRestrictions: { country: "uk" }
+        });
+
+        autocomplete.addListener('place_changed', function () {
+            const place = autocomplete.getPlace();
+            if (!place.address_components) return;
+
+            // Show the hidden form
+            document.getElementById('hiddenField').classList.remove('hidden');
+
+            const getAddressComponent = (type) => {
+                const comp = place.address_components.find(c => c.types.includes(type));
+                return comp ? comp.long_name : '';
+            };
+
+            document.getElementById('building_name').value = getAddressComponent('subpremise') || getAddressComponent('street_number');
+            document.getElementById('address_line1').value = getAddressComponent('route');
+            document.getElementById('town').value = getAddressComponent('postal_town') || getAddressComponent('locality');
+            document.getElementById('postcode').value = getAddressComponent('postal_code');
+
+            document.getElementById('address_line2').value = '';
+            document.getElementById('special_instructions').value = '';
+        });
+    } else {
+        console.error("Google Maps API not loaded.");
+    }
+
+    document.getElementById('enterManually').addEventListener('click', () => {
+        document.getElementById('hiddenField').classList.remove('hidden');
+    });
+});
+</script>
 
 <script>
     const rawAddress = sessionStorage.getItem("collection_address_checkout");
@@ -196,8 +239,7 @@
 </script>
 
 <script>
-
-    let schoolNames = [
+    /* let schoolNames = [
         "ASKAR KALIBARI SECONDARY SCHOOL AND COLLEGE",
         "CHHOYGRAM SECONDARY SCHOOL AND COLLEGE",
         "ADARSHA HIGH SCHOOL AND COLLAGE,MOHONKATHI",
@@ -251,7 +293,7 @@
                 
             });
         }
-    }
+    } */
 
 </script>
 

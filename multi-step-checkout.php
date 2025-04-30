@@ -22,33 +22,33 @@ register_activation_hook( __FILE__, 'msc_check_woocommerce' );
 
 // Load CSS & JS
 function msc_enqueue_scripts() {
-    // Preconnect to Google Fonts and Fonts Static
     echo '<link rel="preconnect" href="https://fonts.googleapis.com">';
     echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>';
-     // Enqueue Google Font Montserrat
-    //  wp_enqueue_style('google-font-montserrat', 'https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap', array(), null);
-     wp_enqueue_style('google-font-montserrat', 'https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&family=Cormorant:ital,wght@0,300..700;1,300..700&family=Josefin+Slab:ital,wght@0,100..700;1,100..700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap', array(), null);
-    // Enqueue Bootstrap CSS
-    wp_enqueue_style('bootstrap-css', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css');
 
-    // Enqueue plugin styles
+    wp_enqueue_style('google-font-montserrat', 'https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&family=Cormorant:ital,wght@0,300..700;1,300..700&family=Josefin+Slab:ital,wght@0,100..700;1,100..700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap', array(), null);
+    wp_enqueue_style('bootstrap-css', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css');
     wp_enqueue_style('msc-style', plugin_dir_url(__FILE__) . 'assets/style.css');
 
-    // Enqueue jQuery (included in WordPress) and Bootstrap JS
     wp_enqueue_script('jquery');
     wp_enqueue_script('bootstrap-js', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js', array('jquery'), null, true);
 
-    // Enqueue custom script
+    wp_enqueue_script(
+        'google-maps-places-api',
+        'https://maps.googleapis.com/maps/api/js?key=AIzaSyBlu-Xyv1nqTvcNBuV4Dvzgw12wZgR-ipI&libraries=places',
+        array(),
+        null,
+        true
+    );  
+
     wp_enqueue_script('msc-script', plugin_dir_url(__FILE__) . 'assets/script.js', array('jquery', 'jquery-ui-datepicker'), null, true);
 
-    wp_enqueue_script('msc-checkout', plugin_dir_url(__FILE__) . 'assets/checkout.js', [], null, true);
+    wp_enqueue_script('msc-checkout', plugin_dir_url(__FILE__) . 'assets/checkout.js', ['jquery', 'google-maps-places-api'], null, true);
 
     wp_localize_script('msc-checkout', 'msc_ajax_obj', [
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce' => wp_create_nonce('msc_nonce'),
         'is_user_logged_in' => is_user_logged_in() ? '1' : '0',
-    ]);  
-         
+    ]);
 }
 add_action('wp_enqueue_scripts', 'msc_enqueue_scripts');
 
