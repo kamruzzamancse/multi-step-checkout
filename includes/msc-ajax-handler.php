@@ -152,50 +152,53 @@ function msc_handle_ajax_checkout() {
 
 
 
-    // Build email content
-$admin_email = get_option('admin_email');
-$subject = 'NEW BOOKING - STORE YOUR DORM';
+    // Build email content start ==============================================
+    
+    $admin_email = get_option('admin_email');
+    $subject = 'NEW BOOKING - STORE YOUR DORM';
 
-$billing = $order->get_address('billing');
+    $billing = $order->get_address('billing');
 
-$supply_date = isset($delivery['date']) ? date('F jS, Y', strtotime($delivery['date'])) . (!empty($delivery['time']) ? " ({$delivery['time']})" : '') : 'N/A';
-$pickup_date = isset($pickup['date']) ? date('F jS, Y', strtotime($pickup['date'])) . (!empty($pickup['time']) ? " ({$pickup['time']})" : '') : 'N/A';
+    $supply_date = isset($delivery['date']) ? date('F jS, Y', strtotime($delivery['date'])) . (!empty($delivery['time']) ? " ({$delivery['time']})" : '') : 'N/A';
+    $pickup_date = isset($pickup['date']) ? date('F jS, Y', strtotime($pickup['date'])) . (!empty($pickup['time']) ? " ({$pickup['time']})" : '') : 'N/A';
 
-// Build items summary
-$item_summary = [];
-if (!empty($product_items)) {
-    foreach ($product_items as $item) {
-        $item_summary[] = $item['quantity'] . ' ' . strtolower($item['title']);
+    // Build items summary
+    $item_summary = [];
+    if (!empty($product_items)) {
+        foreach ($product_items as $item) {
+            $item_summary[] = $item['quantity'] . ' ' . strtolower($item['title']);
+        }
     }
-}
-if (!empty($custom_items)) {
-    foreach ($custom_items as $custom) {
-        $item_summary[] = '1 ' . strtolower($custom['name']);
+    if (!empty($custom_items)) {
+        foreach ($custom_items as $custom) {
+            $item_summary[] = '1 ' . strtolower($custom['name']);
+        }
     }
-}
-$items_string = implode(', ', $item_summary);
+    $items_string = implode(', ', $item_summary);
 
-// Protection Plan
-$protection_text = !empty($protection_plan) ? "{$protection_plan['title']} (${$protection_plan['price']}/month)" : 'None';
+    // Protection Plan
+    $protection_text = !empty($protection_plan) ? "{$protection_plan['title']} (${$protection_plan['price']}/month)" : 'None';
 
-// Email body
-$message = <<<EOD
-Name: {$billing['first_name']} {$billing['last_name']}
+    // Email body
+    $message = <<<EOD
+    Name: {$billing['first_name']} {$billing['last_name']}
 
-Address: {$billing['address_1']}, {$billing['city']}
+    Address: {$billing['address_1']}, {$billing['city']}
 
-Email: {$billing['email']}
-Phone Number: {$billing['phone']}
+    Email: {$billing['email']}
+    Phone Number: {$billing['phone']}
 
-Supply Appointment: {$supply_date}
-Pick-Up Appointment: {$pickup_date}
+    Supply Appointment: {$supply_date}
+    Pick-Up Appointment: {$pickup_date}
 
-Items to Store: {$items_string}
-Additional Services: {$protection_text}
-EOD;
+    Items to Store: {$items_string}
+    Additional Services: {$protection_text}
+    EOD;
 
-// Send the email
-wp_mail($admin_email, $subject, $message);
+    // Send the email
+    wp_mail($admin_email, $subject, $message);
+
+    // Build email content start ==============================================
 
 
 
