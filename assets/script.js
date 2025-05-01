@@ -172,12 +172,19 @@ jQuery(document).ready(function ($) {
             } else {
                 alert("Please select a pickup date before proceeding.");
             }
-        });        
-        
+        });
+
         $(document).on("click", "#boxFive", function(e) {
             e.preventDefault();
-            currentStep = 5;
-            showStep(currentStep);
+            const pickupDataRaw = sessionStorage.getItem("pickup_date");
+            const pickupData = pickupDataRaw ? JSON.parse(pickupDataRaw) : null;
+            
+            if (pickupData && pickupData !== "") {
+                currentStep = 5;
+                showStep(currentStep);
+            } else {
+                alert("Please select a pickup date before proceeding.");
+            }
         });
         
         $(document).on("click", "#boxLast", function (e) {

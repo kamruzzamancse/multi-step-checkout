@@ -10,79 +10,74 @@
 
     <div class="pro_col p-0">
         <div id="pro_address_form" class="pro_form">
+
             <!-- Address Autocomplete Field -->
             <div class="pro_Row" id="searchBox">
                 <div class="pro_col">
                     <input type="text" id="searchInput" class="form-control address-search" placeholder="Start typing and select your address">
                 </div>
-                <div id="searchResult" class="hidden"></div>
             </div>
 
-            <div id="hiddenField" class="hidden">
+            <!-- Google Map -->
+            <div id="map" style="height: 300px; margin-top: 15px;"></div>
+
+            <!-- Hidden Fields (Address Details) -->
+            <div id="hiddenField" class="hidden mt-3">
                 <form class="pro_Form_hidden pro_Row">
                     <div class="pro_Row">
-                        <!-- First Name -->
                         <div class="pro_col">
                             <div class="pro_inputBox inline-label ls-input form-group">
                                 <label class="label" for="first_name">First name *</label>
-                                <input class="form-control valid mb-0 not-empty" type="text" id="first_name" required>
+                                <input class="form-control" type="text" id="first_name" required>
                             </div>
                         </div>
-                        <!-- Last Name -->
                         <div class="pro_col">
                             <div class="pro_inputBox inline-label ls-input form-group">
                                 <label class="label" for="last_name">Last name *</label>
-                                <input class="form-control valid mb-0 not-empty" type="text" id="last_name" required>
+                                <input class="form-control" type="text" id="last_name" required>
                             </div>
                         </div>
                     </div>
 
                     <div class="pro_Row">
-                        <!-- Building number/name -->
                         <div class="pro_col">
                             <div class="pro_inputBox inline-label ls-input form-group">
                                 <label class="label" for="building_name">Building number/name *</label>
-                                <input class="form-control valid mb-0 not-empty" type="text" id="building_name" required>
+                                <input class="form-control" type="text" id="building_name" required>
                             </div>
                         </div>
-                        <!-- Address Line 1 -->
                         <div class="pro_col">
                             <div class="pro_inputBox inline-label ls-input form-group">
                                 <label class="label" for="address_line1">Address line 1 *</label>
-                                <input class="form-control valid mb-0 not-empty" type="text" id="address_line1" required>
+                                <input class="form-control" type="text" id="address_line1" required>
                             </div>
                         </div>
                     </div>
 
                     <div class="pro_Row">
-                        <!-- Address Line 2 -->
                         <div class="pro_col">
                             <div class="pro_inputBox inline-label ls-input form-group">
                                 <label class="label" for="address_line2">Address line 2</label>
-                                <input class="form-control valid mb-0" type="text" id="address_line2">
+                                <input class="form-control" type="text" id="address_line2">
                             </div>
                         </div>
-
-                        <!-- Town -->
                         <div class="pro_col">
                             <div class="pro_inputBox inline-label ls-input form-group">
                                 <label class="label" for="town">Town *</label>
-                                <input class="form-control valid mb-0 not-empty" type="text" id="town" required>
+                                <input class="form-control" type="text" id="town" required>
                             </div>
                         </div>
                     </div>
 
                     <div class="pro_Row">
-                        <!-- Postcode -->
                         <div class="pro_col">
                             <div class="pro_inputBox inline-label ls-input form-group">
                                 <label class="label" for="postcode">Postcode *</label>
-                                <input class="form-control valid mb-0 not-empty" type="text" id="postcode" required>
+                                <input class="form-control" type="text" id="postcode" required>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Special Instructions -->
                     <div class="pro_Row">
                         <div class="pro_col">
                             <div class="inline-label ls-textarea">
@@ -91,7 +86,6 @@
                         </div>
                     </div>
 
-                    <!-- Additional Information -->
                     <div>
                         <span>Please enter special instructions here. Our drivers cannot always contact you by telephone on arrival so make sure that your door bell is working, that any reception point is informed, and that someone is able to meet the driver at the ground floor of the given address.</span>
                     </div>
@@ -107,47 +101,67 @@
     </div>
 </div>
 
-<!-- Google Maps Places API (insert this via wp_enqueue_script ideally) -->
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
-
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const input = document.getElementById('searchInput');
+    let autocomplete;
+    let map;
+    let marker;
 
-    if (typeof google !== 'undefined') {
-        const autocomplete = new google.maps.places.Autocomplete(input, {
-            types: ['address'],
-            componentRestrictions: { country: "uk" }
+    function initMap() {
+        const input = document.getElementById("searchInput");
+
+        autocomplete = new google.maps.places.Autocomplete(input, {
+            types: ["geocode"],
+            componentRestrictions: { country: "ca" },
+            fields: ["address_components", "geometry", "formatted_address"]
         });
 
-        autocomplete.addListener('place_changed', function () {
-            const place = autocomplete.getPlace();
-            if (!place.address_components) return;
+        autocomplete.addListener("place_changed", fillInAddress);
 
-            // Show the hidden form
-            document.getElementById('hiddenField').classList.remove('hidden');
-
-            const getAddressComponent = (type) => {
-                const comp = place.address_components.find(c => c.types.includes(type));
-                return comp ? comp.long_name : '';
-            };
-
-            document.getElementById('building_name').value = getAddressComponent('subpremise') || getAddressComponent('street_number');
-            document.getElementById('address_line1').value = getAddressComponent('route');
-            document.getElementById('town').value = getAddressComponent('postal_town') || getAddressComponent('locality');
-            document.getElementById('postcode').value = getAddressComponent('postal_code');
-
-            document.getElementById('address_line2').value = '';
-            document.getElementById('special_instructions').value = '';
+        map = new google.maps.Map(document.getElementById("map"), {
+            center: { lat: 51.509865, lng: -0.118092 },
+            zoom: 12
         });
-    } else {
-        console.error("Google Maps API not loaded.");
+
+        marker = new google.maps.Marker({
+            map: map,
+            anchorPoint: new google.maps.Point(0, -29)
+        });
     }
 
-    document.getElementById('enterManually').addEventListener('click', () => {
-        document.getElementById('hiddenField').classList.remove('hidden');
-    });
-});
+    function fillInAddress() {
+    const place = autocomplete.getPlace();
+    if (!place.geometry) return;
+
+    map.setCenter(place.geometry.location);
+    map.setZoom(15);
+
+    marker.setPosition(place.geometry.location);
+    marker.setVisible(true);
+
+    const components = place.address_components;
+
+    const getComponent = (type) => {
+        const comp = components.find(c => c.types.includes(type));
+        return comp ? comp.long_name : '';
+    };
+
+    const buildingNumber = getComponent("street_number");
+    const route = getComponent("route");
+    const sublocality = getComponent("sublocality") || getComponent("sublocality_level_1");
+    const locality = getComponent("locality") || getComponent("postal_town");
+    const postalCode = getComponent("postal_code");
+
+    // Set values
+    document.getElementById("building_name").value = buildingNumber;
+    document.getElementById("address_line1").value = route;
+    document.getElementById("address_line2").value = sublocality;
+    document.getElementById("town").value = locality;
+    document.getElementById("postcode").value = postalCode;
+
+    document.getElementById("hiddenField").classList.remove("hidden");
+}
+
+    window.initMap = initMap;
 </script>
 
 <script>
@@ -238,65 +252,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </script>
 
-<script>
-    /* let schoolNames = [
-        "ASKAR KALIBARI SECONDARY SCHOOL AND COLLEGE",
-        "CHHOYGRAM SECONDARY SCHOOL AND COLLEGE",
-        "ADARSHA HIGH SCHOOL AND COLLAGE,MOHONKATHI",
-        "BAGDHA SECONDARY SCHOOL & COLLEGE",
-        "BAHADURPUR NISHIKANTA GAIN GIRL S SCHOOL & COLLEGE",
-        "BARISAL CADET COLLEGE",
-        "MADDHABPASHA CHANDRADIP HIGH SCHOOL AND COLLEGE",
-        "CHANDPASHA HIGH SCHOOL AND COLLEGE",
-        "MASJIDBARI SECONDARY SCHOOL AND COLLEGE",
-        "KASHIPUR GIRLS HIGH SCHOOL & COLLEGE",
-        "PALORDI SCHOOL AND COLLEGE",
-        "HALIMA KHATUN GIRLS SCHOOL & COLLEGE",
-        "SHAHID ZIA ADARSHA GIRLS HIGH SCHOOL",
-        "CHAR ZANGALIA SCHOOL & COLLEGE",
-        "PANGASHIA SCHOOL AND COLLEGE",
-
-    ]
-    function searchSchool() {
-        let input = document.getElementById("searchInput").value.toLowerCase();
-        let searchResult = document.getElementById("searchResult");
-        searchResult.innerHTML = ""; 
-        console.log(input);
-        console.log(searchResult);
-        
-
-        if (input.length < 3) {
-            searchResult.classList.add("hidden");
-        }
-        if (input.length >= 3) {
-            searchResult.classList.remove("hidden");
-            searchResult.style.display = "block";
-            console.log("kaj ki kore");
-            
-        } else {
-            searchResult.classList.add("hidden");
-            searchResult.style.display = "none";
-        }
-
-        let filteredSchools = schoolNames.filter(school => school.toLowerCase().startsWith(input));
-
-        if (filteredSchools.length === 0) {
-            searchResult.innerHTML = "<li>No matching schools found</li>";
-            console.log("not found");
-            
-        } else {
-            filteredSchools.forEach(school => {
-                let li = document.createElement("li");
-                li.textContent = school;
-                searchResult.appendChild(li);
-                console.log("school");
-                
-            });
-        }
-    } */
-
-</script>
-
 <style>
     #pro_address_form.pro_form{
         width: 100%;
@@ -352,6 +307,4 @@ document.addEventListener("DOMContentLoaded", function () {
         border: 1px solid black;
         outline: 1px solid black;
     }
-
-   
 </style>
