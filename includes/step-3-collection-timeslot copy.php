@@ -6,7 +6,7 @@
             <div id="date_time_picker" class="pro_picup_col">
                 
                 <label for="collection_timeslot">Select a Collection Date:</label>
-                <input type="text" id="collection_timeslot" name="collection_timeslot" data-flatpickr readonly>
+                <input type="text" id="collection_timeslot" name="collection_timeslot" readonly>
                 <div id="calendar_container_collection"></div>
                 
                 <div class="prev_next_button">
@@ -48,66 +48,47 @@
 </div>
 
 <script>
-/* document.addEventListener('DOMContentLoaded', function () {
-    const input = document.getElementById('collection_timeslot');
-    const calendarContainer = document.getElementById('calendar_container_collection');
-
-    if (!input || !calendarContainer || typeof flatpickr === 'undefined') return;
-
-    // Initialize Flatpickr
-    flatpickr(input, {
-        minDate: 'today',
-        dateFormat: 'Y-m-d',
-        clickOpens: false,
-        inline: true,
-        appendTo: calendarContainer
-    });
-
-    // Delay and destroy jQuery UI Datepicker if it's applied after Flatpickr
-    setTimeout(() => {
-        if (window.jQuery && jQuery.fn.datepicker) {
-            jQuery('#collection_timeslot').datepicker('destroy');
-        }
-    }, 200);
-}); */
-</script>
-
-<script>
 document.addEventListener('DOMContentLoaded', function () {
-    const input = document.getElementById('collection_timeslot');
-    const calendarContainer = document.getElementById('calendar_container_collection');
+    const dateInput = document.querySelector('#collection_timeslot');
+    const calendarContainer = document.querySelector('#calendar_container_collection');
+    const arrivalWindow = document.querySelector('#arrival_window_inner');
 
-    if (!input || !calendarContainer || typeof flatpickr === 'undefined') return;
+    if (!dateInput || !calendarContainer) return;
 
-    // Initialize Flatpickr
-    flatpickr(input, {
+    // Initialize flatpickr with inline calendar below the input
+    flatpickr(dateInput, {
         minDate: 'today',
         dateFormat: 'Y-m-d',
-        clickOpens: false,
+        disableMobile: true,
+        clickOpens: false, // Disable popup calendar
         inline: true,
         appendTo: calendarContainer,
-        onChange: function (selectedDates, dateStr, instance) {
-            // Show the arrival window section
-            const arrivalWindow = document.getElementById('arrival_window_inner');
-            if (arrivalWindow) {
-                arrivalWindow.style.display = 'block';
-            }
-
-            // Save the details when a date is selected
-            if (typeof savePickupDetails === 'function') {
-                savePickupDetails();
-            }
+        onChange: function () {
+            if (arrivalWindow) arrivalWindow.style.display = 'block';
         }
     });
 
-    // Destroy jQuery UI Datepicker if it was auto-applied
-    setTimeout(() => {
-        if (window.jQuery && jQuery.fn.datepicker) {
-            jQuery('#collection_timeslot').datepicker('destroy');
+    // No scrollIntoView — removed to prevent screen movement
+
+    // Optional: Show calendar when Step 3 becomes visible
+    const step3 = document.getElementById('step-3');
+    const observer = new MutationObserver(() => {
+        if (step3 && getComputedStyle(step3).display !== 'none') {
+            // Do nothing – calendar is inline and already visible
         }
-    }, 200);
+    });
+
+    const root = document.getElementById('multi-step-checkout');
+    if (root) {
+        observer.observe(root, {
+            childList: true,
+            subtree: true,
+        });
+    }
 });
 </script>
+
+
 
 
 <script>

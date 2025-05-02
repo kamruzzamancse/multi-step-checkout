@@ -19,7 +19,7 @@
 
   </div>
 
-  <div class="prev_next_button" id="next_button" style="display: none; margin-top: 25px">
+  <div class="prev_next_button" id="next_button" style="display: none;">
     <button class="next-step">Continue</button>
   </div>
 
@@ -30,8 +30,10 @@
       <div class="pro_delivery_warper">
         <div id="date_time_picker" class="pro_Delivery_col">
           <label for="supply_timeslot">Select a Supply Date:</label>
+          
           <input type="text" id="supply_timeslot" name="supply_timeslot" readonly>
-
+          <div id="calendar_container_supply"></div>
+  
           <div class="prev_next_button">
             <button class="next-step">Continue</button>
           </div>
@@ -75,6 +77,68 @@
     </div>
   </div>
 </div>
+
+<script>
+/* document.addEventListener('DOMContentLoaded', function () {
+    const input = document.getElementById('supply_timeslot');
+    const calendarContainer = document.getElementById('calendar_container_supply');
+
+    if (!input || !calendarContainer || typeof flatpickr === 'undefined') return;
+
+    // Initialize Flatpickr
+    flatpickr(input, {
+        minDate: 'today',
+        dateFormat: 'Y-m-d',
+        clickOpens: false,
+        inline: true,
+        appendTo: calendarContainer
+    });
+
+    // Delay and destroy jQuery UI Datepicker if it's auto-applied after load
+    setTimeout(() => {
+        if (window.jQuery && jQuery.fn.datepicker) {
+            jQuery('#supply_timeslot').datepicker('destroy');
+        }
+    }, 200);
+}); */
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const input = document.getElementById('supply_timeslot');
+    const calendarContainer = document.getElementById('calendar_container_supply');
+
+    if (!input || !calendarContainer || typeof flatpickr === 'undefined') return;
+
+    // Initialize Flatpickr
+    flatpickr(input, {
+        minDate: 'today',
+        dateFormat: 'Y-m-d',
+        clickOpens: false,
+        inline: true,
+        appendTo: calendarContainer,
+        onChange: function (selectedDates, dateStr, instance) {
+            // Show the arrival window section
+            const arrivalWindow = document.getElementById('arrival_window_inner1');
+            if (arrivalWindow) {
+                arrivalWindow.style.display = 'block';
+            }
+
+            // Call saveDeliveryDetails when a date is selected
+            if (typeof saveDeliveryDetails === 'function') {
+                saveDeliveryDetails();
+            }
+        }
+    });
+
+    // Destroy jQuery UI Datepicker if it's been applied automatically
+    setTimeout(() => {
+        if (window.jQuery && jQuery.fn.datepicker) {
+            jQuery('#supply_timeslot').datepicker('destroy');
+        }
+    }, 200);
+});
+</script>
 
 <style>
   .pro_delivery{
@@ -315,3 +379,4 @@
 }
 
 </style>
+

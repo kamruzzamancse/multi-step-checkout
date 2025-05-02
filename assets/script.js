@@ -36,75 +36,99 @@ jQuery(document).ready(function ($) {
     }
 
     // ========================== NEXT BUTTON ==========================
-    $('.next-step').click(function () {
+    $('.next-step').click(function (e) {
+        // Function to set the active box color and miniBox
+        function setActiveBox(boxId) {
+            $(".box").removeClass("active").find(".miniBox").remove(); // Remove active from all boxes
+            $("#" + boxId).addClass("active"); // Add active to clicked box
+        
+            // Add miniBox to the active box (if not already present)
+            if (!$("#" + boxId + " .miniBox").length) {
+                $("#" + boxId).append('<div class="miniBox"></div>');
+            }
+        }
 
-        let boxes = document.querySelectorAll(".box");
-        let miniBoxes = document.querySelectorAll(".miniBox");
-        let lines = document.querySelectorAll(".line");
-
+        const storedCustomItems = sessionStorage.getItem("custom_items");
+        const storedProductItems = sessionStorage.getItem("product_items");
+        const rawAddress = sessionStorage.getItem("collection_address_checkout");
+        const pickupDataRaw = sessionStorage.getItem("pickup_date");
+        const deliveryDetails = sessionStorage.getItem("delivery_date");
+    
+        // Check the current step and process the steps accordingly
         if (currentStep === 1) {
-            lines[0].style.backgroundColor = '#00a899';
-            boxes[1].style.backgroundColor = '#00a899';
-
-             // Validation check before proceeding
+            // Retrieve subtotal values
             let subtotalPre = parseFloat(sessionStorage.getItem("subtotal_pre")) || 0;
             let subtotalCustom = parseFloat(sessionStorage.getItem("subtotal_custom")) || 0;
 
+            // Validation check before proceeding
             if (subtotalPre <= 0 && subtotalCustom <= 0) {
                 alert("Please add at least one item before continuing.");
                 return false;
+            } else {
+
+                // If either custom items or product items exist, mark the Storage box as filled
+                if ((storedCustomItems && JSON.parse(storedCustomItems).length > 0) || 
+                    (storedProductItems && JSON.parse(storedProductItems).length > 0)) {
+                    $("#boxTwo").addClass("filled");
+                }
+
+                // If the subtotal is valid (greater than 0), proceed to the next step
+                setActiveBox("boxTwo"); // Activate the color and miniBox for step 2
+                currentStep = 2; // Set the current step
+                showStep(currentStep); // Show the next step
             }
         }
 
-        if (currentStep === 2) {
-            lines[1].style.backgroundColor = '#00a899';
-            boxes[2].style.backgroundColor = '#00a899';
+        else if (currentStep === 2) {
             if (!validateAddressForm()) {
                 return; // Stop progression if address is invalid
-            }
-            saveAddressToSession();
+            } else {
+                if (rawAddress && rawAddress.trim() !== "") {
+                    $("#boxThree").addClass("filled");
+                }
+                setActiveBox("boxThree"); // Activate the color and miniBox for step 3
+                saveAddressToSession();
+                currentStep = 3; // Set the current step
+                showStep(currentStep); // Show the next step
+            }     
         }
-
-        if (currentStep === 3) {
-            lines[2].style.backgroundColor = '#00a899';
-            boxes[3].style.backgroundColor = '#00a899';
+    
+        else if (currentStep === 3) {
             var dateInputCollection = $("#collection_timeslot").val();
             
             if (!dateInputCollection) {
                 alert("❌ Please select a collection date before continuing.");
                 e.preventDefault();
                 return;
+            } else {
+                if (pickupDataRaw && pickupDataRaw !== "null" && JSON.parse(pickupDataRaw).date) {
+                    $("#boxFour").addClass("filled");
+                }
+                setActiveBox("boxFour"); // Activate the color and miniBox for step 4
+                savePickupDetails();
+                currentStep = 4; // Set the current step
+                showStep(currentStep); // Show the next step
             }
-            savePickupDetails(); // Save pickup info before moving forward
+        }
+    
+        else if (currentStep === 4) {
+            setActiveBox("boxFive"); // Activate the color and miniBox for step 5
+            saveDeliveryDetails();
+            currentStep = 5; // Set the current step
+            showStep(currentStep); // Show the next step
         }
 
-        if (currentStep === 4) {
-            lines[3].style.backgroundColor = '#00a899';
-            boxes[4].style.backgroundColor = '#00a899';
-
-            var dateInputSupply = $("#supply_timeslot").val();
-            
-            if (!dateInputSupply) {
-                alert("❌ Please select a Supply date before continuing.");
-                e.preventDefault();
-                return;
+        else if (currentStep === 5) {
+            if (deliveryDetails && deliveryDetails !== "null") {
+                $("#boxFive").addClass("filled");
             }
-            saveDeliveryDetails(); // Save Delivery info before moving forward
+            setActiveBox("boxLast"); // Activate the color and miniBox for step 6
+            currentStep = 6; // Set the current step
+            showStep(currentStep); // Show the next step
         }
-
-        currentStep++;
-        showStep(currentStep);
+    
         updateSummary();
-    });
-
-
-    // ========================== PREVIOUS BUTTON ==========================
-    $('.prev-step').click(function () {
-        if (currentStep > 1) {
-            currentStep--;
-            showStep(currentStep);
-        }
-    });
+    });    
 
 
     // ========================== Edit link handlers ==========================
@@ -127,33 +151,80 @@ jQuery(document).ready(function ($) {
     });
 
     // ========================== nav link handlers ==========================
-    $(document).ready(function () {
+    /* $(document).ready(function () {
 
         $(document).on("click", "#boxOne", function(e) {
             e.preventDefault();
+            
+            // Mark the box as active
+            $("#boxOne").addClass("active");
+        
+            // Add miniBox to the active box (if not already present)
+            if (!$("#boxOne .miniBox").length) {
+                $("#boxOne").append('<div class="miniBox"></div>');
+            }
+        
+            // Remove active color from other boxes
+            $(".box").not("#boxOne").removeClass("active").find(".miniBox").remove();
+        
+            // Proceed to show the next step
             currentStep = 1;
             showStep(currentStep);
         });
+        
 
         $(document).on("click", "#boxTwo", function(e) {
             e.preventDefault();
-
+        
             const storedCustomItems = sessionStorage.getItem("custom_items");
             const storedProductItems = sessionStorage.getItem("product_items");
-
+        
             // Check if at least one has a non-null, non-empty value
             if ((storedCustomItems && storedCustomItems !== "[]") || (storedProductItems && storedProductItems !== "[]")) {
+                // Set the session for step-2
+                sessionStorage.setItem("step-2", "true");
+        
+                // Mark the box as active
+                $("#boxTwo").addClass("active");
+        
+                // Add miniBox to the active box (if not already present)
+                if (!$("#boxTwo .miniBox").length) {
+                    $("#boxTwo").append('<div class="miniBox"></div>');
+                }
+        
+                // Remove active color from other boxes
+                $(".box").not("#boxTwo").removeClass("active").find(".miniBox").remove();
+        
+                // Proceed to show the next step
                 currentStep = 2;
                 showStep(currentStep);
             } else {
                 alert("Please add a product before proceeding.");
             }
-        });    
-        
+        });
+
         $(document).on("click", "#boxThree", function (e) {
             e.preventDefault();
+        
             const rawAddress = sessionStorage.getItem("collection_address_checkout");
+        
+            // Check if the collection address is valid
             if (rawAddress && rawAddress.trim() !== "") {
+                // Set the session for step-3
+                sessionStorage.setItem("step-3", "true");
+        
+                // Mark the box as active
+                $("#boxThree").addClass("active");
+        
+                // Add miniBox to the active box (if not already present)
+                if (!$("#boxThree .miniBox").length) {
+                    $("#boxThree").append('<div class="miniBox"></div>');
+                }
+        
+                // Remove active color from other boxes
+                $(".box").not("#boxThree").removeClass("active").find(".miniBox").remove();
+        
+                // Proceed to show the next step
                 currentStep = 3;
                 showStep(currentStep);
             } else {
@@ -163,29 +234,63 @@ jQuery(document).ready(function ($) {
         
         $(document).on("click", "#boxFour", function (e) {
             e.preventDefault();
+        
             const pickupDataRaw = sessionStorage.getItem("pickup_date");
             const pickupData = pickupDataRaw ? JSON.parse(pickupDataRaw) : null;
         
+            // Check if pickup date is valid
             if (pickupData && pickupData !== "") {
+                // Set the session for step-4
+                sessionStorage.setItem("step-4", "true");
+        
+                // Mark the box as active
+                $("#boxFour").addClass("active");
+        
+                // Add miniBox to the active box (if not already present)
+                if (!$("#boxFour .miniBox").length) {
+                    $("#boxFour").append('<div class="miniBox"></div>');
+                }
+        
+                // Remove active color from other boxes
+                $(".box").not("#boxFour").removeClass("active").find(".miniBox").remove();
+        
+                // Proceed to show the next step
                 currentStep = 4;
                 showStep(currentStep);
             } else {
                 alert("Please select a pickup date before proceeding.");
             }
-        });
+        }); 
 
         $(document).on("click", "#boxFive", function(e) {
             e.preventDefault();
+        
             const pickupDataRaw = sessionStorage.getItem("pickup_date");
             const pickupData = pickupDataRaw ? JSON.parse(pickupDataRaw) : null;
-            
+        
+            // Check if pickup date is valid
             if (pickupData && pickupData !== "") {
+                // Set the session for step-5
+                sessionStorage.setItem("step-5", "true");
+        
+                // Mark the box as active
+                $("#boxFive").addClass("active");
+        
+                // Add miniBox to the active box (if not already present)
+                if (!$("#boxFive .miniBox").length) {
+                    $("#boxFive").append('<div class="miniBox"></div>');
+                }
+        
+                // Remove active color from other boxes
+                $(".box").not("#boxFive").removeClass("active").find(".miniBox").remove();
+        
+                // Proceed to show the next step
                 currentStep = 5;
                 showStep(currentStep);
             } else {
                 alert("Please select a pickup date before proceeding.");
             }
-        });
+        });        
         
         $(document).on("click", "#boxLast", function (e) {
             e.preventDefault();
@@ -206,7 +311,236 @@ jQuery(document).ready(function ($) {
             renderBookingDetailsRightSide();
         });
 
+    }); */
+
+    $(document).ready(function () {
+        // Function to set the active box color and miniBox
+        function setActiveBox(boxId) {
+            $(".box").removeClass("active").find(".miniBox").remove(); // Remove active from all boxes
+            $("#" + boxId).addClass("active"); // Add active to clicked box
+    
+            // Add miniBox to the active box (if not already present)
+            if (!$("#" + boxId + " .miniBox").length) {
+                $("#" + boxId).append('<div class="miniBox"></div>');
+            }
+        }
+    
+        // Function to fill boxes with color based on session data
+        function fillBoxesBasedOnSession() {
+
+            const storedCustomItems = sessionStorage.getItem("custom_items");
+            const storedProductItems = sessionStorage.getItem("product_items");
+            const rawAddress = sessionStorage.getItem("collection_address_checkout");
+            const pickupDataRaw = sessionStorage.getItem("pickup_date");
+            const deliveryDetails = sessionStorage.getItem("delivery_date");
+            const disposalSelection = sessionStorage.getItem("disposal_selection");
+            const protectionPlan = sessionStorage.getItem("protection_plan");
+
+            // If step-1 is true, mark the Storage box as filled
+            if ((storedCustomItems && storedCustomItems !== "[]") || (storedProductItems && storedProductItems !== "[]")) {
+                $("#boxOne").addClass("filled");
+            }
+
+            // If step-2 is true, mark the Address box as filled
+            if (rawAddress && rawAddress.trim() !== "") {
+                $("#boxTwo").addClass("filled");
+            }
+
+            // If step-3 is true, mark the Pickup box as filled (check if pickup date exists in sessionStorage)
+            if (pickupDataRaw && pickupDataRaw !== "null" && JSON.parse(pickupDataRaw).date) {
+                $("#boxThree").addClass("filled");
+            }
+
+            // If step-4 is true, mark the Materials box as filled (check if delivery details exist)
+            if (deliveryDetails && deliveryDetails !== "null") {
+                $("#boxFour").addClass("filled");
+            }
+
+            // Parse protectionPlan and disposalSelection from sessionStorage if they are stored as JSON
+            const parsedDisposalSelection = disposalSelection ? JSON.parse(disposalSelection) : null;
+            const parsedProtectionPlan = protectionPlan ? JSON.parse(protectionPlan) : null;
+
+            // Check if either the protection plan or disposal selection exists
+            if ((parsedProtectionPlan && parsedProtectionPlan.id) || (parsedDisposalSelection && parsedDisposalSelection.id)) {
+                $("#boxFive").addClass("filled");
+            }
+
+        }
+    
+        // Fill boxes based on session data when page loads
+        fillBoxesBasedOnSession();
+    
+        // Step 1: Storage
+        $(document).on("click", "#boxOne", function (e) {
+            e.preventDefault();
+            setActiveBox("boxOne"); // Set active color and miniBox
+            currentStep = 1;
+            showStep(currentStep);
+        });
+    
+        // Step 2: Address
+        $(document).on("click", "#boxTwo", function (e) {
+            e.preventDefault();
+            const storedCustomItems = sessionStorage.getItem("custom_items");
+            const storedProductItems = sessionStorage.getItem("product_items");
+    
+            // Check if at least one has a non-null, non-empty value
+            if ((storedCustomItems && storedCustomItems !== "[]") || (storedProductItems && storedProductItems !== "[]")) {
+                sessionStorage.setItem("step-2", "true");
+                setActiveBox("boxTwo"); // Set active color and miniBox
+                currentStep = 2;
+                showStep(currentStep);
+            } else {
+                alert("Please add a product before proceeding.");
+            }
+        });
+    
+        // Step 3: Pickup Address
+        $(document).on("click", "#boxThree", function (e) {
+            e.preventDefault();
+        
+            const storedCustomItems = sessionStorage.getItem("custom_items");
+            const storedProductItems = sessionStorage.getItem("product_items");
+            const rawAddress = sessionStorage.getItem("collection_address_checkout");
+        
+            // Check if either custom items or product items are present, and the collection address is valid
+            if ((storedCustomItems && storedCustomItems !== "[]") || (storedProductItems && storedProductItems !== "[]")) {
+                if (rawAddress && rawAddress.trim() !== "") {
+                    // Set the session for step-3
+                    sessionStorage.setItem("step-3", "true");
+        
+                    // Mark the box as active
+                    setActiveBox("boxThree"); // Set active color and miniBox
+        
+                    // Proceed to show the next step
+                    currentStep = 3;
+                    showStep(currentStep);
+                } else {
+                    alert("Please add a collection address before proceeding.");
+                }
+            } else {
+                alert("Please add a product before proceeding.");
+            }
+        });        
+    
+        // Step 4: Materials
+        $(document).on("click", "#boxFour", function (e) {
+            e.preventDefault();
+
+            // Retrieve custom items and product items from sessionStorage
+            const storedCustomItems = sessionStorage.getItem("custom_items");
+            const storedProductItems = sessionStorage.getItem("product_items");
+            
+            // Retrieve pickup date from sessionStorage
+            const pickupDataRaw = sessionStorage.getItem("pickup_date");
+            const pickupData = pickupDataRaw ? JSON.parse(pickupDataRaw) : null;
+
+            // Check if either custom items or product items exist, and the pickup date is valid
+            if (
+                ((storedCustomItems && storedCustomItems !== "[]") || (storedProductItems && storedProductItems !== "[]")) &&
+                pickupData && pickupData !== ""
+            ) {
+                // Set the session for step-4
+                sessionStorage.setItem("step-4", "true");
+
+                // Mark the box as active
+                setActiveBox("boxFour"); // Set active color and miniBox
+
+                // Proceed to show the next step
+                currentStep = 4;
+                showStep(currentStep);
+            } else {
+                // Show alert if pickup date is missing or no items are added
+                if (!(storedCustomItems && storedCustomItems !== "[]") && !(storedProductItems && storedProductItems !== "[]")) {
+                    alert("Please add a product before proceeding.");
+                } else {
+                    alert("Please select a pickup date before proceeding.");
+                }
+            }
+        });
+
+    
+       // Step 5: Protection
+        $(document).on("click", "#boxFive", function (e) {
+            e.preventDefault();
+
+            // Retrieve custom items and product items from sessionStorage
+            const storedCustomItems = sessionStorage.getItem("custom_items");
+            const storedProductItems = sessionStorage.getItem("product_items");
+            
+            // Retrieve pickup date from sessionStorage
+            const pickupDataRaw = sessionStorage.getItem("pickup_date");
+            const pickupData = pickupDataRaw ? JSON.parse(pickupDataRaw) : null;
+
+            // Check if either custom items or product items exist, and the pickup date is valid
+            if (
+                ((storedCustomItems && storedCustomItems !== "[]") || (storedProductItems && storedProductItems !== "[]")) &&
+                pickupData && pickupData !== ""
+            ) {
+                // Set the session for step-5
+                sessionStorage.setItem("step-5", "true");
+
+                // Mark the box as active
+                setActiveBox("boxFive"); // Set active color and miniBox
+
+                // Proceed to show the next step
+                currentStep = 5;
+                showStep(currentStep);
+            } else {
+                // Show alert if no items or pickup date is missing
+                if (!(storedCustomItems && storedCustomItems !== "[]") && !(storedProductItems && storedProductItems !== "[]")) {
+                    alert("Please add a product before proceeding.");
+                } else {
+                    alert("Please select a pickup date before proceeding.");
+                }
+            }
+        });
+
+    
+        // Step 6: Checkout
+        $(document).on("click", "#boxLast", function (e) {
+            e.preventDefault();
+
+            // Retrieve custom items and product items from sessionStorage
+            const storedCustomItems = sessionStorage.getItem("custom_items");
+            const storedProductItems = sessionStorage.getItem("product_items");
+
+            // Retrieve pickup date from sessionStorage
+            const pickupDataRaw = sessionStorage.getItem("pickup_date");
+            const pickupData = pickupDataRaw ? JSON.parse(pickupDataRaw) : null;
+
+            // Check if either custom items or product items exist, and the pickup date is valid
+            if (
+                ((storedCustomItems && storedCustomItems !== "[]") || (storedProductItems && storedProductItems !== "[]")) &&
+                pickupData && pickupData !== ""
+            ) {
+                // Set the session for step-6
+                sessionStorage.setItem("step-6", "true");
+
+                // Mark the box as active
+                setActiveBox("boxLast"); // Set active color and miniBox
+
+                // Proceed to show the next step
+                currentStep = 6;
+                showStep(currentStep); // Show the correct section
+            } else {
+                // Show alert if no items or pickup date is missing
+                if (!(storedCustomItems && storedCustomItems !== "[]") && !(storedProductItems && storedProductItems !== "[]")) {
+                    alert("Please add a product before proceeding.");
+                } else {
+                    alert("Please select a pickup date before proceeding.");
+                }
+            }
+
+            // Populate the Booking Summary table & totals
+            loadPriceDetailsIntoTable();
+            updateStyledChargesSummary();
+            renderBookingDetailsRightSide();
+        });
+
     });
+    
+    
 
     // ==================== Disposal Selection Handling ========================
     $(".disposal-option").click(function () {
@@ -279,6 +613,12 @@ jQuery(document).ready(function ($) {
     const $supplySection = $("#supply_timeslot_section");
     const $nextButton = $("#next_button");
 
+    // Set default value
+    if (sessionStorage.getItem("packing_selected") === null) {
+        sessionStorage.setItem("packing_selected", "true");
+    }
+
+    // Yes option click
     $yesOption.click(function () {
         $yesOption.addClass("selected");
         $noOption.removeClass("selected");
@@ -288,6 +628,7 @@ jQuery(document).ready(function ($) {
         updateSummary();
     });
 
+    // No option click
     $noOption.click(function () {
         sessionStorage.removeItem("delivery_date");
         $noOption.addClass("selected");
@@ -385,6 +726,7 @@ jQuery(document).ready(function ($) {
         const packingSelected = sessionStorage.getItem("packing_selected") === "true"; // Check session storage for packing selection
 
         let deliveryDetails = sessionStorage.getItem("delivery_date");
+        //console.log(packingSelected);
 
         if (packingSelected && deliveryDetails && deliveryDetails !== "null") {
             let parsedDelivery = JSON.parse(deliveryDetails);
@@ -395,6 +737,7 @@ jQuery(document).ready(function ($) {
                 time: parsedDelivery.time || '',
                 price: deliveryPrice
             };
+            //console.log(deliveryData);
 
             // Save structured delivery details
             sessionStorage.setItem("details_delivery", JSON.stringify(deliveryData));
@@ -775,8 +1118,3 @@ document.addEventListener("DOMContentLoaded", function () {
 }); */
 
 // ====navigator steps====
-
-
-
-
-

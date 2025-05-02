@@ -35,6 +35,7 @@
 </nav>
 
 <style>
+
 nav {
   width: 100%;
   max-width: 1400px;
@@ -65,7 +66,7 @@ nav .box_warpper .box {
 nav .box_warpper .box.active {
     background-color: var(--praimary) !important;
     border-color: var(--praimary) !important;
-  }
+}
 nav .box_warpper .box .miniBox {
   width: 100%;
   height: 100%;
@@ -120,10 +121,27 @@ nav .box_warpper .box-container:nth-child(1) .box {
     font-size: 10px !important;
   }
 }
+
+/* Active box color */
+nav .box_warpper .box.active {
+  background-color: #00a899;  /* Active color */
+  border-color: #00a899;
+}
+
+/* Color for completed boxes (filled) */
+nav .box_warpper .box.filled {
+    background-color: #00a899;  /* Color for filled boxes (completed steps) */
+    border-color: #00a899;
+}
+
+/* MiniBox inside active box */
+nav .box_warpper .box .miniBox {
+    background-color: #fff;  /* Optional styling for miniBox */
+}
 </style>
 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
+/*   document.addEventListener("DOMContentLoaded", () => {
     const boxes = document.querySelectorAll(".box");
 
     boxes.forEach((box) => {
@@ -144,6 +162,68 @@ nav .box_warpper .box-container:nth-child(1) .box {
             }
         });
     });
-});
+}); */
 
+</script>
+
+<script>
+/* document.addEventListener("DOMContentLoaded", () => {
+    const boxes = document.querySelectorAll(".box");
+
+    // Check for active step in sessionStorage and activate the corresponding box
+    if (sessionStorage.getItem("step-1") === "true") {
+        document.getElementById("boxOne").classList.add("active");
+        addMiniBox(document.getElementById("boxOne"));
+    }
+    if (sessionStorage.getItem("step-2") === "true") {
+        document.getElementById("boxTwo").classList.add("active");
+        addMiniBox(document.getElementById("boxTwo"));
+    }
+    if (sessionStorage.getItem("step-3") === "true") {
+        document.getElementById("boxThree").classList.add("active");
+        addMiniBox(document.getElementById("boxThree"));
+    }
+    if (sessionStorage.getItem("step-4") === "true") {
+        document.getElementById("boxFour").classList.add("active");
+        addMiniBox(document.getElementById("boxFour"));
+    }
+    if (sessionStorage.getItem("step-5") === "true") {
+        document.getElementById("boxFive").classList.add("active");
+        addMiniBox(document.getElementById("boxFive"));
+    }
+    if (sessionStorage.getItem("step-6") === "true") {
+        document.getElementById("boxLast").classList.add("active");
+        addMiniBox(document.getElementById("boxLast"));
+    }
+
+    // Function to append miniBox if not already present
+    function addMiniBox(boxElement) {
+        if (!boxElement.querySelector(".miniBox")) {
+            const miniBox = document.createElement("div");
+            miniBox.classList.add("miniBox");
+            boxElement.appendChild(miniBox);
+        }
+    }
+
+    // Click event to mark boxes as active and store the active step in sessionStorage
+    boxes.forEach((box) => {
+        box.addEventListener("click", function () {
+            // Remove 'active' class and miniBox from all boxes
+            boxes.forEach((eachBox) => {
+                eachBox.classList.remove("active");
+                const miniBox = eachBox.querySelector(".miniBox");
+                if (miniBox) eachBox.removeChild(miniBox);
+            });
+
+            // Add 'active' class and append miniBox to the clicked box
+            this.classList.add("active");
+            addMiniBox(this);
+
+            // Store the active step in sessionStorage
+            sessionStorage.setItem("active_step", this.id);
+            const stepNumber = this.id.replace('box', 'step-'); // Convert box ID to step number
+            sessionStorage.setItem(stepNumber, "true");
+        });
+    });
+}); */
 </script>
