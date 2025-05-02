@@ -65,6 +65,18 @@ function msc_enqueue_scripts() {
 add_action('wp_enqueue_scripts', 'msc_enqueue_scripts');
 
 
+// ========================== Custom Shortcode for Navigation ==========================
+/* function custom_navigation_shortcode() {
+    ob_start();
+    ?>
+    <!-- Include Navigation HTML -->
+    <?php include( plugin_dir_path(__FILE__) . 'includes/nav-bar.php'); ?>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('custom_navigation', 'custom_navigation_shortcode'); */
+
+
 // Load Multi-Step Checkout Form
 function msc_custom_checkout_form() {
     ?>

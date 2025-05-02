@@ -35,283 +35,8 @@ jQuery(document).ready(function ($) {
         return isValid;
     }
 
-    // ========================== NEXT BUTTON ==========================
-    $('.next-step').click(function (e) {
-        // Function to set the active box color and miniBox
-        function setActiveBox(boxId) {
-            $(".box").removeClass("active").find(".miniBox").remove(); // Remove active from all boxes
-            $("#" + boxId).addClass("active"); // Add active to clicked box
-        
-            // Add miniBox to the active box (if not already present)
-            if (!$("#" + boxId + " .miniBox").length) {
-                $("#" + boxId).append('<div class="miniBox"></div>');
-            }
-        }
-
-        const storedCustomItems = sessionStorage.getItem("custom_items");
-        const storedProductItems = sessionStorage.getItem("product_items");
-        const rawAddress = sessionStorage.getItem("collection_address_checkout");
-        const pickupDataRaw = sessionStorage.getItem("pickup_date");
-        const deliveryDetails = sessionStorage.getItem("delivery_date");
-    
-        // Check the current step and process the steps accordingly
-        if (currentStep === 1) {
-            // Retrieve subtotal values
-            let subtotalPre = parseFloat(sessionStorage.getItem("subtotal_pre")) || 0;
-            let subtotalCustom = parseFloat(sessionStorage.getItem("subtotal_custom")) || 0;
-
-            // Validation check before proceeding
-            if (subtotalPre <= 0 && subtotalCustom <= 0) {
-                alert("Please add at least one item before continuing.");
-                return false;
-            } else {
-
-                // If either custom items or product items exist, mark the Storage box as filled
-                if ((storedCustomItems && JSON.parse(storedCustomItems).length > 0) || 
-                    (storedProductItems && JSON.parse(storedProductItems).length > 0)) {
-                    $("#boxTwo").addClass("filled");
-                }
-
-                // If the subtotal is valid (greater than 0), proceed to the next step
-                setActiveBox("boxTwo"); // Activate the color and miniBox for step 2
-                currentStep = 2; // Set the current step
-                showStep(currentStep); // Show the next step
-            }
-        }
-
-        else if (currentStep === 2) {
-            if (!validateAddressForm()) {
-                return; // Stop progression if address is invalid
-            } else {
-                if (rawAddress && rawAddress.trim() !== "") {
-                    $("#boxThree").addClass("filled");
-                }
-                setActiveBox("boxThree"); // Activate the color and miniBox for step 3
-                saveAddressToSession();
-                currentStep = 3; // Set the current step
-                showStep(currentStep); // Show the next step
-            }     
-        }
-    
-        else if (currentStep === 3) {
-            var dateInputCollection = $("#collection_timeslot").val();
-            
-            if (!dateInputCollection) {
-                alert("❌ Please select a collection date before continuing.");
-                e.preventDefault();
-                return;
-            } else {
-                if (pickupDataRaw && pickupDataRaw !== "null" && JSON.parse(pickupDataRaw).date) {
-                    $("#boxFour").addClass("filled");
-                }
-                setActiveBox("boxFour"); // Activate the color and miniBox for step 4
-                savePickupDetails();
-                currentStep = 4; // Set the current step
-                showStep(currentStep); // Show the next step
-            }
-        }
-    
-        else if (currentStep === 4) {
-            setActiveBox("boxFive"); // Activate the color and miniBox for step 5
-            saveDeliveryDetails();
-            currentStep = 5; // Set the current step
-            showStep(currentStep); // Show the next step
-        }
-
-        else if (currentStep === 5) {
-            if (deliveryDetails && deliveryDetails !== "null") {
-                $("#boxFive").addClass("filled");
-            }
-            setActiveBox("boxLast"); // Activate the color and miniBox for step 6
-            currentStep = 6; // Set the current step
-            showStep(currentStep); // Show the next step
-        }
-    
-        updateSummary();
-    });    
-
-
-    // ========================== Edit link handlers ==========================
-    $(document).on("click", ".edit-link-address", function(e) {
-        e.preventDefault();
-        currentStep = 2;
-        showStep(currentStep);
-    });
-
-    $(document).on("click", ".edit-link-pickup-date", function(e) {
-        e.preventDefault();
-        currentStep = 3;
-        showStep(currentStep);
-    });
-
-    $(document).on("click", ".edit-link-supply-date", function(e) {
-        e.preventDefault();
-        currentStep = 4;
-        showStep(currentStep);
-    });
 
     // ========================== nav link handlers ==========================
-    /* $(document).ready(function () {
-
-        $(document).on("click", "#boxOne", function(e) {
-            e.preventDefault();
-            
-            // Mark the box as active
-            $("#boxOne").addClass("active");
-        
-            // Add miniBox to the active box (if not already present)
-            if (!$("#boxOne .miniBox").length) {
-                $("#boxOne").append('<div class="miniBox"></div>');
-            }
-        
-            // Remove active color from other boxes
-            $(".box").not("#boxOne").removeClass("active").find(".miniBox").remove();
-        
-            // Proceed to show the next step
-            currentStep = 1;
-            showStep(currentStep);
-        });
-        
-
-        $(document).on("click", "#boxTwo", function(e) {
-            e.preventDefault();
-        
-            const storedCustomItems = sessionStorage.getItem("custom_items");
-            const storedProductItems = sessionStorage.getItem("product_items");
-        
-            // Check if at least one has a non-null, non-empty value
-            if ((storedCustomItems && storedCustomItems !== "[]") || (storedProductItems && storedProductItems !== "[]")) {
-                // Set the session for step-2
-                sessionStorage.setItem("step-2", "true");
-        
-                // Mark the box as active
-                $("#boxTwo").addClass("active");
-        
-                // Add miniBox to the active box (if not already present)
-                if (!$("#boxTwo .miniBox").length) {
-                    $("#boxTwo").append('<div class="miniBox"></div>');
-                }
-        
-                // Remove active color from other boxes
-                $(".box").not("#boxTwo").removeClass("active").find(".miniBox").remove();
-        
-                // Proceed to show the next step
-                currentStep = 2;
-                showStep(currentStep);
-            } else {
-                alert("Please add a product before proceeding.");
-            }
-        });
-
-        $(document).on("click", "#boxThree", function (e) {
-            e.preventDefault();
-        
-            const rawAddress = sessionStorage.getItem("collection_address_checkout");
-        
-            // Check if the collection address is valid
-            if (rawAddress && rawAddress.trim() !== "") {
-                // Set the session for step-3
-                sessionStorage.setItem("step-3", "true");
-        
-                // Mark the box as active
-                $("#boxThree").addClass("active");
-        
-                // Add miniBox to the active box (if not already present)
-                if (!$("#boxThree .miniBox").length) {
-                    $("#boxThree").append('<div class="miniBox"></div>');
-                }
-        
-                // Remove active color from other boxes
-                $(".box").not("#boxThree").removeClass("active").find(".miniBox").remove();
-        
-                // Proceed to show the next step
-                currentStep = 3;
-                showStep(currentStep);
-            } else {
-                alert("Please add a collection address before proceeding.");
-            }
-        });
-        
-        $(document).on("click", "#boxFour", function (e) {
-            e.preventDefault();
-        
-            const pickupDataRaw = sessionStorage.getItem("pickup_date");
-            const pickupData = pickupDataRaw ? JSON.parse(pickupDataRaw) : null;
-        
-            // Check if pickup date is valid
-            if (pickupData && pickupData !== "") {
-                // Set the session for step-4
-                sessionStorage.setItem("step-4", "true");
-        
-                // Mark the box as active
-                $("#boxFour").addClass("active");
-        
-                // Add miniBox to the active box (if not already present)
-                if (!$("#boxFour .miniBox").length) {
-                    $("#boxFour").append('<div class="miniBox"></div>');
-                }
-        
-                // Remove active color from other boxes
-                $(".box").not("#boxFour").removeClass("active").find(".miniBox").remove();
-        
-                // Proceed to show the next step
-                currentStep = 4;
-                showStep(currentStep);
-            } else {
-                alert("Please select a pickup date before proceeding.");
-            }
-        }); 
-
-        $(document).on("click", "#boxFive", function(e) {
-            e.preventDefault();
-        
-            const pickupDataRaw = sessionStorage.getItem("pickup_date");
-            const pickupData = pickupDataRaw ? JSON.parse(pickupDataRaw) : null;
-        
-            // Check if pickup date is valid
-            if (pickupData && pickupData !== "") {
-                // Set the session for step-5
-                sessionStorage.setItem("step-5", "true");
-        
-                // Mark the box as active
-                $("#boxFive").addClass("active");
-        
-                // Add miniBox to the active box (if not already present)
-                if (!$("#boxFive .miniBox").length) {
-                    $("#boxFive").append('<div class="miniBox"></div>');
-                }
-        
-                // Remove active color from other boxes
-                $(".box").not("#boxFive").removeClass("active").find(".miniBox").remove();
-        
-                // Proceed to show the next step
-                currentStep = 5;
-                showStep(currentStep);
-            } else {
-                alert("Please select a pickup date before proceeding.");
-            }
-        });        
-        
-        $(document).on("click", "#boxLast", function (e) {
-            e.preventDefault();
-            //sessionStorage.removeItem("pickup_date");
-            const pickupDataRaw = sessionStorage.getItem("pickup_date");
-            const pickupData = pickupDataRaw ? JSON.parse(pickupDataRaw) : null;
-        
-            if (pickupData && pickupData !== "") {
-                currentStep = 6;
-                showStep(currentStep); // Show the correct section
-            } else {
-                alert("Please select a pickup date before proceeding.");
-            }
-        
-            // Populate the Booking Summary table & totals
-            loadPriceDetailsIntoTable();
-            updateStyledChargesSummary();
-            renderBookingDetailsRightSide();
-        });
-
-    }); */
 
     $(document).ready(function () {
         // Function to set the active box color and miniBox
@@ -325,54 +50,16 @@ jQuery(document).ready(function ($) {
             }
         }
     
-        // Function to fill boxes with color based on session data
-        function fillBoxesBasedOnSession() {
-
-            const storedCustomItems = sessionStorage.getItem("custom_items");
-            const storedProductItems = sessionStorage.getItem("product_items");
-            const rawAddress = sessionStorage.getItem("collection_address_checkout");
-            const pickupDataRaw = sessionStorage.getItem("pickup_date");
-            const deliveryDetails = sessionStorage.getItem("delivery_date");
-            const disposalSelection = sessionStorage.getItem("disposal_selection");
-            const protectionPlan = sessionStorage.getItem("protection_plan");
-
-            // If step-1 is true, mark the Storage box as filled
-            if ((storedCustomItems && storedCustomItems !== "[]") || (storedProductItems && storedProductItems !== "[]")) {
-                $("#boxOne").addClass("filled");
-            }
-
-            // If step-2 is true, mark the Address box as filled
-            if (rawAddress && rawAddress.trim() !== "") {
-                $("#boxTwo").addClass("filled");
-            }
-
-            // If step-3 is true, mark the Pickup box as filled (check if pickup date exists in sessionStorage)
-            if (pickupDataRaw && pickupDataRaw !== "null" && JSON.parse(pickupDataRaw).date) {
-                $("#boxThree").addClass("filled");
-            }
-
-            // If step-4 is true, mark the Materials box as filled (check if delivery details exist)
-            if (deliveryDetails && deliveryDetails !== "null") {
-                $("#boxFour").addClass("filled");
-            }
-
-            // Parse protectionPlan and disposalSelection from sessionStorage if they are stored as JSON
-            const parsedDisposalSelection = disposalSelection ? JSON.parse(disposalSelection) : null;
-            const parsedProtectionPlan = protectionPlan ? JSON.parse(protectionPlan) : null;
-
-            // Check if either the protection plan or disposal selection exists
-            if ((parsedProtectionPlan && parsedProtectionPlan.id) || (parsedDisposalSelection && parsedDisposalSelection.id)) {
-                $("#boxFive").addClass("filled");
-            }
-
-        }
-    
         // Fill boxes based on session data when page loads
         fillBoxesBasedOnSession();
     
         // Step 1: Storage
         $(document).on("click", "#boxOne", function (e) {
             e.preventDefault();
+    
+            // Call the function to fill boxes based on session data
+            fillBoxesBasedOnSession();
+
             setActiveBox("boxOne"); // Set active color and miniBox
             currentStep = 1;
             showStep(currentStep);
@@ -386,7 +73,9 @@ jQuery(document).ready(function ($) {
     
             // Check if at least one has a non-null, non-empty value
             if ((storedCustomItems && storedCustomItems !== "[]") || (storedProductItems && storedProductItems !== "[]")) {
-                sessionStorage.setItem("step-2", "true");
+                // Call the function to fill boxes based on session data
+                fillBoxesBasedOnSession();
+
                 setActiveBox("boxTwo"); // Set active color and miniBox
                 currentStep = 2;
                 showStep(currentStep);
@@ -406,8 +95,9 @@ jQuery(document).ready(function ($) {
             // Check if either custom items or product items are present, and the collection address is valid
             if ((storedCustomItems && storedCustomItems !== "[]") || (storedProductItems && storedProductItems !== "[]")) {
                 if (rawAddress && rawAddress.trim() !== "") {
-                    // Set the session for step-3
-                    sessionStorage.setItem("step-3", "true");
+
+                    // Call the function to fill boxes based on session data
+                    fillBoxesBasedOnSession();
         
                     // Mark the box as active
                     setActiveBox("boxThree"); // Set active color and miniBox
@@ -440,8 +130,9 @@ jQuery(document).ready(function ($) {
                 ((storedCustomItems && storedCustomItems !== "[]") || (storedProductItems && storedProductItems !== "[]")) &&
                 pickupData && pickupData !== ""
             ) {
-                // Set the session for step-4
-                sessionStorage.setItem("step-4", "true");
+
+                // Call the function to fill boxes based on session data
+                fillBoxesBasedOnSession();
 
                 // Mark the box as active
                 setActiveBox("boxFour"); // Set active color and miniBox
@@ -477,8 +168,9 @@ jQuery(document).ready(function ($) {
                 ((storedCustomItems && storedCustomItems !== "[]") || (storedProductItems && storedProductItems !== "[]")) &&
                 pickupData && pickupData !== ""
             ) {
-                // Set the session for step-5
-                sessionStorage.setItem("step-5", "true");
+
+                // Call the function to fill boxes based on session data
+                fillBoxesBasedOnSession();
 
                 // Mark the box as active
                 setActiveBox("boxFive"); // Set active color and miniBox
@@ -514,8 +206,9 @@ jQuery(document).ready(function ($) {
                 ((storedCustomItems && storedCustomItems !== "[]") || (storedProductItems && storedProductItems !== "[]")) &&
                 pickupData && pickupData !== ""
             ) {
-                // Set the session for step-6
-                sessionStorage.setItem("step-6", "true");
+
+                // Call the function to fill boxes based on session data
+                fillBoxesBasedOnSession();
 
                 // Mark the box as active
                 setActiveBox("boxLast"); // Set active color and miniBox
@@ -539,7 +232,166 @@ jQuery(document).ready(function ($) {
         });
 
     });
+
+    // Function to fill boxes with color based on session data
+    function fillBoxesBasedOnSession() {
+
+        const storedCustomItems = sessionStorage.getItem("custom_items");
+        const storedProductItems = sessionStorage.getItem("product_items");
+        const rawAddress = sessionStorage.getItem("collection_address_checkout");
+        const pickupDataRaw = sessionStorage.getItem("pickup_date");
+        const deliveryDetails = sessionStorage.getItem("delivery_date");
+        const disposalSelection = sessionStorage.getItem("disposal_selection");
+        const protectionPlan = sessionStorage.getItem("protection_plan");
+
+        // If step-1 is true, mark the Storage box as filled
+        if ((storedCustomItems && storedCustomItems !== "[]") || (storedProductItems && storedProductItems !== "[]")) {
+            $("#boxOne").addClass("filled");
+        }else {
+            $("#boxOne").removeClass("filled");
+        }
+
+        // If step-2 is true, mark the Address box as filled
+        if (rawAddress && rawAddress.trim() !== "") {
+            $("#boxTwo").addClass("filled");
+            console.log('filled');
+        }else {
+            $("#boxTwo").removeClass("filled");
+            console.log('removed');
+        }
+
+        // If step-3 is true, mark the Pickup box as filled (check if pickup date exists in sessionStorage)
+        if (pickupDataRaw && pickupDataRaw !== "null" && JSON.parse(pickupDataRaw).date) {
+            $("#boxThree").addClass("filled");
+        }else {
+            $("#boxThree").removeClass("filled");
+        }
+
+        // If step-4 is true, mark the Materials box as filled (check if delivery details exist)
+        if (deliveryDetails && deliveryDetails !== "null") {
+            $("#boxFour").addClass("filled");
+        }else {
+            $("#boxFour").removeClass("filled");
+        }
+
+        // Parse protectionPlan and disposalSelection from sessionStorage if they are stored as JSON
+        const parsedDisposalSelection = disposalSelection ? JSON.parse(disposalSelection) : null;
+        const parsedProtectionPlan = protectionPlan ? JSON.parse(protectionPlan) : null;
+
+        // Check if either the protection plan or disposal selection exists
+        if ((parsedProtectionPlan && parsedProtectionPlan.id) || (parsedDisposalSelection && parsedDisposalSelection.id)) {
+            $("#boxFive").addClass("filled");
+        }else {
+            $("#boxFive").removeClass("filled");
+        }
+
+    }
+
+    // ========================== NEXT BUTTON ==========================
+    $('.next-step').click(function (e) {
+
+        // Function to set the active box color and miniBox
+        function setActiveBox(boxId) {
+            $(".box").removeClass("active").find(".miniBox").remove(); // Remove active from all boxes
+            $("#" + boxId).addClass("active"); // Add active to clicked box
+        
+            // Add miniBox to the active box (if not already present)
+            if (!$("#" + boxId + " .miniBox").length) {
+                $("#" + boxId).append('<div class="miniBox"></div>');
+            }
+        }
     
+        // Check the current step and process the steps accordingly
+        if (currentStep === 1) {
+            // Retrieve subtotal values
+            let subtotalPre = parseFloat(sessionStorage.getItem("subtotal_pre")) || 0;
+            let subtotalCustom = parseFloat(sessionStorage.getItem("subtotal_custom")) || 0;
+
+            // Validation check before proceeding
+            if (subtotalPre <= 0 && subtotalCustom <= 0) {
+                alert("Please add at least one item before continuing.");
+                return false;
+            } else {
+                // Call the function to fill boxes based on session data
+                fillBoxesBasedOnSession();
+
+                // If the subtotal is valid (greater than 0), proceed to the next step
+                setActiveBox("boxTwo"); // Activate the color and miniBox for step 2
+                currentStep = 2; // Set the current step
+                showStep(currentStep); // Show the next step
+            }
+        }
+
+        else if (currentStep === 2) {
+            if (!validateAddressForm()) {
+                return; // Stop progression if address is invalid
+            } else {
+                
+                setActiveBox("boxThree"); // Activate the color and miniBox for step 3
+
+                saveAddressToSession();
+                currentStep = 3; // Set the current step
+                showStep(currentStep); // Show the next step
+                // Call the function to fill boxes based on session data
+                fillBoxesBasedOnSession();
+            }     
+        }
+    
+        else if (currentStep === 3) {
+            var dateInputCollection = $("#collection_timeslot").val();
+            
+            if (!dateInputCollection) {
+                alert("❌ Please select a collection date before continuing.");
+                e.preventDefault();
+                return;
+            } else {
+                // Call the function to fill boxes based on session data
+                fillBoxesBasedOnSession();
+                setActiveBox("boxFour"); // Activate the color and miniBox for step 4
+                savePickupDetails();
+                currentStep = 4; // Set the current step
+                showStep(currentStep); // Show the next step
+            }
+        }
+    
+        else if (currentStep === 4) {
+            // Call the function to fill boxes based on session data
+            fillBoxesBasedOnSession();
+            setActiveBox("boxFive"); // Activate the color and miniBox for step 5
+            saveDeliveryDetails();
+            currentStep = 5; // Set the current step
+            showStep(currentStep); // Show the next step
+        }
+
+        else if (currentStep === 5) {
+            // Call the function to fill boxes based on session data
+            fillBoxesBasedOnSession();
+            setActiveBox("boxLast"); // Activate the color and miniBox for step 6
+            currentStep = 6; // Set the current step
+            showStep(currentStep); // Show the next step
+        }
+    
+        updateSummary();
+    });
+
+    // ========================== Edit link handlers ==========================
+    $(document).on("click", ".edit-link-address", function(e) {
+        e.preventDefault();
+        currentStep = 2;
+        showStep(currentStep);
+    });
+
+    $(document).on("click", ".edit-link-pickup-date", function(e) {
+        e.preventDefault();
+        currentStep = 3;
+        showStep(currentStep);
+    });
+
+    $(document).on("click", ".edit-link-supply-date", function(e) {
+        e.preventDefault();
+        currentStep = 4;
+        showStep(currentStep);
+    });   
     
 
     // ==================== Disposal Selection Handling ========================
