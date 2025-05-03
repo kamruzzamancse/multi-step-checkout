@@ -24,13 +24,13 @@
                     <div class="pro_Row">
                         <div class="pro_col">
                             <div class="pro_inputBox inline-label ls-input form-group">
-                                <label class="label" for="first_name">First name *</label>
+                                <label class="label filled" for="first_name">First name *</label>
                                 <input class="form-control" type="text" id="first_name" required>
                             </div>
                         </div>
                         <div class="pro_col">
                             <div class="pro_inputBox inline-label ls-input form-group">
-                                <label class="label" for="last_name">Last name *</label>
+                                <label class="label filled" for="last_name">Last name *</label>
                                 <input class="form-control" type="text" id="last_name" required>
                             </div>
                         </div>
@@ -39,13 +39,13 @@
                     <div class="pro_Row">
                         <div class="pro_col">
                             <div class="pro_inputBox inline-label ls-input form-group">
-                                <label class="label" for="building_name">Building number/name *</label>
+                                <label class="label filled" for="building_name">Building number/name *</label>
                                 <input class="form-control" type="text" id="building_name" required>
                             </div>
                         </div>
                         <div class="pro_col">
                             <div class="pro_inputBox inline-label ls-input form-group">
-                                <label class="label" for="address_line1">Address line 1 *</label>
+                                <label class="label filled" for="address_line1">Address line 1 *</label>
                                 <input class="form-control" type="text" id="address_line1" required>
                             </div>
                         </div>
@@ -54,13 +54,13 @@
                     <div class="pro_Row">
                         <div class="pro_col">
                             <div class="pro_inputBox inline-label ls-input form-group">
-                                <label class="label" for="address_line2">Address line 2</label>
+                                <label class="label filled" for="address_line2">Address line 2</label>
                                 <input class="form-control" type="text" id="address_line2">
                             </div>
                         </div>
                         <div class="pro_col">
                             <div class="pro_inputBox inline-label ls-input form-group">
-                                <label class="label" for="town">Town *</label>
+                                <label class="label filled" for="town">Town *</label>
                                 <input class="form-control" type="text" id="town" required>
                             </div>
                         </div>
@@ -69,7 +69,7 @@
                     <div class="pro_Row">
                         <div class="pro_col">
                             <div class="pro_inputBox inline-label ls-input form-group">
-                                <label class="label" for="postcode">Postcode *</label>
+                                <label class="label filled" for="postcode">Postcode *</label>
                                 <input class="form-control" type="text" id="postcode" required>
                             </div>
                         </div>
@@ -189,10 +189,6 @@
 
     window.initMap = initMap;
 </script>
-
-
-
-
 
 <script>
     const rawAddress = sessionStorage.getItem("collection_address_checkout");

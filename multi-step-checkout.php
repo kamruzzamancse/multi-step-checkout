@@ -66,7 +66,7 @@ add_action('wp_enqueue_scripts', 'msc_enqueue_scripts');
 
 
 // ========================== Custom Shortcode for Navigation ==========================
-/* function custom_navigation_shortcode() {
+function custom_navigation_shortcode() {
     ob_start();
     ?>
     <!-- Include Navigation HTML -->
@@ -74,11 +74,12 @@ add_action('wp_enqueue_scripts', 'msc_enqueue_scripts');
     <?php
     return ob_get_clean();
 }
-add_shortcode('custom_navigation', 'custom_navigation_shortcode'); */
+add_shortcode('custom_navigation', 'custom_navigation_shortcode');
 
 
 // Load Multi-Step Checkout Form
 function msc_custom_checkout_form() {
+    ob_start();
     ?>
     <div id="multi-step-checkout">
         <div id="nav-bar-wrapper">
@@ -110,6 +111,7 @@ function msc_custom_checkout_form() {
         </div>
     </div>
     <?php
+    return ob_get_clean();
 }
 
 add_shortcode( 'multi_step_checkout', 'msc_custom_checkout_form' );
